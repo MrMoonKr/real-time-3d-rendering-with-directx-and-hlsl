@@ -21,7 +21,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;
-	WNDCLASSEX window;	
+	WNDCLASSEX window;
 
 	UtilityWin32::InitializeWindow(window, windowHandle, instance, windowClassName, windowTitle, RenderTargetSize, showCommand);
 

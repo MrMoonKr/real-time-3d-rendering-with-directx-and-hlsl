@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameException.h"
 
 namespace Library
 {

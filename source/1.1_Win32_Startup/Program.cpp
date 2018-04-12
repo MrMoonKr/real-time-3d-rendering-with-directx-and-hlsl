@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+#include "GameException.h"
 
 using namespace std;
 using namespace DirectX;

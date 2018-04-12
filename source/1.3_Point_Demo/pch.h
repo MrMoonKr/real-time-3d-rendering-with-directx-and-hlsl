@@ -1,5 +1,12 @@
 #pragma once
 
+// Windows
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <wrl.h>
+
 // Standard
 #include <exception>
 #include <cassert>
@@ -22,16 +29,6 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 #endif
-
-// Guidelines Support Library
-#include <gsl\gsl>
-
-// Windows
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <windows.h>
-#include <wrl.h>
 
 // DirectX
 #include <d3d11_4.h>
