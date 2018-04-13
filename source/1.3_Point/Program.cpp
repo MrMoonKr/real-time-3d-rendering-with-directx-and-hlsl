@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
 
 	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"1.1 - Win32 Startup Framework";
+	const wstring windowTitle = L"1.3 - Point";
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;

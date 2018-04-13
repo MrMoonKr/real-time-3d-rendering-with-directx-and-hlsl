@@ -2,10 +2,9 @@
 #include "RenderingGame.h"
 #include "GameException.h"
 #include "KeyboardComponent.h"
-#include "MouseComponent.h"
 #include "GamePadComponent.h"
 #include "FpsComponent.h"
-#include "PointDemo.h"
+#include "ColoredTriangleDemo.h"
 
 using namespace std;
 using namespace DirectX;
@@ -13,8 +12,6 @@ using namespace Library;
 
 namespace Rendering
 {
-	const XMVECTORF32 RenderingGame::BackgroundColor = Colors::CornflowerBlue;
-
 	RenderingGame::RenderingGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
 		Game(getWindowCallback, getRenderTargetSizeCallback)
 	{
@@ -26,10 +23,6 @@ namespace Rendering
 		mComponents.push_back(mKeyboard);
 		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
 
-		mMouse = make_shared<MouseComponent>(*this);
-		mComponents.push_back(mMouse);
-		mServices.AddService(MouseComponent::TypeIdClass(), mMouse.get());
-
 		mGamePad = make_shared<GamePadComponent>(*this);
 		mComponents.push_back(mGamePad);
 		mServices.AddService(GamePadComponent::TypeIdClass(), mGamePad.get());
@@ -37,8 +30,8 @@ namespace Rendering
 		auto fpsComponent = make_shared<FpsComponent>(*this);
 		mComponents.push_back(fpsComponent);
 
-		auto pointDemo = make_shared<PointDemo>(*this);
-		mComponents.push_back(pointDemo);
+		auto coloredTriangleDemo = make_shared<ColoredTriangleDemo>(*this);
+		mComponents.push_back(coloredTriangleDemo);
 
 		Game::Initialize();
 	}
