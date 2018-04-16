@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1_3_Point", "..\source\1.3_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1_4_Colored_Triangle", "..\source\1.4_Colored_Triangle\1_4_Colored_Triangle.vcxproj", "{5D37DE3F-D821-43E1-AC55-5DE04FFBCFBB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1_5_Colored_Cube", "..\source\1.5_Colored_Cube\1_5_Colored_Cube.vcxproj", "{02097CAA-9F4D-4014-8487-D7D86085C673}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -79,6 +81,14 @@ Global
 		{5D37DE3F-D821-43E1-AC55-5DE04FFBCFBB}.Release|Win32.Build.0 = Release|Win32
 		{5D37DE3F-D821-43E1-AC55-5DE04FFBCFBB}.Release|x64.ActiveCfg = Release|x64
 		{5D37DE3F-D821-43E1-AC55-5DE04FFBCFBB}.Release|x64.Build.0 = Release|x64
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Debug|Win32.ActiveCfg = Debug|Win32
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Debug|Win32.Build.0 = Debug|Win32
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Debug|x64.ActiveCfg = Debug|x64
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Debug|x64.Build.0 = Debug|x64
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Release|Win32.ActiveCfg = Release|Win32
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Release|Win32.Build.0 = Release|Win32
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Release|x64.ActiveCfg = Release|x64
+		{02097CAA-9F4D-4014-8487-D7D86085C673}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
