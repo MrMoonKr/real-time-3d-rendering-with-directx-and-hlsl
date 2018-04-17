@@ -1,10 +1,13 @@
 #include "pch.h"
-#include "ColoredCubeDemo.h"
+#include "ModelDemo.h"
 #include "Utility.h"
-#include "GameException.h"
-#include "Game.h"
-#include "VertexDeclarations.h"
+#include "ColorHelper.h"
 #include "Camera.h"
+#include "VertexDeclarations.h"
+#include "Game.h"
+#include "GameException.h"
+#include "..\Library.Shared\Model.h"
+#include "..\Library.Shared\Mesh.h"
 
 using namespace std;
 using namespace gsl;
@@ -13,31 +16,31 @@ using namespace DirectX;
 
 namespace Rendering
 {
-	ColoredCubeDemo::ColoredCubeDemo(Game & game, const shared_ptr<Camera>& camera) :
+	ModelDemo::ModelDemo(Game & game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera)
 	{
 	}
 
-	bool ColoredCubeDemo::AnimationEnabled() const
+	bool ModelDemo::AnimationEnabled() const
 	{
 		return mAnimationEnabled;
 	}
 
-	void ColoredCubeDemo::SetAnimationEnabled(bool enabled)
+	void ModelDemo::SetAnimationEnabled(bool enabled)
 	{
 		mAnimationEnabled = enabled;
 	}
 
-	void ColoredCubeDemo::Initialize()
+	void ModelDemo::Initialize()
 	{
 		// Load a compiled vertex shader
 		vector<char> compiledVertexShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\ColoredCubeDemoVS.cso", compiledVertexShader);
+		Utility::LoadBinaryFile(L"Content\\Shaders\\ModelDemoVS.cso", compiledVertexShader);
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
 
 		// Load a compiled pixel shader
 		vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\ColoredCubeDemoPS.cso", compiledPixelShader);
+		Utility::LoadBinaryFile(L"Content\\Shaders\\ModelDemoPS.cso", compiledPixelShader);
 		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
 
 		// Create an input layout
@@ -49,61 +52,14 @@ namespace Rendering
 
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, ARRAYSIZE(inputElementDescriptions), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
 
-		// Create a vertex buffer
-		VertexPositionColor vertices[] =
-		{
-			VertexPositionColor(XMFLOAT4(-1.0f, +1.0f, -1.0f, 1.0f), XMFLOAT4(&Colors::Green[0])),
-			VertexPositionColor(XMFLOAT4(+1.0f, +1.0f, -1.0f, 1.0f), XMFLOAT4(&Colors::Yellow[0])),
-			VertexPositionColor(XMFLOAT4(+1.0f, +1.0f, +1.0f, 1.0f), XMFLOAT4(&Colors::White[0])),
-			VertexPositionColor(XMFLOAT4(-1.0f, +1.0f, +1.0f, 1.0f), XMFLOAT4(&Colors::Cyan[0])),
+		// Load the model
+		Library::Model model("Content\\Models\\Sphere.obj.bin");
 
-			VertexPositionColor(XMFLOAT4(-1.0f, -1.0f, +1.0f, 1.0f), XMFLOAT4(&Colors::Blue[0])),
-			VertexPositionColor(XMFLOAT4(+1.0f, -1.0f, +1.0f, 1.0f), XMFLOAT4(&Colors::Purple[0])),
-			VertexPositionColor(XMFLOAT4(+1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(&Colors::Red[0])),
-			VertexPositionColor(XMFLOAT4(-1.0f, -1.0f, -1.0f, 1.0f), XMFLOAT4(&Colors::Black[0]))
-		};
-
-		D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
-		vertexBufferDesc.ByteWidth = sizeof(VertexPositionColor) * ARRAYSIZE(vertices);
-		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData = { 0 };
-		vertexSubResourceData.pSysMem = vertices;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, mVertexBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
-
-		// Create an index buffer
-		uint32_t indices[] =
-		{
-			0, 1, 2,
-			0, 2, 3,
-
-			4, 5, 6,
-			4, 6, 7,
-
-			3, 2, 5,
-			3, 5, 4,
-
-			2, 1, 6,
-			2, 6, 5,
-
-			1, 7, 6,
-			1, 0, 7,
-
-			0, 3, 4,
-			0, 4, 7
-		};
-
-		mIndexCount = ARRAYSIZE(indices);
-
-		D3D11_BUFFER_DESC indexBufferDesc = { 0 };
-		indexBufferDesc.ByteWidth = sizeof(uint32_t) * ARRAYSIZE(indices);
-		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA indexSubResourceData = { 0 };
-		indexSubResourceData.pSysMem = indices;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&indexBufferDesc, &indexSubResourceData, mIndexBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		// Create vertex and index buffers for the model
+		Mesh* mesh = model.Meshes().at(0).get();
+		CreateVertexBuffer(*mesh, mVertexBuffer.ReleaseAndGetAddressOf());
+		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
+		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
 		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
 		constantBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(CBufferPerObject));
@@ -111,7 +67,7 @@ namespace Rendering
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 	}
 
-	void ColoredCubeDemo::Update(const GameTime & gameTime)
+	void ModelDemo::Update(const GameTime & gameTime)
 	{
 		static float angle = 0.0f;
 
@@ -122,17 +78,16 @@ namespace Rendering
 		}
 	}
 
-	void ColoredCubeDemo::Draw(const GameTime & gameTime)
+	void ModelDemo::Draw(const GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
 		assert(mCamera != nullptr);
 
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
-		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionColor));
-		uint32_t offset = 0;
+		UINT stride = sizeof(VertexPositionColor);
+		UINT offset = 0;
 		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
 		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
@@ -148,5 +103,43 @@ namespace Rendering
 		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 
 		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
+	}
+
+	void ModelDemo::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	{
+		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
+
+		vector<VertexPositionColor> vertices;
+		vertices.reserve(sourceVertices.size());
+		if (mesh.VertexColors().size() > 0)
+		{
+			const vector<XMFLOAT4>& vertexColors = mesh.VertexColors().at(0);
+			assert(vertexColors.size() == sourceVertices.size());
+
+			for (size_t i = 0; i < sourceVertices.size(); i++)
+			{
+				const XMFLOAT3& position = sourceVertices.at(i);
+				const XMFLOAT4& color = vertexColors.at(i);
+				vertices.push_back(VertexPositionColor(XMFLOAT4(position.x, position.y, position.z, 1.0f), color));
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < sourceVertices.size(); i++)
+			{
+				const XMFLOAT3& position = sourceVertices.at(i);
+				XMFLOAT4 color = ColorHelper::RandomColor();
+				vertices.push_back(VertexPositionColor(XMFLOAT4(position.x, position.y, position.z, 1.0f), color));
+			}
+		}
+
+		D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
+		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionColor) * vertices.size());
+		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+		D3D11_SUBRESOURCE_DATA vertexSubResourceData = { 0 };
+		vertexSubResourceData.pSysMem = &vertices[0];
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 }

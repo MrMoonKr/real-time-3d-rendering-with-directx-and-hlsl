@@ -1,22 +1,21 @@
 #pragma once
 
-#include <windows.h>
-#include <functional>
-#include <DirectXColors.h>
 #include "Game.h"
 #include "RenderStateHelper.h"
+#include <windows.h>
+#include <functional>
 
 namespace Library
 {
 	class KeyboardComponent;
-	class MouseComponent;
 	class GamePadComponent;
 	class FpsComponent;
+	class Camera;
 }
 
 namespace Rendering
 {
-	class ColoredCubeDemo;
+	class ModelDemo;
 
 	class RenderingGame final : public Library::Game
 	{
@@ -36,6 +35,6 @@ namespace Rendering
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::GamePadComponent> mGamePad;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
-		std::shared_ptr<ColoredCubeDemo> mColoredCubeDemo;
+		std::shared_ptr<ModelDemo> mModelDemo;
 	};
 }

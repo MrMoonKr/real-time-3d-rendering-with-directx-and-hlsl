@@ -4,7 +4,10 @@
 #include "Game.h"
 #include "GameException.h"
 #include "VertexDeclarations.h"
+#include <gsl\gsl>
 
+using namespace std;
+using namespace gsl;
 using namespace Library;
 using namespace DirectX;
 
@@ -64,7 +67,7 @@ namespace Rendering
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
-		uint32_t stride = gsl::narrow_cast<uint32_t>(sizeof(VertexPositionColor));
+		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionColor));
 		uint32_t offset = 0;
 		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
 
