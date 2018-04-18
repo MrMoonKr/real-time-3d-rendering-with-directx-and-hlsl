@@ -117,6 +117,11 @@ namespace Library
 
 	void Game::Shutdown()
 	{
+		for (auto& component : mComponents)
+		{
+			component->Shutdown();
+		}
+
 		// Free up all D3D resources.
 		mDirect3DDeviceContext->ClearState();
 		mDirect3DDeviceContext->Flush();
