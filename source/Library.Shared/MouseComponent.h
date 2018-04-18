@@ -60,6 +60,7 @@ namespace Library
 		bool WasButtonReleasedThisFrame(MouseButtons button) const;
 		bool IsButtonHeldDown(MouseButtons Button) const;
 
+		MouseModes Mode() const;
 		void SetMode(MouseModes mode);
 
 	private:

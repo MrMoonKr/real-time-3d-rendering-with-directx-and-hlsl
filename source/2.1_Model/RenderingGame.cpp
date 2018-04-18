@@ -8,15 +8,20 @@
 #include "ModelDemo.h"
 #include "Grid.h"
 #include "FirstPersonCamera.h"
+#include "ImGuiComponent.h"
+#include "imgui_impl_dx11.h"
+#include "UtilityWin32.h"
 
 using namespace std;
 using namespace DirectX;
 using namespace Library;
 
+IMGUI_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 namespace Rendering
 {
 	RenderingGame::RenderingGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
-		Game(getWindowCallback, getRenderTargetSizeCallback), mRenderStateHelper(*this)
+		Game(getWindowCallback, getRenderTargetSizeCallback)
 	{
 	}
 
@@ -26,9 +31,9 @@ namespace Rendering
 		mComponents.push_back(mKeyboard);
 		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
 
-		auto mouse = make_shared<MouseComponent>(*this);
-		mComponents.push_back(mouse);
-		mServices.AddService(MouseComponent::TypeIdClass(), mouse.get());
+		mMouse = make_shared<MouseComponent>(*this, MouseModes::Absolute);
+		mComponents.push_back(mMouse);
+		mServices.AddService(MouseComponent::TypeIdClass(), mMouse.get());
 
 		mGamePad = make_shared<GamePadComponent>(*this);
 		mComponents.push_back(mGamePad);
@@ -38,32 +43,67 @@ namespace Rendering
 		mComponents.push_back(camera);
 		mServices.AddService(Camera::TypeIdClass(), camera.get());
 
-		auto grid = make_shared<Grid>(*this, camera);
-		mComponents.push_back(grid);
+		mGrid = make_shared<Grid>(*this, camera);
+		mComponents.push_back(mGrid);
 
 		mModelDemo = make_shared<ModelDemo>(*this, camera);
 		mComponents.push_back(mModelDemo);
 
-		Game::Initialize();
+		auto imGui = make_shared<ImGuiComponent>(*this);
+		mComponents.push_back(imGui);
+		mServices.AddService(ImGuiComponent::TypeIdClass(), imGui.get());
+		auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
+		UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
+
+		auto helpTextImGuiRenderBlock = make_shared<ImGuiComponent::RenderBlock>([this]()
+		{
+			ImGui::Begin("Controls");
+			ImGui::SetNextWindowPos(ImVec2(10, 10));
+
+			stringstream fpsLabel;
+			fpsLabel << setprecision(4) << "Frame Rate: " << mFrameRate << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+			ImGui::Text(fpsLabel.str().c_str());
+
+			ImGui::Text("Camera: WASD + Left-Click-Mouse-Look");
+			ImGui::Text("Toggle Grid: G");
+			ImGui::End();
+		});
+		imGui->AddRenderBlock(helpTextImGuiRenderBlock);
 
 		mFpsComponent = make_shared<FpsComponent>(*this);
-		mFpsComponent->Initialize();
+		mFpsComponent->SetVisible(false);
+		mComponents.push_back(mFpsComponent);
+
+		Game::Initialize();
 
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
 	{
-		mFpsComponent->Update(gameTime);
-
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape) || mGamePad->WasButtonPressedThisFrame(GamePadButtons::Back))
 		{
 			Exit();
 		}
 
+		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
+		{
+			mMouse->SetMode(MouseModes::Relative);
+		}
+
+		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Left))
+		{
+			mMouse->SetMode(MouseModes::Absolute);
+		}		
+
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
 		{
 			mModelDemo->SetAnimationEnabled(!mModelDemo->AnimationEnabled());
+		}
+
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::G))
+		{
+			mGrid->SetVisible(!mGrid->Visible());
 		}
 
 		Game::Update(gameTime);
@@ -75,10 +115,6 @@ namespace Rendering
 		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		Game::Draw(gameTime);
-
-		mRenderStateHelper.SaveAll();
-		mFpsComponent->Draw(gameTime);
-		mRenderStateHelper.RestoreAll();
 
 		HRESULT hr = mSwapChain->Present(1, 0);
 

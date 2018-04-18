@@ -1,11 +1,16 @@
 #include "pch.h"
 #include "UtilityWin32.h"
+#include <windows.h>
+#include <string>
 #include <Shlwapi.h>
+#include <algorithm>
 
 using namespace std;
 
 namespace Library
 {
+	vector<shared_ptr<UtilityWin32::WndProcHandler>> UtilityWin32::sWndProcHandlers;
+
 	void UtilityWin32::InitializeWindow(WNDCLASSEX& window, HWND& windowHandle, HINSTANCE instance, const wstring& className, const wstring windowTitle, const SIZE& renderTargetSize, int showCommand)
 	{
 		ZeroMemory(&window, sizeof(window));
@@ -44,6 +49,11 @@ namespace Library
 
 	LRESULT WINAPI UtilityWin32::WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
 	{
+		for (auto& wndProcHandler : sWndProcHandlers)
+		{
+			(*wndProcHandler)(windowHandle, message, wParam, lParam);
+		}
+
 		switch (message)
 		{
 		case WM_DESTROY:
@@ -110,5 +120,20 @@ namespace Library
 	void UtilityWin32::GetPathExtension(const wstring& source, wstring& dest)
 	{
 		dest = PathFindExtension(source.c_str());
+	}
+
+	const vector<shared_ptr<UtilityWin32::WndProcHandler>>& UtilityWin32::WndProcHandlers()
+	{
+		return sWndProcHandlers;
+	}
+
+	void UtilityWin32::AddWndProcHandler(shared_ptr<WndProcHandler> handler)
+	{
+		sWndProcHandlers.push_back(handler);
+	}
+
+	void UtilityWin32::RemoveWndProcHandler(shared_ptr<WndProcHandler> handler)
+	{
+		sWndProcHandlers.erase(find(sWndProcHandlers.cbegin(), sWndProcHandlers.cend(), handler));
 	}
 }

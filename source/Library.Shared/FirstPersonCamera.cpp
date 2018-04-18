@@ -108,7 +108,7 @@ namespace Library
 			}
 
 			XMFLOAT2 rotationAmount = Vector2Helper::Zero;
-			if (mMouse != nullptr)
+			if (mMouse != nullptr && mMouse->Mode() == MouseModes::Relative)
 			{				
 				if (mMouse->IsButtonHeldDown(MouseButtons::Left))
 				{

@@ -34,6 +34,10 @@ namespace Library
 	{
 	}
 
+	void GameComponent::Shutdown()
+	{
+	}
+
 	void GameComponent::Update(const GameTime&)
 	{		
 	}

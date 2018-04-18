@@ -27,6 +27,7 @@ namespace Library
 		void SetEnabled(bool enabled);
 
 		virtual void Initialize();
+		virtual void Shutdown();
 		virtual void Update(const GameTime& gameTime);
 
 	protected:

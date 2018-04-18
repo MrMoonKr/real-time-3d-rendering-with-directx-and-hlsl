@@ -101,6 +101,12 @@ namespace Library
 		return (IsButtonDown(button) && WasButtonDown(button));
 	}
 
+	MouseModes MouseComponent::Mode() const
+	{
+		auto state = sMouse->GetState();
+		return static_cast<MouseModes>(state.positionMode);
+	}
+
 	void MouseComponent::SetMode(MouseModes mode)
 	{
 		sMouse->SetMode(static_cast<Mouse::Mode>(mode));

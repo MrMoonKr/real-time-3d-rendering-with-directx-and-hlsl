@@ -47,7 +47,7 @@ namespace Library
 		mSpriteBatch->Begin();
 
 		wostringstream fpsLabel;
-		fpsLabel << setprecision(4) << L"Frame Rate: " << mFrameRate << "    Total Elapsed Time: " << gameTime.TotalGameTimeSeconds().count();
+		fpsLabel << setprecision(4) << L"Frame Rate: " << mFrameRate << L"    Total Elapsed Time: " << gameTime.TotalGameTimeSeconds().count();
 		mSpriteFont->DrawString(mSpriteBatch.get(), fpsLabel.str().c_str(), mTextPosition);
 
 		mSpriteBatch->End();
