@@ -15,7 +15,7 @@ namespace Library
 
 namespace Rendering
 {
-	class ModelDemo;
+	class TexturedModelDemo;
 
 	class RenderingGame final : public Library::Game
 	{
@@ -25,6 +25,7 @@ namespace Rendering
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
+		virtual void Shutdown() override;
 
 		void Exit();
 
@@ -36,6 +37,6 @@ namespace Rendering
 		std::shared_ptr<Library::GamePadComponent> mGamePad;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<Library::Grid> mGrid;
-		std::shared_ptr<ModelDemo> mModelDemo;
+		std::shared_ptr<TexturedModelDemo> mTexturedModelDemo;
 	};
 }

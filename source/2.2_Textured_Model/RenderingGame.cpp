@@ -5,12 +5,13 @@
 #include "MouseComponent.h"
 #include "GamePadComponent.h"
 #include "FpsComponent.h"
-#include "ModelDemo.h"
+#include "TexturedModelDemo.h"
 #include "Grid.h"
 #include "FirstPersonCamera.h"
 #include "ImGuiComponent.h"
 #include "imgui_impl_dx11.h"
 #include "UtilityWin32.h"
+#include "SamplerStates.h"
 
 using namespace std;
 using namespace DirectX;
@@ -27,11 +28,13 @@ namespace Rendering
 
 	void RenderingGame::Initialize()
 	{
+		SamplerStates::Initialize(mDirect3DDevice.Get());
+
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
 		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
 
-		mMouse = make_shared<MouseComponent>(*this, MouseModes::Absolute);
+		mMouse = make_shared<MouseComponent>(*this);
 		mComponents.push_back(mMouse);
 		mServices.AddService(MouseComponent::TypeIdClass(), mMouse.get());
 
@@ -46,8 +49,8 @@ namespace Rendering
 		mGrid = make_shared<Grid>(*this, camera);
 		mComponents.push_back(mGrid);
 
-		mModelDemo = make_shared<ModelDemo>(*this, camera);
-		mComponents.push_back(mModelDemo);
+		mTexturedModelDemo = make_shared<TexturedModelDemo>(*this, camera);
+		mComponents.push_back(mTexturedModelDemo);
 
 		auto imGui = make_shared<ImGuiComponent>(*this);
 		mComponents.push_back(imGui);
@@ -76,7 +79,7 @@ namespace Rendering
 		mComponents.push_back(mFpsComponent);
 
 		Game::Initialize();
-
+		
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
 	}
 
@@ -95,11 +98,11 @@ namespace Rendering
 		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Left))
 		{
 			mMouse->SetMode(MouseModes::Absolute);
-		}		
+		}
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
 		{
-			mModelDemo->SetAnimationEnabled(!mModelDemo->AnimationEnabled());
+			mTexturedModelDemo->SetAnimationEnabled(!mTexturedModelDemo->AnimationEnabled());
 		}
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::G))
@@ -128,6 +131,11 @@ namespace Rendering
 		{
 			ThrowIfFailed(hr, "IDXGISwapChain::Present() failed.");
 		}
+	}
+
+	void RenderingGame::Shutdown()
+	{
+		SamplerStates::Shutdown();
 	}
 
 	void RenderingGame::Exit()
