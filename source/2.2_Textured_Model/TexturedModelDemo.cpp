@@ -10,6 +10,7 @@
 #include "SamplerStates.h"
 
 using namespace std;
+using namespace std::string_literals;
 using namespace gsl;
 using namespace Library;
 using namespace DirectX;
@@ -67,7 +68,7 @@ namespace Rendering
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		// Load a texture
-		wstring textureName = L"Content\\Textures\\EarthComposite.dds";
+		const wstring textureName = L"Content\\Textures\\EarthComposite.dds"s;
 		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
 	}
 
@@ -82,9 +83,8 @@ namespace Rendering
 		}
 	}
 
-	void TexturedModelDemo::Draw(const GameTime & gameTime)
+	void TexturedModelDemo::Draw(const GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
 		assert(mCamera != nullptr);
 
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();

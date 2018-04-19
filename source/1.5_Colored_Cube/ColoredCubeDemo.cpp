@@ -122,9 +122,8 @@ namespace Rendering
 		}
 	}
 
-	void ColoredCubeDemo::Draw(const GameTime & gameTime)
+	void ColoredCubeDemo::Draw(const GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
 		assert(mCamera != nullptr);
 
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();

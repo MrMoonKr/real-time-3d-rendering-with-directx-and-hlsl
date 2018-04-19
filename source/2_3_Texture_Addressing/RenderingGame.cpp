@@ -5,7 +5,7 @@
 #include "MouseComponent.h"
 #include "GamePadComponent.h"
 #include "FpsComponent.h"
-#include "TexturedModelDemo.h"
+#include "AddressingModesDemo.h"
 #include "Grid.h"
 #include "FirstPersonCamera.h"
 #include "ImGuiComponent.h"
@@ -16,8 +16,6 @@
 using namespace std;
 using namespace DirectX;
 using namespace Library;
-
-IMGUI_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Rendering
 {
@@ -49,9 +47,6 @@ namespace Rendering
 		mGrid = make_shared<Grid>(*this, camera);
 		mComponents.push_back(mGrid);
 
-		mTexturedModelDemo = make_shared<TexturedModelDemo>(*this, camera);
-		mComponents.push_back(mTexturedModelDemo);
-
 		auto imGui = make_shared<ImGuiComponent>(*this);
 		mComponents.push_back(imGui);
 		mServices.AddService(ImGuiComponent::TypeIdClass(), imGui.get());
@@ -73,10 +68,9 @@ namespace Rendering
 			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
 			ImGui::Text(gridVisibleLabel.str().c_str());
 
-			stringstream animationEnabledLabel;
-			animationEnabledLabel << "Toggle Animation (Space): " << (mTexturedModelDemo->AnimationEnabled() ? "Enabled" : "Disabled");
-			ImGui::Text(animationEnabledLabel.str().c_str());
-
+			stringstream addressingModelLabel;
+			addressingModelLabel << "Addressing Mode (Space): " << AddressingModesDemo::AddressingModeNames.at(mAddressingModesDemo->ActiveAddressingMode());
+			ImGui::Text(addressingModelLabel.str().c_str());
 			ImGui::End();
 		});
 		imGui->AddRenderBlock(helpTextImGuiRenderBlock);
@@ -85,9 +79,12 @@ namespace Rendering
 		mFpsComponent->SetVisible(false);
 		mComponents.push_back(mFpsComponent);
 
+		mAddressingModesDemo = make_shared<AddressingModesDemo>(*this, camera);
+		mComponents.push_back(mAddressingModesDemo);
+
 		Game::Initialize();
-		
-		camera->SetPosition(0.0f, 2.5f, 20.0f);
+
+		camera->SetPosition(0.0f, 2.5f, 25.0f);
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -105,11 +102,6 @@ namespace Rendering
 		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Left))
 		{
 			mMouse->SetMode(MouseModes::Absolute);
-		}
-
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-		{
-			mTexturedModelDemo->SetAnimationEnabled(!mTexturedModelDemo->AnimationEnabled());
 		}
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::G))

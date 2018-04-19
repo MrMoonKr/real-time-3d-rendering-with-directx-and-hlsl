@@ -61,12 +61,18 @@ namespace Rendering
 			ImGui::SetNextWindowPos(ImVec2(10, 10));
 
 			stringstream fpsLabel;
-			fpsLabel << setprecision(4) << "Frame Rate: " << mFrameRate << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+			fpsLabel << setprecision(4) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
 			ImGui::Text(fpsLabel.str().c_str());
 
-			ImGui::Text("Camera: WASD + Left-Click-Mouse-Look");
-			ImGui::Text("Toggle Animation: Space");
-			ImGui::Text("Toggle Grid: G");
+			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
+
+			stringstream gridVisibleLabel;
+			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
+			ImGui::Text(gridVisibleLabel.str().c_str());
+
+			stringstream animationEnabledLabel;
+			animationEnabledLabel << "Toggle Animation (Space): " << (mModelDemo->AnimationEnabled() ? "Enabled" : "Disabled");
+			ImGui::Text(animationEnabledLabel.str().c_str());
 			ImGui::End();
 		});
 		imGui->AddRenderBlock(helpTextImGuiRenderBlock);

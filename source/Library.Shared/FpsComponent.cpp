@@ -3,6 +3,7 @@
 #include "Game.h"
 
 using namespace std;
+using namespace std::literals;
 using namespace DirectX;
 
 namespace Library
@@ -19,9 +20,14 @@ namespace Library
 		return mTextPosition;
 	}
 
-	int FpsComponent::FrameRate() const
+	int FpsComponent::FrameCount() const
 	{
 		return mFrameCount;
+	}
+
+	int FpsComponent::FrameRate() const
+	{
+		return mFrameRate;
 	}
 
 	void FpsComponent::Initialize()
@@ -32,7 +38,7 @@ namespace Library
 
 	void FpsComponent::Update(const GameTime& gameTime)
 	{
-		if ((gameTime.TotalGameTime() - mLastTotalGameTime).count() >= 1000)
+		if ((gameTime.TotalGameTime() - mLastTotalGameTime) >= 1s)
 		{
 			mLastTotalGameTime = gameTime.TotalGameTime();
 			mFrameRate = mFrameCount;

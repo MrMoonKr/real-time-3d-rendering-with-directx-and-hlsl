@@ -147,10 +147,8 @@ namespace Library
 		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
 	}
 
-	void ProxyModel::Update(const GameTime& gameTime)
+	void ProxyModel::Update(const GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
-
 		XMMATRIX worldMatrix = XMMatrixIdentity();
 		MatrixHelper::SetForward(worldMatrix, mDirection);
 		MatrixHelper::SetUp(worldMatrix, mUp);
@@ -160,10 +158,8 @@ namespace Library
 		XMStoreFloat4x4(&mWorldMatrix, XMLoadFloat4x4(&mScaleMatrix) * worldMatrix);
 	}
 
-	void ProxyModel::Draw(const GameTime& gameTime)
+	void ProxyModel::Draw(const GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
-
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());

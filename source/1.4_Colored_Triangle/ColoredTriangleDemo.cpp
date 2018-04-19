@@ -59,10 +59,8 @@ namespace Rendering
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, mVertexBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 	}
 
-	void ColoredTriangleDemo::Draw(const Library::GameTime & gameTime)
+	void ColoredTriangleDemo::Draw(const Library::GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
-
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());

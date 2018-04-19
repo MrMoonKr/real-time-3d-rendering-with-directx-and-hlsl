@@ -15,7 +15,7 @@ namespace Library
 
 namespace Rendering
 {
-	class TexturedModelDemo;
+	class AddressingModesDemo;
 
 	class RenderingGame final : public Library::Game
 	{
@@ -37,6 +37,6 @@ namespace Rendering
 		std::shared_ptr<Library::GamePadComponent> mGamePad;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<Library::Grid> mGrid;
-		std::shared_ptr<TexturedModelDemo> mTexturedModelDemo;
+		std::shared_ptr<AddressingModesDemo> mAddressingModesDemo;
 	};
 }

@@ -64,18 +64,14 @@ namespace Library
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.GetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 	}
 
-	void Skybox::Update(const GameTime& gameTime)
+	void Skybox::Update(const GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
-
 		const XMFLOAT3& position = mCamera->Position();
 		XMStoreFloat4x4(&mWorldMatrix, XMLoadFloat4x4(&mScaleMatrix) * XMMatrixTranslation(position.x, position.y, position.z));
 	}
 
-	void Skybox::Draw(const GameTime& gameTime)
+	void Skybox::Draw(const GameTime&)
 	{
-		UNREFERENCED_PARAMETER(gameTime);
-
 		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());

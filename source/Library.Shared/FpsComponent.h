@@ -26,7 +26,8 @@ namespace Library
 		~FpsComponent() = default;
 
 		DirectX::XMFLOAT2& TextPosition();
-		int FrameRate() const;	
+		int FrameCount() const;	
+		int FrameRate() const;
 
 		virtual void Initialize() override;
 		virtual void Update(const GameTime& gameTime) override;
