@@ -19,10 +19,10 @@ namespace Rendering
 
 	const map<AddressingModes, string> AddressingModesDemo::AddressingModeNames
 	{
-		{ AddressingModes::Wrap, "Wrap" },
-		{ AddressingModes::Mirror, "Mirror" },
-		{ AddressingModes::Clamp, "Clamp" },
-		{ AddressingModes::Border, "Border" }
+		{ AddressingModes::Wrap, "Wrap"s },
+		{ AddressingModes::Mirror, "Mirror"s },
+		{ AddressingModes::Clamp, "Clamp"s },
+		{ AddressingModes::Border, "Border"s }
 	};
 
 	AddressingModesDemo::AddressingModesDemo(Game& game, const shared_ptr<Camera>& camera) : 

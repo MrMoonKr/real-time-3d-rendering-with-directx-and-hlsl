@@ -47,6 +47,9 @@ namespace Rendering
 		mGrid = make_shared<Grid>(*this, camera);
 		mComponents.push_back(mGrid);
 
+		mAddressingModesDemo = make_shared<AddressingModesDemo>(*this, camera);
+		mComponents.push_back(mAddressingModesDemo);
+
 		auto imGui = make_shared<ImGuiComponent>(*this);
 		mComponents.push_back(imGui);
 		mServices.AddService(ImGuiComponent::TypeIdClass(), imGui.get());
@@ -78,9 +81,6 @@ namespace Rendering
 		mFpsComponent = make_shared<FpsComponent>(*this);
 		mFpsComponent->SetVisible(false);
 		mComponents.push_back(mFpsComponent);
-
-		mAddressingModesDemo = make_shared<AddressingModesDemo>(*this, camera);
-		mComponents.push_back(mAddressingModesDemo);
 
 		Game::Initialize();
 
