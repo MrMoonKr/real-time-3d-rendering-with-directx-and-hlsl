@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "TexturedModelDemo.h"
+#include "AmbientLightingDemo.h"
 #include "Utility.h"
 #include "Camera.h"
 #include "VertexDeclarations.h"
@@ -17,31 +17,32 @@ using namespace DirectX;
 
 namespace Rendering
 {
-	TexturedModelDemo::TexturedModelDemo(Game & game, const shared_ptr<Camera>& camera) :
+	AmbientLightingDemo::AmbientLightingDemo(Game & game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera)
 	{
 	}
 
-	bool TexturedModelDemo::AnimationEnabled() const
+	float AmbientLightingDemo::AmbientLightIntensity() const
 	{
-		return mAnimationEnabled;
+		return mCBufferPerFrameData.AmbientColor.x;
 	}
 
-	void TexturedModelDemo::SetAnimationEnabled(bool enabled)
+	void AmbientLightingDemo::SetAmbientLightIntensity(float ambientIntensity)
 	{
-		mAnimationEnabled = enabled;
+		mCBufferPerFrameData.AmbientColor = XMFLOAT4(ambientIntensity, ambientIntensity, ambientIntensity, 1.0f);
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mCBufferPerFrame.Get(), 0, nullptr, &mCBufferPerFrameData, 0, 0);
 	}
 
-	void TexturedModelDemo::Initialize()
+	void AmbientLightingDemo::Initialize()
 	{
 		// Load a compiled vertex shader
 		vector<char> compiledVertexShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\TexturedModelDemoVS.cso", compiledVertexShader);
+		Utility::LoadBinaryFile(L"Content\\Shaders\\AmbientLightingDemoVS.cso", compiledVertexShader);
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
 
 		// Load a compiled pixel shader
 		vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\TexturedModelDemoPS.cso", compiledPixelShader);
+		Utility::LoadBinaryFile(L"Content\\Shaders\\AmbientLightingDemoPS.cso", compiledPixelShader);
 		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
 
 		// Create an input layout
@@ -62,28 +63,23 @@ namespace Rendering
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
 		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
 
-		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
+		D3D11_BUFFER_DESC constantBufferDesc { 0 };
 		constantBufferDesc.ByteWidth = sizeof(CBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+
+		constantBufferDesc.ByteWidth = sizeof(CBufferPerFrame);
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+
+		// Initialize pixel shader cbuffer with ambient color
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mCBufferPerFrame.Get(), 0, nullptr, &mCBufferPerFrameData, 0, 0);
 
 		// Load a texture
 		const wstring textureName = L"Content\\Textures\\EarthComposite.dds"s;
 		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
 	}
 
-	void TexturedModelDemo::Update(const GameTime & gameTime)
-	{
-		static float angle = 0.0f;
-
-		if (mAnimationEnabled)
-		{
-			angle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(angle));
-		}
-	}
-
-	void TexturedModelDemo::Draw(const GameTime&)
+	void AmbientLightingDemo::Draw(const GameTime&)
 	{
 		assert(mCamera != nullptr);
 
@@ -102,18 +98,19 @@ namespace Rendering
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
 		XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
 		wvp = XMMatrixTranspose(wvp);
-		XMStoreFloat4x4(&mCBufferPerObject.WorldViewProjection, wvp);
+		XMStoreFloat4x4(&mCBufferPerObjectData.WorldViewProjection, wvp);
 
-		direct3DDeviceContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCBufferPerObject, 0, 0);
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
+		direct3DDeviceContext->UpdateSubresource(mCBufferPerObject.Get(), 0, nullptr, &mCBufferPerObjectData, 0, 0);
+		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mCBufferPerObject.GetAddressOf());
 
+		direct3DDeviceContext->PSSetConstantBuffers(0, 1, mCBufferPerFrame.GetAddressOf());
 		direct3DDeviceContext->PSSetShaderResources(0, 1, mColorTexture.GetAddressOf());
 		direct3DDeviceContext->PSSetSamplers(0, 1, SamplerStates::TrilinearWrap.GetAddressOf());
 
 		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
 	}
 
-	void TexturedModelDemo::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	void AmbientLightingDemo::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
