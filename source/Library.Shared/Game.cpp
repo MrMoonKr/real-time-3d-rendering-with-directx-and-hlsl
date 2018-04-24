@@ -3,6 +3,7 @@
 #include "GameException.h"
 #include "DrawableGameComponent.h"
 #include "DirectXHelper.h"
+#include "ContentTypeReaderManager.h"
 
 using namespace std;
 using namespace Library;
@@ -13,13 +14,9 @@ namespace Library
 {
 	RTTI_DEFINITIONS(Game)
 
-	const D3D_FEATURE_LEVEL Game::DefaultFeatureLevel = D3D_FEATURE_LEVEL_9_1;
-	const uint32_t Game::DefaultFrameRate = 60;
-	const uint32_t Game::DefaultMultiSamplingCount = 4;
-	const uint32_t Game::DefaultBufferCount = 2;
-
 	Game::Game(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :
-		mGetWindow(getWindowCallback), mGetRenderTargetSize(getRenderTargetSizeCallback)
+		mGetWindow(getWindowCallback), mGetRenderTargetSize(getRenderTargetSizeCallback),
+		mContentManager(*this)
 	{
 		assert(getWindowCallback != nullptr);
 		assert(mGetRenderTargetSize != nullptr);
@@ -100,6 +97,7 @@ namespace Library
 
 	void Game::Initialize()
 	{
+		ContentTypeReaderManager::Initialize(*this);
 		mGameClock.Reset();
 
 		for (auto& component : mComponents)
@@ -134,6 +132,8 @@ namespace Library
 		mSwapChain = nullptr;
 		mDirect3DDeviceContext = nullptr;
 		mDirect3DDevice = nullptr;
+
+		ContentTypeReaderManager::Shutdown();
 	}
 
 	void Game::Update(const GameTime& gameTime)
@@ -180,6 +180,11 @@ namespace Library
 	function<void*()> Game::GetWindowCallback() const
 	{
 		return mGetWindow;
+	}
+
+	ContentManager& Game::Content()
+	{
+		return mContentManager;
 	}
 
 	void Game::Begin()

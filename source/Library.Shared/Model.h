@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include "RTTI.h"
 
 namespace Library
 {
@@ -19,8 +20,10 @@ namespace Library
 		std::vector<std::shared_ptr<ModelMaterial>> Materials;
 	};
 
-    class Model final
+    class Model final : public RTTI
     {
+		RTTI_DECLARATIONS(Model, RTTI)
+
     public:
 		Model() = default;
 		Model(const std::string& filename);

@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2_4_Texture_Filtering", "..
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3_1_Ambient_Lighting", "..\source\3.1_Ambient_Lighting\3_1_Ambient_Lighting.vcxproj", "{0F7BB80A-1F24-47CD-BFB1-6FC9A6FAA5CD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3_2_Diffuse_Lighting", "..\source\3.2_Diffuse_Lighting\3_2_Diffuse_Lighting.vcxproj", "{C272F3DF-945A-4E1D-B66F-B200D7656761}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -139,6 +141,14 @@ Global
 		{0F7BB80A-1F24-47CD-BFB1-6FC9A6FAA5CD}.Release|Win32.Build.0 = Release|Win32
 		{0F7BB80A-1F24-47CD-BFB1-6FC9A6FAA5CD}.Release|x64.ActiveCfg = Release|x64
 		{0F7BB80A-1F24-47CD-BFB1-6FC9A6FAA5CD}.Release|x64.Build.0 = Release|x64
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Debug|Win32.Build.0 = Debug|Win32
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Debug|x64.ActiveCfg = Debug|x64
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Debug|x64.Build.0 = Debug|x64
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Release|Win32.ActiveCfg = Release|Win32
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Release|Win32.Build.0 = Release|Win32
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Release|x64.ActiveCfg = Release|x64
+		{C272F3DF-945A-4E1D-B66F-B200D7656761}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

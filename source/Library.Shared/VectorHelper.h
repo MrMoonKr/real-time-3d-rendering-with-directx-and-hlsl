@@ -11,6 +11,7 @@ namespace Library
 		static const DirectX::XMFLOAT2 One;
 
 		static std::string ToString(const DirectX::XMFLOAT2& vector);
+		static bool Equals(const DirectX::XMFLOAT2& lhs, const DirectX::XMFLOAT2& rhs);
 
 		Vector2Helper() = delete;
 		Vector2Helper(const Vector2Helper&) = delete;
@@ -33,6 +34,7 @@ namespace Library
 		static const DirectX::XMFLOAT3 Left;
 
 		static std::string ToString(const DirectX::XMFLOAT3& vector);
+		static bool Equals(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs);
 
 		Vector3Helper() = delete;
 		Vector3Helper(const Vector3Helper&) = delete;
@@ -49,6 +51,7 @@ namespace Library
 		static const DirectX::XMFLOAT4 One;
 
 		static std::string ToString(const DirectX::XMFLOAT4& vector);
+		static bool Equals(const DirectX::XMFLOAT4& lhs, const DirectX::XMFLOAT4& rhs);
 
 		Vector4Helper() = delete;
 		Vector4Helper(const Vector3Helper&) = delete;
@@ -58,3 +61,5 @@ namespace Library
 		~Vector4Helper() = default;
 	};
 }
+
+#include "VectorHelper.inl"

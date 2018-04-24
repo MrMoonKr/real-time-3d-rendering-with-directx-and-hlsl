@@ -4,7 +4,7 @@
 #define NOMINMAX
 #endif
 #include <wrl.h>
-#include <d3d11_4.h>
+#include <d3d11.h>
 #include <DirectXMath.h>
 #include <gsl\gsl>
 #include "DrawableGameComponent.h"
@@ -14,16 +14,17 @@
 namespace Library
 {
 	class Mesh;
+	class BasicMaterial;
 
-	class ProxyModel : public DrawableGameComponent
+	class ProxyModel final : public DrawableGameComponent
 	{
 		RTTI_DECLARATIONS(ProxyModel, DrawableGameComponent)
 
 	public:
 		ProxyModel(Game& game, const std::shared_ptr<Camera>& camera, const std::string& modelFileName, float scale = 1.0f);
 		ProxyModel(const ProxyModel&) = delete;
-		ProxyModel& operator=(const ProxyModel&) = default;
-		ProxyModel(ProxyModel&&) = delete;
+		ProxyModel(ProxyModel&&) = default;
+		ProxyModel& operator=(const ProxyModel&) = delete;		
 		ProxyModel& operator=(ProxyModel&&) = default;
 		~ProxyModel() = default;
 
@@ -51,30 +52,19 @@ namespace Library
 		virtual void Draw(const GameTime& gameTime) override;
 
 	private:
-		struct VertexCBufferPerObject
-		{
-			DirectX::XMFLOAT4X4 WorldViewProjection;
-
-			VertexCBufferPerObject() = default;
-			VertexCBufferPerObject(const DirectX::XMFLOAT4X4& wvp) : WorldViewProjection(wvp) { }
-		};
-
 		void CreateVertexBuffer(ID3D11Device* device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
+		void UpdateMaterial();
 
 		DirectX::XMFLOAT4X4 mWorldMatrix{ MatrixHelper::Identity };
-		DirectX::XMFLOAT4X4 mScaleMatrix{ MatrixHelper::Identity };
 		DirectX::XMFLOAT3 mPosition{ Vector3Helper::Zero };
 		DirectX::XMFLOAT3 mDirection{ Vector3Helper::Forward };
 		DirectX::XMFLOAT3 mUp{ Vector3Helper::Up };
 		DirectX::XMFLOAT3 mRight{ Vector3Helper::Right };
 		std::string mModelFileName;
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> mVertexShader;
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> mPixelShader;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
+		float mScale;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;		
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexCBufferPerObject;
-		VertexCBufferPerObject mVertexCBufferPerObjectData;
+		std::shared_ptr<BasicMaterial> mMaterial;
 		std::uint32_t mIndexCount{ 0 };
 		bool mDisplayWireframe{ true };
 	};

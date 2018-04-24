@@ -20,7 +20,7 @@ namespace Library
 		return mTotalGameTime;
 	}
 
-	void GameTime::SetTotalGameTime(const std::chrono::milliseconds& totalGameTime)
+	void GameTime::SetTotalGameTime(const milliseconds& totalGameTime)
 	{
 		mTotalGameTime = totalGameTime;
 	}
@@ -30,7 +30,7 @@ namespace Library
 		return mElapsedGameTime;
 	}
 
-	void GameTime::SetElapsedGameTime(const std::chrono::milliseconds& elapsedGameTime)
+	void GameTime::SetElapsedGameTime(const milliseconds& elapsedGameTime)
 	{
 		mElapsedGameTime = elapsedGameTime;
 	}

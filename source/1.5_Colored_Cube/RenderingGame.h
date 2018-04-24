@@ -34,6 +34,7 @@ namespace Rendering
 
 		Library::RenderStateHelper mRenderStateHelper;
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
+		std::shared_ptr<Library::MouseComponent> mMouse;
 		std::shared_ptr<Library::GamePadComponent> mGamePad;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<ColoredCubeDemo> mColoredCubeDemo;

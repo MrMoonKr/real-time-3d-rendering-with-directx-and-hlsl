@@ -25,10 +25,14 @@ namespace Rendering
 	public:
 		AmbientLightingDemo(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
 		
+		bool AnimationEnabled() const;
+		void SetAnimationEnabled(bool enabled);
+
 		float AmbientLightIntensity() const;
 		void SetAmbientLightIntensity(float ambientIntensity);
 
 		virtual void Initialize() override;
+		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
@@ -50,6 +54,8 @@ namespace Rendering
 
 		void CreateVertexBuffer(const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
 
+		inline static const float RotationRate{ DirectX::XM_PI };
+
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		CBufferPerObject mCBufferPerObjectData;
 		CBufferPerFrame mCBufferPerFrameData;
@@ -62,5 +68,6 @@ namespace Rendering
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mCBufferPerFrame;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;		
 		std::uint32_t mIndexCount{ 0 };
+		bool mAnimationEnabled{ true };
 	};
 }

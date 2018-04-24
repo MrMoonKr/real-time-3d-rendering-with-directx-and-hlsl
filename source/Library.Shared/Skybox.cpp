@@ -2,13 +2,13 @@
 #include "Skybox.h"
 #include "Game.h"
 #include "GameException.h"
-#include "Utility.h"
 #include "Camera.h"
-#include "VertexDeclarations.h"
-#include "RasterizerStates.h"
-#include "SamplerStates.h"
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
+#include "SkyboxMaterial.h"
+#include "VertexDeclarations.h"
+#include "VectorHelper.h"
+#include "TextureCube.h"
 
 using namespace std;
 using namespace gsl;
@@ -20,83 +20,40 @@ namespace Library
 
 	Skybox::Skybox(Game& game, const shared_ptr<Camera>& camera, const wstring& cubeMapFileName, float scale) :
 		DrawableGameComponent(game, camera),
-		mCubeMapFileName(cubeMapFileName)
+		mCubeMapFileName(cubeMapFileName), mScale(scale)
 	{
-		XMStoreFloat4x4(&mScaleMatrix, XMMatrixScaling(scale, scale, scale));
 	}
 
 	void Skybox::Initialize()
 	{
-
-		// Load a compiled vertex shader
-		vector<char> compiledVertexShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\SkyboxVS.cso", compiledVertexShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.GetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
-
-		// Load a compiled pixel shader
-		vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\SkyboxPS.cso", compiledPixelShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.GetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
-
-		// Create an input layout
-		D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[] =
-		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, ARRAYSIZE(inputElementDescriptions), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.GetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
-
-		// Load the model
-		Library::Model model = Library::Model("Content\\Models\\Sphere.obj.bin");
-
-		// Create vertex and index buffers for the model
-		Mesh* mesh = model.Meshes().at(0).get();
+		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin");
+		Mesh* mesh = model->Meshes().at(0).get();
 		CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, mVertexBuffer.ReleaseAndGetAddressOf());
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
 		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
 
-		ThrowIfFailed(DirectX::CreateDDSTextureFromFile(mGame->Direct3DDevice(), mCubeMapFileName.c_str(), nullptr, mSkyboxTexture.GetAddressOf()), "CreateDDSTextureFromFile() failed.");
+		auto textureCube = mGame->Content().Load<TextureCube>(mCubeMapFileName);
+		mMaterial = make_shared<SkyboxMaterial>(*mGame, textureCube);
+		mMaterial->Initialize();
 
-		// Create constant buffer
-		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
-		constantBufferDesc.ByteWidth = sizeof(mVertexCBufferPerObjectData);
-		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.GetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		using namespace std::placeholders;
+		mMaterial->SetUpdateMaterialCallback(bind(&Skybox::UpdateMaterial, this));
 	}
 
 	void Skybox::Update(const GameTime&)
-	{
-		const XMFLOAT3& position = mCamera->Position();
-		XMStoreFloat4x4(&mWorldMatrix, XMLoadFloat4x4(&mScaleMatrix) * XMMatrixTranslation(position.x, position.y, position.z));
+	{		
+		const XMFLOAT3& currentPosition = mCamera->Position();
+		if (Vector3Helper::Equals(mLastPosition, currentPosition) == false)
+		{
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(mScale, mScale, mScale) * XMMatrixTranslation(currentPosition.x, currentPosition.y, currentPosition.z));
+		}
+
+		mLastPosition = currentPosition;
 	}
 
 	void Skybox::Draw(const GameTime&)
 	{
-		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
-		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
-
-		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionTexture));
-		uint32_t offset = 0;
-		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
-		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
-		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
-
-		XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
-		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, XMMatrixTranspose(wvp));
-
-		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mVertexCBufferPerObject.GetAddressOf());
-
-		direct3DDeviceContext->PSSetShaderResources(0, 1, mSkyboxTexture.GetAddressOf());
-		direct3DDeviceContext->PSSetSamplers(0, 1, SamplerStates::TrilinearClamp.GetAddressOf());
-
-		direct3DDeviceContext->RSSetState(RasterizerStates::DisabledCulling.Get());
-		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
-		direct3DDeviceContext->RSSetState(nullptr);
+		mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 	}
 
 	void Skybox::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
@@ -114,13 +71,20 @@ namespace Library
 			vertices.push_back(VertexPositionTexture(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y)));
 		}
 
-		D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
+		D3D11_BUFFER_DESC vertexBufferDesc { 0 };
 		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionTexture) * vertices.size());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData = { 0 };
+		D3D11_SUBRESOURCE_DATA vertexSubResourceData { 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+	}
+
+	void Skybox::UpdateMaterial()
+	{
+		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+		mMaterial->UpdateConstantBuffer(wvp);
 	}
 }

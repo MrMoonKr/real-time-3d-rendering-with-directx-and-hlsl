@@ -26,17 +26,17 @@ namespace Rendering
 		mComponents.push_back(mKeyboard);
 		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
 
+		mMouse = make_shared<MouseComponent>(*this, MouseModes::Absolute);
+		mComponents.push_back(mMouse);
+		mServices.AddService(MouseComponent::TypeIdClass(), mMouse.get());
+
 		mGamePad = make_shared<GamePadComponent>(*this);
 		mComponents.push_back(mGamePad);
 		mServices.AddService(GamePadComponent::TypeIdClass(), mGamePad.get());
 
 		auto camera = make_shared<FirstPersonCamera>(*this);
 		mComponents.push_back(camera);
-		mServices.AddService(Camera::TypeIdClass(), camera.get());
-
-		auto mouse = make_shared<MouseComponent>(*this);
-		mComponents.push_back(mouse);
-		mServices.AddService(MouseComponent::TypeIdClass(), mouse.get());
+		mServices.AddService(Camera::TypeIdClass(), camera.get());		
 
 		auto grid = make_shared<Grid>(*this, camera);
 		mComponents.push_back(grid);
@@ -59,6 +59,16 @@ namespace Rendering
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape) || mGamePad->WasButtonPressedThisFrame(GamePadButtons::Back))
 		{
 			Exit();
+		}
+
+		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
+		{
+			mMouse->SetMode(MouseModes::Relative);
+		}
+
+		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Left))
+		{
+			mMouse->SetMode(MouseModes::Absolute);
 		}
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))

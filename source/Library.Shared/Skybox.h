@@ -4,7 +4,7 @@
 #define NOMINMAX
 #endif
 #include <wrl.h>
-#include <d3d11_4.h>
+#include <d3d11.h>
 #include <DirectXMath.h>
 #include <gsl\gsl>
 #include "DrawableGameComponent.h"
@@ -13,6 +13,7 @@
 namespace Library
 {
 	class Mesh;
+	class SkyboxMaterial;
 
 	class Skybox final : public DrawableGameComponent
 	{
@@ -31,27 +32,16 @@ namespace Library
 		virtual void Draw(const GameTime& gameTime) override;
 
 	private:
-		struct VertexCBufferPerObject
-		{
-			DirectX::XMFLOAT4X4 WorldViewProjection;
-
-			VertexCBufferPerObject() { }
-			VertexCBufferPerObject(const DirectX::XMFLOAT4X4& wvp) : WorldViewProjection(wvp) { }
-		};
-
 		void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
+		void UpdateMaterial();
 
-		DirectX::XMFLOAT4X4 mWorldMatrix{ MatrixHelper::Identity };
-		DirectX::XMFLOAT4X4 mScaleMatrix{ MatrixHelper::Identity };
-		VertexCBufferPerObject mVertexCBufferPerObjectData;
 		std::wstring mCubeMapFileName;
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> mVertexShader;
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> mPixelShader;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
+		DirectX::XMFLOAT4X4 mWorldMatrix{ MatrixHelper::Identity };
+		float mScale;
+		std::shared_ptr<SkyboxMaterial> mMaterial;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexCBufferPerObject;		
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mSkyboxTexture;
 		std::uint32_t mIndexCount{ 0 };
+		DirectX::XMFLOAT3 mLastPosition;
 	};
 }

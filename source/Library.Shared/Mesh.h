@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <gsl\gsl>
 #include <DirectXMath.h>
-#include <d3d11_4.h>
+#include <d3d11.h>
 
 namespace Library
 {

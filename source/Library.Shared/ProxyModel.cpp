@@ -8,6 +8,7 @@
 #include "RasterizerStates.h"
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
+#include "BasicMaterial.h"
 #include <gsl\gsl>
 
 using namespace std;
@@ -19,9 +20,10 @@ namespace Library
 	RTTI_DEFINITIONS(ProxyModel)
 
 	ProxyModel::ProxyModel(Game& game, const shared_ptr<Camera>& camera, const std::string& modelFileName, float scale) :
-		DrawableGameComponent(game, camera), mModelFileName(modelFileName)
+		DrawableGameComponent(game, camera),
+		mModelFileName(modelFileName), mScale(scale),
+		mMaterial(make_shared<BasicMaterial>(*mGame))
 	{
-		XMStoreFloat4x4(&mScaleMatrix, XMMatrixScaling(scale, scale, scale));
 	}
 
 	const XMFLOAT3& ProxyModel::Position() const
@@ -112,40 +114,16 @@ namespace Library
 
 	void ProxyModel::Initialize()
 	{
-		// Load a compiled vertex shader
-		std::vector<char> compiledVertexShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\BasicVS.cso", compiledVertexShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
-
-		// Load a compiled pixel shader
-		std::vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\BasicPS.cso", compiledPixelShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
-
-		// Create an input layout
-		D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[] =
-		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, ARRAYSIZE(inputElementDescriptions), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
-
-		// Create constant buffers
-		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
-		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
-		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
-
-		// Load a model
-		Model model = Library::Model(mModelFileName);
-
-		// Create vertex and index buffers for the model
-		Mesh* mesh = model.Meshes().at(0).get();
-		CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, mVertexBuffer.GetAddressOf());
+		const auto model = mGame->Content().Load<Model>(Utility::ToWideString(mModelFileName));
+		Mesh* mesh = model->Meshes().at(0).get();
+		CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, mVertexBuffer.ReleaseAndGetAddressOf());
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
-		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
-	}
+		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
+
+		mMaterial->Initialize();
+
+		using namespace std::placeholders;
+		mMaterial->SetUpdateMaterialCallback(bind(&ProxyModel::UpdateMaterial, this));	}
 
 	void ProxyModel::Update(const GameTime&)
 	{
@@ -155,39 +133,20 @@ namespace Library
 		MatrixHelper::SetRight(worldMatrix, mRight);
 		MatrixHelper::SetTranslation(worldMatrix, mPosition);
 
-		XMStoreFloat4x4(&mWorldMatrix, XMLoadFloat4x4(&mScaleMatrix) * worldMatrix);
+		XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(mScale, mScale, mScale) * worldMatrix);
 	}
 
 	void ProxyModel::Draw(const GameTime&)
 	{
-		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
-		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
-
-		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionColor));
-		uint32_t offset = 0;
-		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
-		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
-		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
-
-		XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
-		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, XMMatrixTranspose(wvp));
-
-		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mVertexCBufferPerObject.GetAddressOf());
-
 		if (mDisplayWireframe)
 		{
 			mGame->Direct3DDeviceContext()->RSSetState(RasterizerStates::Wireframe.Get());
-			direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
+			mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 			mGame->Direct3DDeviceContext()->RSSetState(nullptr);
 		}
 		else
 		{
-			direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
+			mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 		}
 	}
 
@@ -227,5 +186,12 @@ namespace Library
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+	}
+
+	void ProxyModel::UpdateMaterial()
+	{
+		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+		mMaterial->UpdateConstantBuffer(wvp);
 	}
 }

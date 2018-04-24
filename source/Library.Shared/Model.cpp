@@ -10,6 +10,8 @@ using namespace DirectX;
 
 namespace Library
 {
+	RTTI_DEFINITIONS(Model)
+
 	Model::Model(const string& filename)
 	{
 		Load(filename);

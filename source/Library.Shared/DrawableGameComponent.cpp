@@ -27,7 +27,7 @@ namespace Library
 		return mCamera;
 	}
 
-	void DrawableGameComponent::SetCamera(const std::shared_ptr<Camera>& camera)
+	void DrawableGameComponent::SetCamera(const shared_ptr<Camera>& camera)
 	{
 		mCamera = camera;
 	}

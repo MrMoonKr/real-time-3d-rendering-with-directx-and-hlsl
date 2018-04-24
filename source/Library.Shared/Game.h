@@ -22,6 +22,7 @@
 #include "GameTime.h"
 #include "ServiceContainer.h"
 #include "RenderTarget.h"
+#include "ContentManager.h"
 
 namespace Library
 {
@@ -76,6 +77,8 @@ namespace Library
 		virtual void UnbindPixelShaderResources(std::uint32_t startSlot, std::uint32_t count);
 		std::function<void*()> GetWindowCallback() const;
 
+		ContentManager& Content();
+
     protected:
 		virtual void Update(const GameTime& gameTime);
 		virtual void Draw(const GameTime& gameTime);
@@ -88,10 +91,10 @@ namespace Library
 		virtual void CreateDeviceResources();
 		virtual void CreateWindowSizeDependentResources();
 
-		static const D3D_FEATURE_LEVEL DefaultFeatureLevel;
-		static const std::uint32_t DefaultFrameRate;
-		static const std::uint32_t DefaultMultiSamplingCount;
-		static const std::uint32_t DefaultBufferCount;
+		inline static const D3D_FEATURE_LEVEL DefaultFeatureLevel{ D3D_FEATURE_LEVEL_9_1 };
+		inline static const std::uint32_t DefaultFrameRate{ 60 };
+		inline static const std::uint32_t DefaultMultiSamplingCount{ 4 };
+		inline static const std::uint32_t DefaultBufferCount{ 2 };
 
 		Microsoft::WRL::ComPtr<ID3D11Device5> mDirect3DDevice;
 		Microsoft::WRL::ComPtr<ID3D11DeviceContext4> mDirect3DDeviceContext;
@@ -117,5 +120,6 @@ namespace Library
         GameTime mGameTime;
 		std::vector<std::shared_ptr<GameComponent>> mComponents;
 		ServiceContainer mServices;
+		ContentManager mContentManager;
     };
 }

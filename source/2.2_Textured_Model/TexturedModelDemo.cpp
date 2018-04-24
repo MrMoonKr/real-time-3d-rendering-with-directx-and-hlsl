@@ -72,7 +72,7 @@ namespace Rendering
 		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
 	}
 
-	void TexturedModelDemo::Update(const GameTime & gameTime)
+	void TexturedModelDemo::Update(const GameTime& gameTime)
 	{
 		static float angle = 0.0f;
 

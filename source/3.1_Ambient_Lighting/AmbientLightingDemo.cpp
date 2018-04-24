@@ -22,6 +22,16 @@ namespace Rendering
 	{
 	}
 
+	bool AmbientLightingDemo::AnimationEnabled() const
+	{
+		return mAnimationEnabled;
+	}
+
+	void AmbientLightingDemo::SetAnimationEnabled(bool enabled)
+	{
+		mAnimationEnabled = enabled;
+	}
+
 	float AmbientLightingDemo::AmbientLightIntensity() const
 	{
 		return mCBufferPerFrameData.AmbientColor.x;
@@ -77,6 +87,17 @@ namespace Rendering
 		// Load a texture
 		const wstring textureName = L"Content\\Textures\\EarthComposite.dds"s;
 		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
+	}
+
+	void AmbientLightingDemo::Update(const GameTime& gameTime)
+	{
+		static float angle = 0.0f;
+
+		if (mAnimationEnabled)
+		{
+			angle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(angle));
+		}
 	}
 
 	void AmbientLightingDemo::Draw(const GameTime&)

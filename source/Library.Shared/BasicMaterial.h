@@ -1,0 +1,29 @@
+#pragma once
+
+#include "Material.h"
+
+namespace Library
+{
+	class BasicMaterial : public Material
+	{
+		RTTI_DECLARATIONS(BasicMaterial, Material)
+
+	public:
+		explicit BasicMaterial(Game& game);
+		BasicMaterial(const BasicMaterial&) = default;
+		BasicMaterial& operator=(const BasicMaterial&) = default;
+		BasicMaterial(BasicMaterial&&) = default;
+		BasicMaterial& operator=(BasicMaterial&&) = default;
+		virtual ~BasicMaterial() = default;
+
+		virtual std::uint32_t VertexSize() const override;
+		virtual void Initialize() override;
+
+		void UpdateConstantBuffer(DirectX::CXMMATRIX worldViewProjectionMatrix);
+
+	private:
+		virtual void BeginDraw() override;
+
+		Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer;
+	};
+}

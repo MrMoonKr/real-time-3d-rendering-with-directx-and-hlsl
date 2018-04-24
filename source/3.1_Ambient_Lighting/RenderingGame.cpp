@@ -74,8 +74,12 @@ namespace Rendering
 			ImGui::Text(gridVisibleLabel.str().c_str());
 
 			stringstream animationEnabledLabel;
-			animationEnabledLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mAmbientLightingDemo->AmbientLightIntensity();
+			animationEnabledLabel << "Toggle Animation (Space): " << (mAmbientLightingDemo->AnimationEnabled() ? "Enabled" : "Disabled");
 			ImGui::Text(animationEnabledLabel.str().c_str());
+
+			stringstream ambientLightIntensityLabel;
+			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mAmbientLightingDemo->AmbientLightIntensity();
+			ImGui::Text(ambientLightIntensityLabel.str().c_str());
 
 			ImGui::End();
 		});
@@ -105,6 +109,11 @@ namespace Rendering
 		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Left))
 		{
 			mMouse->SetMode(MouseModes::Absolute);
+		}
+
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
+		{
+			mAmbientLightingDemo->SetAnimationEnabled(!mAmbientLightingDemo->AnimationEnabled());
 		}
 
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::G))

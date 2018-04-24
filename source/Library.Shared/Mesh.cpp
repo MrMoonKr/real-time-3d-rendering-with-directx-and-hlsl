@@ -77,8 +77,6 @@ const vector<uint32_t>& Mesh::Indices() const
 
 void Mesh::CreateIndexBuffer(ID3D11Device& device, gsl::not_null<ID3D11Buffer**> indexBuffer)
 {
-	assert(indexBuffer != nullptr);
-
 	D3D11_BUFFER_DESC indexBufferDesc = { 0 };
 	indexBufferDesc.ByteWidth = static_cast<uint32_t>(sizeof(uint32_t) * mData.Indices.size());
 	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;

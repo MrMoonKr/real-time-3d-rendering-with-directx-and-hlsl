@@ -1,20 +1,23 @@
 #include "pch.h"
 #include "RenderTarget.h"
 
+using namespace std;
+using namespace gsl;
+
 namespace Library
 {
     RTTI_DEFINITIONS(RenderTarget)
 
-    std::stack<RenderTarget::RenderTargetData> RenderTarget::sRenderTargetStack;
+    stack<RenderTarget::RenderTargetData> RenderTarget::sRenderTargetStack;
 
-	void RenderTarget::Begin(gsl::not_null<ID3D11DeviceContext*> deviceContext, std::uint32_t viewCount, gsl::not_null<ID3D11RenderTargetView**> renderTargetViews, gsl::not_null<ID3D11DepthStencilView*> depthStencilView, const D3D11_VIEWPORT& viewport)
+	void RenderTarget::Begin(not_null<ID3D11DeviceContext*> deviceContext, uint32_t viewCount, not_null<ID3D11RenderTargetView**> renderTargetViews, not_null<ID3D11DepthStencilView*> depthStencilView, const D3D11_VIEWPORT& viewport)
 	{
 		sRenderTargetStack.push(RenderTargetData(viewCount, renderTargetViews, depthStencilView, viewport));
 		deviceContext->OMSetRenderTargets(viewCount, renderTargetViews, depthStencilView);
 		deviceContext->RSSetViewports(1, &viewport);
 	}
 
-	void RenderTarget::End(gsl::not_null<ID3D11DeviceContext*> deviceContext)
+	void RenderTarget::End(not_null<ID3D11DeviceContext*> deviceContext)
 	{
 		sRenderTargetStack.pop();
 
@@ -23,7 +26,7 @@ namespace Library
 		deviceContext->RSSetViewports(1, &renderTargetData.Viewport);
 	}
 
-	void RenderTarget::RebindCurrentRenderTargets(gsl::not_null<ID3D11DeviceContext*> deviceContext)
+	void RenderTarget::RebindCurrentRenderTargets(not_null<ID3D11DeviceContext*> deviceContext)
 	{
 		RenderTargetData renderTargetData = sRenderTargetStack.top();
 		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount, renderTargetData.RenderTargetViews, renderTargetData.DepthStencilView);
