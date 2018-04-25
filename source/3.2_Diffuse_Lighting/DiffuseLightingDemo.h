@@ -68,5 +68,6 @@ namespace Rendering
 		bool mAnimationEnabled{ true };
 		std::unique_ptr<Library::DirectionalLight> mDirectionalLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
+		float mModelRotationAngle{ 0.0f };
 	};
 }

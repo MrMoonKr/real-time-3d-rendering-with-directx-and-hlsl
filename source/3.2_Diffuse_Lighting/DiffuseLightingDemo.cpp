@@ -102,12 +102,10 @@ namespace Rendering
 
 	void DiffuseLightingDemo::Update(const GameTime& gameTime)
 	{
-		static float angle = 0.0f;
-
 		if (mAnimationEnabled)
 		{
-			angle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(angle));
+			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));
 		}
 
 		mProxyModel->Update(gameTime);

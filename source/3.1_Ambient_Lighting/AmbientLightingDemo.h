@@ -50,5 +50,6 @@ namespace Rendering
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
 		bool mAnimationEnabled{ true };
+		float mModelRotationAngle{ 0.0f };
 	};
 }
