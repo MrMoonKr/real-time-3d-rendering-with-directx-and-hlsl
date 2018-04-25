@@ -1,13 +1,11 @@
 #include "pch.h"
 #include "DiffuseLightingDemo.h"
-#include "Utility.h"
 #include "Camera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
-#include "SamplerStates.h"
 #include "ProxyModel.h"
 #include "DirectionalLight.h"
 #include "DiffuseLightingMaterial.h"
@@ -153,6 +151,6 @@ namespace Rendering
 	{
 		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
 		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateVSCBufferPerObject(wvp, XMMatrixTranspose(worldMatrix));
+		mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
 	}
 }

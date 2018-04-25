@@ -55,7 +55,6 @@ namespace Rendering
 
 	private:
 		void UpdateMaterial();
-
 		void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
 
 		inline static const float RotationRate{ DirectX::XM_PI };
@@ -64,7 +63,7 @@ namespace Rendering
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;		
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
 		bool mAnimationEnabled{ true };
 		std::unique_ptr<Library::DirectionalLight> mDirectionalLight;

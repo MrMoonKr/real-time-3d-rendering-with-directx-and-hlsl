@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "DiffuseLightingMaterial.h"
+#include "AmbientLightingMaterial.h"
 #include "Game.h"
 #include "GameException.h"
 #include "VertexDeclarations.h"
@@ -15,78 +15,56 @@ using namespace Library;
 
 namespace Rendering
 {
-	RTTI_DEFINITIONS(DiffuseLightingMaterial)
+	RTTI_DEFINITIONS(AmbientLightingMaterial)
 
-	DiffuseLightingMaterial::DiffuseLightingMaterial(Game& game, std::shared_ptr<Texture2D> texture) :
+	AmbientLightingMaterial::AmbientLightingMaterial(Game& game, std::shared_ptr<Texture2D> texture) :
 		Material(game), mTexture(move(texture))
 	{
 	}
 
-	ComPtr<ID3D11SamplerState> DiffuseLightingMaterial::SamplerState() const
+	ComPtr<ID3D11SamplerState> AmbientLightingMaterial::SamplerState() const
 	{
 		return mSamplerState;
 	}
 
-	void DiffuseLightingMaterial::SetSamplerState(ComPtr<ID3D11SamplerState> samplerState)
+	void AmbientLightingMaterial::SetSamplerState(ComPtr<ID3D11SamplerState> samplerState)
 	{
 		mSamplerState = move(samplerState);
 	}
 
-	shared_ptr<Texture2D> DiffuseLightingMaterial::Texture() const
+	shared_ptr<Texture2D> AmbientLightingMaterial::Texture() const
 	{
 		return mTexture;
 	}
 
-	void DiffuseLightingMaterial::SetTexture(shared_ptr<Texture2D> texture)
+	void AmbientLightingMaterial::SetTexture(shared_ptr<Texture2D> texture)
 	{
 		mTexture = move(texture);
 	}
 
-	const XMFLOAT4& DiffuseLightingMaterial::AmbientColor() const
+	const XMFLOAT4& AmbientLightingMaterial::AmbientColor() const
 	{
 		return mPixelCBufferPerFrameData.AmbientColor;
 	}
 
-	void DiffuseLightingMaterial::SetAmbientColor(const XMFLOAT4& color)
+	void AmbientLightingMaterial::SetAmbientColor(const XMFLOAT4& color)
 	{
 		mPixelCBufferPerFrameData.AmbientColor = color;
-		mPixelCBufferPerFrameDataDirty = true;
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 	}
 
-	const XMFLOAT3& DiffuseLightingMaterial::LightDirection() const
+	uint32_t AmbientLightingMaterial::VertexSize() const
 	{
-		return mPixelCBufferPerFrameData.LightDirection;
+		return sizeof(VertexPositionTexture);
 	}
 
-	void DiffuseLightingMaterial::SetLightDirection(const XMFLOAT3& direction)
-	{
-		mPixelCBufferPerFrameData.LightDirection = direction;
-		mPixelCBufferPerFrameDataDirty = true;
-	}
-
-	const XMFLOAT4& DiffuseLightingMaterial::LightColor() const
-	{
-		return mPixelCBufferPerFrameData.LightColor;
-	}
-
-	void DiffuseLightingMaterial::SetLightColor(const XMFLOAT4& color)
-	{
-		mPixelCBufferPerFrameData.LightColor = color;
-		mPixelCBufferPerFrameDataDirty = true;
-	}
-
-	uint32_t DiffuseLightingMaterial::VertexSize() const
-	{
-		return sizeof(VertexPositionTextureNormal);
-	}
-
-	void DiffuseLightingMaterial::Initialize()
+	void AmbientLightingMaterial::Initialize()
 	{
 		Material::Initialize();
 
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\DiffuseLightingDemoVS.cso"s);
-		mVertexShader->CreateInputLayout<VertexPositionTextureNormal>(mGame->Direct3DDevice());
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\DiffuseLightingDemoPS.cso");
+		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\AmbientLightingDemoVS.cso"s);
+		mVertexShader->CreateInputLayout<VertexPositionTexture>(mGame->Direct3DDevice());
+		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\AmbientLightingDemoPS.cso");
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
@@ -100,24 +78,17 @@ namespace Rendering
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 	}
 
-	void DiffuseLightingMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
+	void AmbientLightingMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix)
 	{
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, worldViewProjectionMatrix);
-		XMStoreFloat4x4(&mVertexCBufferPerObjectData.World, worldMatrix);
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 	}
 
-	void DiffuseLightingMaterial::BeginDraw()
+	void AmbientLightingMaterial::BeginDraw()
 	{
 		Material::BeginDraw();
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-		if (mPixelCBufferPerFrameDataDirty)
-		{
-			mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
-			mPixelCBufferPerFrameDataDirty = false;
-		}
 
 		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mVertexCBufferPerObject.GetAddressOf());
 		direct3DDeviceContext->PSSetConstantBuffers(0, 1, mPixelCBufferPerFrame.GetAddressOf());

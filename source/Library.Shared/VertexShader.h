@@ -26,6 +26,12 @@ namespace Library
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader() const;
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout() const;
 
+		template <typename T>
+		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, bool releaseCompiledShader = false)
+		{
+			CreateInputLayout(device, &T::InputElements[0], T::InputElementCount, releaseCompiledShader);
+		}
+
 		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, gsl::not_null<const D3D11_INPUT_ELEMENT_DESC*> inputElementDescriptions, std::uint32_t inputElementCount, bool releaseCompiledShader = false);
 
 	private:

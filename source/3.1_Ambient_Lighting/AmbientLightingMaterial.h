@@ -12,17 +12,17 @@ namespace Library
 
 namespace Rendering
 {
-	class DiffuseLightingMaterial : public Library::Material
+	class AmbientLightingMaterial : public Library::Material
 	{
-		RTTI_DECLARATIONS(DiffuseLightingMaterial, Library::Material)
+		RTTI_DECLARATIONS(AmbientLightingMaterial, Library::Material)
 
 	public:
-		DiffuseLightingMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> texture);
-		DiffuseLightingMaterial(const DiffuseLightingMaterial&) = default;
-		DiffuseLightingMaterial& operator=(const DiffuseLightingMaterial&) = default;
-		DiffuseLightingMaterial(DiffuseLightingMaterial&&) = default;
-		DiffuseLightingMaterial& operator=(DiffuseLightingMaterial&&) = default;
-		virtual ~DiffuseLightingMaterial() = default;
+		AmbientLightingMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> texture);
+		AmbientLightingMaterial(const AmbientLightingMaterial&) = default;
+		AmbientLightingMaterial& operator=(const AmbientLightingMaterial&) = default;
+		AmbientLightingMaterial(AmbientLightingMaterial&&) = default;
+		AmbientLightingMaterial& operator=(AmbientLightingMaterial&&) = default;
+		virtual ~AmbientLightingMaterial() = default;
 
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState() const;
 		void SetSamplerState(Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState);
@@ -33,30 +33,20 @@ namespace Rendering
 		const DirectX::XMFLOAT4& AmbientColor() const;
 		void SetAmbientColor(const DirectX::XMFLOAT4& color);
 
-		const DirectX::XMFLOAT3& LightDirection() const;
-		void SetLightDirection(const DirectX::XMFLOAT3& direction);
-
-		const DirectX::XMFLOAT4& LightColor() const;
-		void SetLightColor(const DirectX::XMFLOAT4& color);
-
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
-		void UpdateTransforms(DirectX::FXMMATRIX worldViewProjectionMatrix, DirectX::CXMMATRIX worldMatrix);
+		void UpdateTransforms(DirectX::FXMMATRIX worldViewProjectionMatrix);
 		
 	private:
 		struct VertexCBufferPerObject
 		{
 			DirectX::XMFLOAT4X4 WorldViewProjection{ Library::MatrixHelper::Identity };
-			DirectX::XMFLOAT4X4 World{ Library::MatrixHelper::Identity };
 		};
 
 		struct PixelCBufferPerFrame
 		{
-			DirectX::XMFLOAT4 AmbientColor{ DirectX::Colors::Black };
-			DirectX::XMFLOAT3 LightDirection{ 0.0f, 0.0f, 1.0f };
-			float Padding;
-			DirectX::XMFLOAT4 LightColor{ DirectX::Colors::White };
+			DirectX::XMFLOAT4 AmbientColor{ DirectX::Colors::White };
 		};
 
 		virtual void BeginDraw() override;
