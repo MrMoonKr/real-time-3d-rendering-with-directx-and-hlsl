@@ -150,7 +150,7 @@ namespace Library
 		}
 	}
 
-	void ProxyModel::CreateVertexBuffer(ID3D11Device* device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const
+	void ProxyModel::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		const std::vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 
@@ -179,7 +179,7 @@ namespace Library
 		}
 
 		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionTexture) * vertices.size());
+		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionColor) * vertices.size());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 

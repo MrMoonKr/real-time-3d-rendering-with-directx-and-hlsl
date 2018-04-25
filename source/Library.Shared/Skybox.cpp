@@ -30,7 +30,7 @@ namespace Library
 		Mesh* mesh = model->Meshes().at(0).get();
 		CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, mVertexBuffer.ReleaseAndGetAddressOf());
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
-		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
+		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
 		auto textureCube = mGame->Content().Load<TextureCube>(mCubeMapFileName);
 		mMaterial = make_shared<SkyboxMaterial>(*mGame, textureCube);
@@ -71,12 +71,12 @@ namespace Library
 			vertices.push_back(VertexPositionTexture(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y)));
 		}
 
-		D3D11_BUFFER_DESC vertexBufferDesc { 0 };
+		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
 		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionTexture) * vertices.size());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData { 0 };
+		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}

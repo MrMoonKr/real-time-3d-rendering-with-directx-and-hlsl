@@ -52,7 +52,7 @@ namespace Library
 		virtual void Draw(const GameTime& gameTime) override;
 
 	private:
-		void CreateVertexBuffer(ID3D11Device* device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
+		void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
 		void UpdateMaterial();
 
 		DirectX::XMFLOAT4X4 mWorldMatrix{ MatrixHelper::Identity };

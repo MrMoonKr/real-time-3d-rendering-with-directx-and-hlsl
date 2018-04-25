@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
 
 	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"3.1 - Ambient Lighting";
+	const wstring windowTitle = L"3.2 - Diffuse Lighting";
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;

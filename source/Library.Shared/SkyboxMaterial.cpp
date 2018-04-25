@@ -37,9 +37,9 @@ namespace Library
 		return mTexture;
 	}
 
-	void SkyboxMaterial::SetTexture(const shared_ptr<TextureCube>& texture)
+	void SkyboxMaterial::SetTexture(shared_ptr<TextureCube> texture)
 	{
-		mTexture = texture;
+		mTexture = move(texture);
 	}
 
 	uint32_t SkyboxMaterial::VertexSize() const

@@ -23,7 +23,7 @@ namespace Library
 		void SetSamplerState(const Microsoft::WRL::ComPtr<ID3D11SamplerState>& samplerState);
 
 		std::shared_ptr<TextureCube> Texture() const;
-		void SetTexture(const std::shared_ptr<TextureCube>& texture);
+		void SetTexture(std::shared_ptr<TextureCube> texture);
 
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;

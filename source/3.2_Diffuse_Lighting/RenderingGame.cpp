@@ -8,10 +8,12 @@
 #include "DiffuseLightingDemo.h"
 #include "Grid.h"
 #include "FirstPersonCamera.h"
+#include "SamplerStates.h"
+#include "RasterizerStates.h"
+#include "VectorHelper.h"
 #include "ImGuiComponent.h"
 #include "imgui_impl_dx11.h"
 #include "UtilityWin32.h"
-#include "SamplerStates.h"
 
 using namespace std;
 using namespace DirectX;
@@ -29,6 +31,7 @@ namespace Rendering
 	void RenderingGame::Initialize()
 	{
 		SamplerStates::Initialize(mDirect3DDevice.Get());
+		RasterizerStates::Initialize(mDirect3DDevice.Get());
 
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
@@ -67,8 +70,9 @@ namespace Rendering
 			fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
 			ImGui::Text(fpsLabel.str().c_str());
 
-			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
-			
+			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");			
+			ImGui::Text("Rotate Directional Light (Arrow Keys)");
+
 			stringstream gridVisibleLabel;
 			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
 			ImGui::Text(gridVisibleLabel.str().c_str());
@@ -81,6 +85,10 @@ namespace Rendering
 			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mDiffuseLightingDemo->AmbientLightIntensity();
 			ImGui::Text(ambientLightIntensityLabel.str().c_str());
 
+			stringstream directionalLightIntensityLabel;
+			directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (Home/End): " << mDiffuseLightingDemo->DirectionalLightIntensity();
+			ImGui::Text(directionalLightIntensityLabel.str().c_str());
+
 			ImGui::End();
 		});
 		imGui->AddRenderBlock(helpTextImGuiRenderBlock);
@@ -92,6 +100,8 @@ namespace Rendering
 		Game::Initialize();
 		
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
+		mAmbientLightIntensity = mDiffuseLightingDemo->AmbientLightIntensity();
+		mDirectionalLightIntensity = mDiffuseLightingDemo->DirectionalLightIntensity();
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -122,6 +132,7 @@ namespace Rendering
 		}
 
 		UpdateAmbientLightIntensity(gameTime);
+		UpdateDirectionalLight(gameTime);
 
 		Game::Update(gameTime);
 	}
@@ -149,6 +160,7 @@ namespace Rendering
 	void RenderingGame::Shutdown()
 	{
 		Game::Shutdown();
+		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
 	}
 
@@ -159,19 +171,60 @@ namespace Rendering
 
 	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
 	{
-		static float ambientIntensity = mDiffuseLightingDemo->AmbientLightIntensity();
-
-		if (mKeyboard->IsKeyDown(Keys::PageUp) && ambientIntensity < 1.0f)
+		if (mKeyboard->IsKeyDown(Keys::PageUp) && mAmbientLightIntensity < 1.0f)
 		{
-			ambientIntensity += gameTime.ElapsedGameTimeSeconds().count();
-			ambientIntensity = min(ambientIntensity, 1.0f);
-			mDiffuseLightingDemo->SetAmbientLightIntensity(ambientIntensity);
+			mAmbientLightIntensity += gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientLightIntensity = min(mAmbientLightIntensity, 1.0f);
+			mDiffuseLightingDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
 		}
-		else if (mKeyboard->IsKeyDown(Keys::PageDown) && ambientIntensity > 0.0f)
+		else if (mKeyboard->IsKeyDown(Keys::PageDown) && mAmbientLightIntensity > 0.0f)
 		{
-			ambientIntensity -= gameTime.ElapsedGameTimeSeconds().count();
-			ambientIntensity = max(ambientIntensity, 0.0f);
-			mDiffuseLightingDemo->SetAmbientLightIntensity(ambientIntensity);
+			mAmbientLightIntensity -= gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientLightIntensity = max(mAmbientLightIntensity, 0.0f);
+			mDiffuseLightingDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
+		}
+	}
+
+	void RenderingGame::UpdateDirectionalLight(const GameTime& gameTime)
+	{
+		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+
+		// Update light intensity
+		if (mKeyboard->IsKeyDown(Keys::Home) && mDirectionalLightIntensity < 1.0f)
+		{
+			mDirectionalLightIntensity += elapsedTime;
+			mDirectionalLightIntensity = min(mDirectionalLightIntensity, 1.0f);
+			mDiffuseLightingDemo->SetDirectionalLightIntensity(mDirectionalLightIntensity);
+		}
+		else if (mKeyboard->IsKeyDown(Keys::End) && mDirectionalLightIntensity > 0.0f)
+		{
+			mDirectionalLightIntensity -= elapsedTime;
+			mDirectionalLightIntensity = max(mDirectionalLightIntensity, 0.0f);
+			mDiffuseLightingDemo->SetDirectionalLightIntensity(mDirectionalLightIntensity);
+		}
+
+		// Rotate light
+		XMFLOAT2 rotationAmount = Vector2Helper::Zero;
+		if (mKeyboard->IsKeyDown(Keys::Left))
+		{
+			rotationAmount.x += LightRotationRate.x * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Right))
+		{
+			rotationAmount.x -= LightRotationRate.x * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Up))
+		{
+			rotationAmount.y += LightRotationRate.y * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Down))
+		{
+			rotationAmount.y -= LightRotationRate.y * elapsedTime;
+		}
+
+		if (rotationAmount.x != 0.0f || rotationAmount.y != 0.0f)
+		{
+			mDiffuseLightingDemo->RotateDirectionalLight(rotationAmount);
 		}
 	}
 }

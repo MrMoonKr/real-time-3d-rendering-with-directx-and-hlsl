@@ -10,6 +10,8 @@
 #include "SamplerStates.h"
 #include "ProxyModel.h"
 #include "DirectionalLight.h"
+#include "DiffuseLightingMaterial.h"
+#include "Texture2D.h"
 
 using namespace std;
 using namespace std::string_literals;
@@ -45,68 +47,59 @@ namespace Rendering
 
 	float DiffuseLightingDemo::AmbientLightIntensity() const
 	{
-		return mPixelCBufferPerFrameData.AmbientColor.x;
+		return mMaterial->AmbientColor().x;
 	}
 
-	void DiffuseLightingDemo::SetAmbientLightIntensity(float ambientIntensity)
+	void DiffuseLightingDemo::SetAmbientLightIntensity(float intensity)
 	{
-		mPixelCBufferPerFrameData.AmbientColor = XMFLOAT4(ambientIntensity, ambientIntensity, ambientIntensity, 1.0f);
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+		mMaterial->SetAmbientColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
+	}
+
+	float DiffuseLightingDemo::DirectionalLightIntensity() const
+	{
+		return mMaterial->LightColor().x;
+	}
+
+	void DiffuseLightingDemo::SetDirectionalLightIntensity(float intensity)
+	{
+		mMaterial->SetLightColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
+	}
+
+	const DirectX::XMFLOAT3& DiffuseLightingDemo::LightDirection() const
+	{
+		return mDirectionalLight->Direction();
+	}
+
+	void DiffuseLightingDemo::RotateDirectionalLight(DirectX::XMFLOAT2 amount)
+	{
+		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mDirectionalLight->RightVector(), amount.y);
+		mDirectionalLight->ApplyRotation(lightRotationMatrix);
+		mProxyModel->ApplyRotation(lightRotationMatrix);
+		mMaterial->SetLightDirection(mDirectionalLight->DirectionToLight());
 	}
 
 	void DiffuseLightingDemo::Initialize()
 	{
-		// Load a compiled vertex shader
-		vector<char> compiledVertexShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\DiffuseLightingDemoVS.cso", compiledVertexShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
-
-		// Load a compiled pixel shader
-		vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\DiffuseLightingDemoPS.cso", compiledPixelShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
-
-		// Create an input layout
-		D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[]
-		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-		};
-
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, ARRAYSIZE(inputElementDescriptions), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
-
-		// Load the model
-		Library::Model model("Content\\Models\\Sphere.obj.bin");
-
-		// Create vertex and index buffers for the model
-		Mesh* mesh = model.Meshes().at(0).get();
-		CreateVertexBuffer(*mesh, mVertexBuffer.ReleaseAndGetAddressOf());
+		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin"s);
+		Mesh* mesh = model->Meshes().at(0).get();
+		CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, mVertexBuffer.ReleaseAndGetAddressOf());
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
-		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
+		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
-		D3D11_BUFFER_DESC constantBufferDesc { 0 };
-		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
-		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		auto texture = mGame->Content().Load<Texture2D>(L"Textures\\EarthComposite.dds"s);
+		mMaterial = make_shared<DiffuseLightingMaterial>(*mGame, texture);
+		mMaterial->Initialize();
 
-		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
-
-		// Initialize pixel shader cbuffer with ambient color
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
-
-		// Load a texture
-		const wstring textureName = L"Content\\Textures\\EarthComposite.dds"s;
-		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
-
-		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\DirectionalLightProxy.obj.bin", 0.5f);
+		using namespace std::placeholders;
+		mMaterial->SetUpdateMaterialCallback(bind(&DiffuseLightingDemo::UpdateMaterial, this));
+		
+		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\DirectionalLightProxy.obj.bin"s, 0.5f);
 		mProxyModel->Initialize();
 		mProxyModel->SetPosition(10.0f, 0.0, 0.0f);
 		mProxyModel->ApplyRotation(XMMatrixRotationY(XM_PIDIV2));
 
 		mDirectionalLight = make_unique<DirectionalLight>(*mGame);
-		mPixelCBufferPerFrameData.LightDirection = mDirectionalLight->DirectionToLight();
+		mMaterial->SetLightDirection(mDirectionalLight->DirectionToLight());
 	}
 
 	void DiffuseLightingDemo::Update(const GameTime& gameTime)
@@ -124,58 +117,42 @@ namespace Rendering
 
 	void DiffuseLightingDemo::Draw(const GameTime& gameTime)
 	{
-		assert(mCamera != nullptr);
-
-		ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
-		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
-
-		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionTexture));
-		uint32_t offset = 0;
-		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
-		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
-
-		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
-		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
-
-		XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
-		wvp = XMMatrixTranspose(wvp);
-		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, wvp);
-
-		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mVertexCBufferPerObject.GetAddressOf());
-
-		direct3DDeviceContext->PSSetConstantBuffers(0, 1, mPixelCBufferPerFrame.GetAddressOf());
-		direct3DDeviceContext->PSSetShaderResources(0, 1, mColorTexture.GetAddressOf());
-		direct3DDeviceContext->PSSetSamplers(0, 1, SamplerStates::TrilinearWrap.GetAddressOf());
-
-		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
-
+		mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 		mProxyModel->Draw(gameTime);
 	}
 
-	void DiffuseLightingDemo::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	void DiffuseLightingDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
+		assert(sourceUVs.size() == sourceVertices.size());
+		const auto& sourceNormals = mesh.Normals();
+		assert(sourceNormals.size() == sourceVertices.size());
 
-		vector<VertexPositionTexture> vertices;
+		vector<VertexPositionTextureNormal> vertices;
 		vertices.reserve(sourceVertices.size());
 		for (size_t i = 0; i < sourceVertices.size(); i++)
 		{
 			const XMFLOAT3& position = sourceVertices.at(i);
 			const XMFLOAT3& uv = sourceUVs.at(i);
-			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y));
+			const XMFLOAT3& normal = sourceNormals.at(i);
+			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y), normal);
 		}
 
-		D3D11_BUFFER_DESC vertexBufferDesc { 0 };
-		vertexBufferDesc.ByteWidth = sizeof(VertexPositionTexture) * static_cast<uint32_t>(vertices.size());
+		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
+		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionTextureNormal) * vertices.size());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData { 0 };
+		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+	}
+
+	void DiffuseLightingDemo::UpdateMaterial()
+	{
+		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+		mMaterial->UpdateVSCBufferPerObject(wvp, XMMatrixTranspose(worldMatrix));
 	}
 }
