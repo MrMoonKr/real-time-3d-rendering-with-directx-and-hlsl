@@ -13,29 +13,35 @@ namespace Library
 
 namespace Rendering
 {
-	class BlinnPhongMaterial : public Library::Material
+	class PointLightMaterial : public Library::Material
 	{
-		RTTI_DECLARATIONS(BlinnPhongMaterial, Library::Material)
+		RTTI_DECLARATIONS(PointLightMaterial, Library::Material)
 
 	public:
-		BlinnPhongMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> texture);
-		BlinnPhongMaterial(const BlinnPhongMaterial&) = default;
-		BlinnPhongMaterial& operator=(const BlinnPhongMaterial&) = default;
-		BlinnPhongMaterial(BlinnPhongMaterial&&) = default;
-		BlinnPhongMaterial& operator=(BlinnPhongMaterial&&) = default;
-		virtual ~BlinnPhongMaterial() = default;
+		PointLightMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> colormap, std::shared_ptr<Library::Texture2D> specularMap);
+		PointLightMaterial(const PointLightMaterial&) = default;
+		PointLightMaterial& operator=(const PointLightMaterial&) = default;
+		PointLightMaterial(PointLightMaterial&&) = default;
+		PointLightMaterial& operator=(PointLightMaterial&&) = default;
+		virtual ~PointLightMaterial() = default;
 
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState() const;
 		void SetSamplerState(Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState);
 
-		std::shared_ptr<Library::Texture2D> Texture() const;
-		void SetTexture(std::shared_ptr<Library::Texture2D> texture);
+		std::shared_ptr<Library::Texture2D> ColorMap() const;
+		void SetColorMap(std::shared_ptr<Library::Texture2D> texture);
+
+		std::shared_ptr<Library::Texture2D> SpecularMap() const;
+		void SetSpecularMap(std::shared_ptr<Library::Texture2D> texture);
 
 		const DirectX::XMFLOAT4& AmbientColor() const;
 		void SetAmbientColor(const DirectX::XMFLOAT4& color);
 
-		const DirectX::XMFLOAT3& LightDirection() const;
-		void SetLightDirection(const DirectX::XMFLOAT3& direction);
+		const DirectX::XMFLOAT3& LightPosition() const;
+		void SetLightPosition(const DirectX::XMFLOAT3& position);
+
+		const float LightRadius() const;
+		void SetLightRadius(float radius);
 
 		const DirectX::XMFLOAT4& LightColor() const;
 		void SetLightColor(const DirectX::XMFLOAT4& color);
@@ -53,6 +59,12 @@ namespace Rendering
 		void UpdateTransforms(DirectX::FXMMATRIX worldViewProjectionMatrix, DirectX::CXMMATRIX worldMatrix);
 		
 	private:
+		struct VertexCBufferPerFrame
+		{
+			DirectX::XMFLOAT3 LightPosition{ Library::Vector3Helper::Zero };
+			float LightRadius{ 50.0f };
+		};
+
 		struct VertexCBufferPerObject
 		{
 			DirectX::XMFLOAT4X4 WorldViewProjection{ Library::MatrixHelper::Identity };
@@ -64,7 +76,7 @@ namespace Rendering
 			DirectX::XMFLOAT3 CameraPosition{ Library::Vector3Helper::Zero };
 			float Padding;
 			DirectX::XMFLOAT4 AmbientColor{ DirectX::Colors::Black };
-			DirectX::XMFLOAT3 LightDirection{ 0.0f, 0.0f, 1.0f };
+			DirectX::XMFLOAT3 LightPosition{ 0.0f, 0.0f, 1.0f };
 			float Padding2;
 			DirectX::XMFLOAT4 LightColor{ DirectX::Colors::White };
 		};
@@ -77,15 +89,19 @@ namespace Rendering
 
 		virtual void BeginDraw() override;
 
+		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexCBufferPerFrame;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexCBufferPerObject;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mPixelCBufferPerFrame;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mPixelCBufferPerObject;
+		VertexCBufferPerFrame mVertexCBufferPerFrameData;
 		VertexCBufferPerObject mVertexCBufferPerObjectData;
 		PixelCBufferPerFrame mPixelCBufferPerFrameData;
 		PixelCBufferPerObject mPixelCBufferPerObjectData;
+		bool mVertexCBufferPerFrameDataDirty{ true };
 		bool mPixelCBufferPerFrameDataDirty{ true };
 		bool mPixelCBufferPerObjectDataDirty{ true };
-		std::shared_ptr<Library::Texture2D> mTexture;
+		std::shared_ptr<Library::Texture2D> mColorMap;
+		std::shared_ptr<Library::Texture2D> mSpecularMap;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };
 	};
 }

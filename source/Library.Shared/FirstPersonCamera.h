@@ -2,6 +2,7 @@
 
 #include "PerspectiveCamera.h"
 #include "GamePadComponent.h"
+#include <functional>
 
 namespace Library
 {	
@@ -33,6 +34,9 @@ namespace Library
         float& RotationRate();
         float& MovementRate();
         
+		std::function<void()> PositionUpdatedCallback() const;
+		void SetPositionUpdatedCallback(std::function<void()> callback);
+
 		virtual void Initialize() override;
         virtual void Update(const GameTime& gameTime) override;
 
@@ -61,6 +65,7 @@ namespace Library
 		float mMouseSensitivity{ DefaultMouseSensitivity };
 		float mRotationRate{ DefaultRotationRate };
         float mMovementRate{ DefaultMovementRate };
+		std::function<void()> mPositionUpdatedCallback;
     };
 }
 

@@ -5,7 +5,7 @@
 #define NOMINMAX
 #endif
 #include <wrl.h>
-#include <d3d11_2.h>
+#include <d3d11.h>
 #include <DirectXMath.h>
 #include <cstdint>
 #include <memory>

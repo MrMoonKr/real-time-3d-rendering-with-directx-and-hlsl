@@ -18,14 +18,34 @@ namespace Library
         return mAspectRatio;
     }
 
+	void PerspectiveCamera::SetAspectRatio(float aspectRatio)
+	{
+		mAspectRatio = aspectRatio;
+		mProjectionMatrixDataDirty = true;
+	}
+
     float PerspectiveCamera::FieldOfView() const
     {
         return mFieldOfView;
     }
 
+	void PerspectiveCamera::SetFieldOfView(float fieldOfView)
+	{
+		mFieldOfView = fieldOfView;
+		mProjectionMatrixDataDirty = true;
+	}
+
     void PerspectiveCamera::UpdateProjectionMatrix()
     {
-        XMMATRIX projectionMatrix = XMMatrixPerspectiveFovRH(mFieldOfView, mAspectRatio, mNearPlaneDistance, mFarPlaneDistance);
-        XMStoreFloat4x4(&mProjectionMatrix, projectionMatrix);
+		if (mProjectionMatrixDataDirty)
+		{
+			XMMATRIX projectionMatrix = XMMatrixPerspectiveFovRH(mFieldOfView, mAspectRatio, mNearPlaneDistance, mFarPlaneDistance);
+			XMStoreFloat4x4(&mProjectionMatrix, projectionMatrix);
+
+			if (mProjectionMatrixUpdatedCallback != nullptr)
+			{
+				mProjectionMatrixUpdatedCallback();
+			}
+		}
     }
 }

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BlinnPhongMaterial.h"
+#include "PointLightMaterial.h"
 #include "Game.h"
 #include "GameException.h"
 #include "VertexDeclarations.h"
@@ -15,104 +15,131 @@ using namespace Library;
 
 namespace Rendering
 {
-	RTTI_DEFINITIONS(BlinnPhongMaterial)
+	RTTI_DEFINITIONS(PointLightMaterial)
 
-	BlinnPhongMaterial::BlinnPhongMaterial(Game& game, shared_ptr<Texture2D> texture) :
-		Material(game), mTexture(move(texture))
+	PointLightMaterial::PointLightMaterial(Game& game, shared_ptr<Texture2D> colorMap, shared_ptr<Texture2D> specularMap) :
+		Material(game), mColorMap(move(colorMap)), mSpecularMap(move(specularMap))
 	{
 	}
 
-	ComPtr<ID3D11SamplerState> BlinnPhongMaterial::SamplerState() const
+	ComPtr<ID3D11SamplerState> PointLightMaterial::SamplerState() const
 	{
 		return mSamplerState;
 	}
 
-	void BlinnPhongMaterial::SetSamplerState(ComPtr<ID3D11SamplerState> samplerState)
+	void PointLightMaterial::SetSamplerState(ComPtr<ID3D11SamplerState> samplerState)
 	{
 		mSamplerState = move(samplerState);
 	}
 
-	shared_ptr<Texture2D> BlinnPhongMaterial::Texture() const
+	shared_ptr<Texture2D> PointLightMaterial::ColorMap() const
 	{
-		return mTexture;
+		return mColorMap;
 	}
 
-	void BlinnPhongMaterial::SetTexture(shared_ptr<Texture2D> texture)
+	void PointLightMaterial::SetColorMap(shared_ptr<Texture2D> texture)
 	{
-		mTexture = move(texture);
+		mColorMap = move(texture);
 	}
 
-	const XMFLOAT4& BlinnPhongMaterial::AmbientColor() const
+	shared_ptr<Texture2D> PointLightMaterial::SpecularMap() const
+	{
+		return mColorMap;
+	}
+
+	void PointLightMaterial::SetSpecularMap(shared_ptr<Texture2D> texture)
+	{
+		mSpecularMap = move(texture);
+	}
+
+	const XMFLOAT4& PointLightMaterial::AmbientColor() const
 	{
 		return mPixelCBufferPerFrameData.AmbientColor;
 	}
 
-	void BlinnPhongMaterial::SetAmbientColor(const XMFLOAT4& color)
+	void PointLightMaterial::SetAmbientColor(const XMFLOAT4& color)
 	{
 		mPixelCBufferPerFrameData.AmbientColor = color;
 		mPixelCBufferPerFrameDataDirty = true;
 	}
 
-	const XMFLOAT3& BlinnPhongMaterial::LightDirection() const
+	const XMFLOAT3& PointLightMaterial::LightPosition() const
 	{
-		return mPixelCBufferPerFrameData.LightDirection;
+		return mPixelCBufferPerFrameData.LightPosition;
 	}
 
-	void BlinnPhongMaterial::SetLightDirection(const XMFLOAT3& direction)
+	void PointLightMaterial::SetLightPosition(const XMFLOAT3& position)
 	{
-		mPixelCBufferPerFrameData.LightDirection = direction;
+		mPixelCBufferPerFrameData.LightPosition = position;
 		mPixelCBufferPerFrameDataDirty = true;
+
+		mVertexCBufferPerFrameData.LightPosition = position;
+		mVertexCBufferPerFrameDataDirty = true;
 	}
 
-	const XMFLOAT4& BlinnPhongMaterial::LightColor() const
+	const float PointLightMaterial::LightRadius() const
+	{
+		return mVertexCBufferPerFrameData.LightRadius;
+	}
+
+	void PointLightMaterial::SetLightRadius(float radius)
+	{
+		mVertexCBufferPerFrameData.LightRadius = radius;
+		mVertexCBufferPerFrameDataDirty = true;
+	}
+
+	const XMFLOAT4& PointLightMaterial::LightColor() const
 	{
 		return mPixelCBufferPerFrameData.LightColor;
 	}
 
-	void BlinnPhongMaterial::SetLightColor(const XMFLOAT4& color)
+	void PointLightMaterial::SetLightColor(const XMFLOAT4& color)
 	{
 		mPixelCBufferPerFrameData.LightColor = color;
 		mPixelCBufferPerFrameDataDirty = true;
 	}
 
-	const DirectX::XMFLOAT3& BlinnPhongMaterial::SpecularColor() const
+	const DirectX::XMFLOAT3& PointLightMaterial::SpecularColor() const
 	{
 		return mPixelCBufferPerObjectData.SpecularColor;
 	}
 
-	void BlinnPhongMaterial::SetSpecularColor(const DirectX::XMFLOAT3& color)
+	void PointLightMaterial::SetSpecularColor(const DirectX::XMFLOAT3& color)
 	{
 		mPixelCBufferPerObjectData.SpecularColor = color;
 		mPixelCBufferPerObjectDataDirty = true;
 	}
 
-	const float BlinnPhongMaterial::SpecularPower() const
+	const float PointLightMaterial::SpecularPower() const
 	{
 		return mPixelCBufferPerObjectData.SpecularPower;
 	}
 
-	void BlinnPhongMaterial::SetSpecularPower(float power)
+	void PointLightMaterial::SetSpecularPower(float power)
 	{
 		mPixelCBufferPerObjectData.SpecularPower = power;
 		mPixelCBufferPerObjectDataDirty = true;
 	}
 
-	uint32_t BlinnPhongMaterial::VertexSize() const
+	uint32_t PointLightMaterial::VertexSize() const
 	{
 		return sizeof(VertexPositionTextureNormal);
 	}
 
-	void BlinnPhongMaterial::Initialize()
+	void PointLightMaterial::Initialize()
 	{
 		Material::Initialize();
 
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\BlinnPhongDemoVS.cso"s);
+		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\PointLightDemoVS.cso"s);
 		mVertexShader->CreateInputLayout<VertexPositionTextureNormal>(mGame->Direct3DDevice());
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\BlinnPhongDemoPS.cso");
+		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\PointLightDemoPS.cso");
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
-		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
+		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerFrame);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+
+		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
@@ -121,29 +148,36 @@ namespace Rendering
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerFrame.Get(), 0, nullptr, &mVertexCBufferPerFrameData, 0, 0);
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.Get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 	}
 
-	void BlinnPhongMaterial::UpdateCameraPosition(const DirectX::XMFLOAT3& position)
+	void PointLightMaterial::UpdateCameraPosition(const DirectX::XMFLOAT3& position)
 	{
 		mPixelCBufferPerFrameData.CameraPosition = position;
 		mPixelCBufferPerFrameDataDirty = true;
 	}
 
-	void BlinnPhongMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
+	void PointLightMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
 	{
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, worldViewProjectionMatrix);
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.World, worldMatrix);
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 	}
 
-	void BlinnPhongMaterial::BeginDraw()
+	void PointLightMaterial::BeginDraw()
 	{
 		Material::BeginDraw();
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+
+		if (mVertexCBufferPerFrameDataDirty)
+		{
+			mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerFrame.Get(), 0, nullptr, &mVertexCBufferPerFrameData, 0, 0);
+			mVertexCBufferPerFrameDataDirty = false;
+		}
 
 		if (mPixelCBufferPerFrameDataDirty)
 		{
@@ -157,10 +191,15 @@ namespace Rendering
 			mPixelCBufferPerObjectDataDirty = false;
 		}
 
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mVertexCBufferPerObject.GetAddressOf());
+		ID3D11Buffer* VSConstantBuffers[]{ mVertexCBufferPerFrame.Get(), mVertexCBufferPerObject.Get() };
+		direct3DDeviceContext->VSSetConstantBuffers(0, ARRAYSIZE(VSConstantBuffers), VSConstantBuffers);
+		
 		ID3D11Buffer* PSConstantBuffers[] { mPixelCBufferPerFrame.Get(), mPixelCBufferPerObject.Get() };
 		direct3DDeviceContext->PSSetConstantBuffers(0, ARRAYSIZE(PSConstantBuffers), PSConstantBuffers);
-		direct3DDeviceContext->PSSetShaderResources(0, 1, mTexture->ShaderResourceView().GetAddressOf());
+
+		ID3D11ShaderResourceView* PSShaderResources[] = { mColorMap->ShaderResourceView().Get(), mSpecularMap->ShaderResourceView().Get() };
+		direct3DDeviceContext->PSSetShaderResources(0, ARRAYSIZE(PSShaderResources), PSShaderResources);
+
 		direct3DDeviceContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
 	}
 }

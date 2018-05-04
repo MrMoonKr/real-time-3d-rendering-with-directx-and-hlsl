@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BlinnPhongDemo.h"
+#include "PointLightDemo.h"
 #include "FirstPersonCamera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
@@ -7,8 +7,8 @@
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
 #include "ProxyModel.h"
-#include "DirectionalLight.h"
-#include "BlinnPhongMaterial.h"
+#include "PointLight.h"
+#include "PointLightMaterial.h"
 #include "Texture2D.h"
 
 using namespace std;
@@ -19,84 +19,108 @@ using namespace DirectX;
 
 namespace Rendering
 {
-	BlinnPhongDemo::BlinnPhongDemo(Game & game, const shared_ptr<Camera>& camera) :
+	PointLightDemo::PointLightDemo(Game & game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera)
 	{
 	}
 
-	BlinnPhongDemo::~BlinnPhongDemo()
+	PointLightDemo::~PointLightDemo()
 	{
 	}
 
-	bool BlinnPhongDemo::AnimationEnabled() const
+	bool PointLightDemo::AnimationEnabled() const
 	{
 		return mAnimationEnabled;
 	}
 
-	void BlinnPhongDemo::SetAnimationEnabled(bool enabled)
+	void PointLightDemo::SetAnimationEnabled(bool enabled)
 	{
 		mAnimationEnabled = enabled;
 	}
 
-	void BlinnPhongDemo::ToggleAnimation()
+	void PointLightDemo::ToggleAnimation()
 	{
 		mAnimationEnabled = !mAnimationEnabled;
 	}
 
-	float BlinnPhongDemo::AmbientLightIntensity() const
+	float PointLightDemo::AmbientLightIntensity() const
 	{
 		return mMaterial->AmbientColor().x;
 	}
 
-	void BlinnPhongDemo::SetAmbientLightIntensity(float intensity)
+	void PointLightDemo::SetAmbientLightIntensity(float intensity)
 	{
 		mMaterial->SetAmbientColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
 	}
 
-	float BlinnPhongDemo::DirectionalLightIntensity() const
+	float PointLightDemo::PointLightIntensity() const
 	{
 		return mMaterial->LightColor().x;
 	}
 
-	void BlinnPhongDemo::SetDirectionalLightIntensity(float intensity)
+	void PointLightDemo::SetPointLightIntensity(float intensity)
 	{
 		mMaterial->SetLightColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
 	}
 
-	const DirectX::XMFLOAT3& BlinnPhongDemo::LightDirection() const
+	const XMFLOAT3& PointLightDemo::LightPosition() const
 	{
-		return mDirectionalLight->Direction();
+		return mPointLight->Position();
 	}
 
-	void BlinnPhongDemo::RotateDirectionalLight(DirectX::XMFLOAT2 amount)
+	const XMVECTOR PointLightDemo::LightPositionVector() const
 	{
-		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mDirectionalLight->RightVector(), amount.y);
-		mDirectionalLight->ApplyRotation(lightRotationMatrix);
-		mProxyModel->ApplyRotation(lightRotationMatrix);
-		mMaterial->SetLightDirection(mDirectionalLight->DirectionToLight());
+		return mPointLight->PositionVector();
 	}
 
-	float BlinnPhongDemo::SpecularIntensity() const
+	void PointLightDemo::SetLightPosition(const XMFLOAT3& position)
+	{
+		mPointLight->SetPosition(position);
+		mProxyModel->SetPosition(position);
+		mMaterial->SetLightPosition(position);
+	}
+
+	void PointLightDemo::SetLightPosition(FXMVECTOR position)
+	{
+		mPointLight->SetPosition(position);
+		mProxyModel->SetPosition(position);
+
+		XMFLOAT3 materialPosition;
+		XMStoreFloat3(&materialPosition, position);
+		mMaterial->SetLightPosition(materialPosition);
+	}
+
+	float PointLightDemo::LightRadius() const
+	{
+		return mMaterial->LightRadius();
+	}
+
+	void PointLightDemo::SetLightRadius(float radius)
+	{
+		mMaterial->SetLightRadius(radius);
+	}
+
+	float PointLightDemo::SpecularIntensity() const
 	{
 		return mMaterial->SpecularColor().x;
 	}
 
-	void BlinnPhongDemo::SetSpecularIntensity(float intensity)
+	void PointLightDemo::SetSpecularIntensity(float intensity)
 	{
 		mMaterial->SetSpecularColor(XMFLOAT3(intensity, intensity, intensity));
 	}
 
-	float BlinnPhongDemo::SpecularPower() const
+	float PointLightDemo::SpecularPower() const
 	{
 		return mMaterial->SpecularPower();
 	}
 
-	void BlinnPhongDemo::SetSpecularPower(float power)
+	void PointLightDemo::SetSpecularPower(float power)
 	{
 		mMaterial->SetSpecularPower(power);
 	}
 
-	void BlinnPhongDemo::Initialize()
+	void PointLightDemo::Initialize()
 	{
 		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin"s);
 		Mesh* mesh = model->Meshes().at(0).get();
@@ -104,20 +128,16 @@ namespace Rendering
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
-		auto texture = mGame->Content().Load<Texture2D>(L"Textures\\Earthatday.dds"s);
-		mMaterial = make_shared<BlinnPhongMaterial>(*mGame, texture);
+		auto colorMap = mGame->Content().Load<Texture2D>(L"Textures\\EarthComposite.dds"s);
+		auto specularMap = mGame->Content().Load<Texture2D>(L"Textures\\EarthSpecularMap.png"s);
+		mMaterial = make_shared<PointLightMaterial>(*mGame, colorMap, specularMap);
 		mMaterial->Initialize();
+	
+		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\PointLightProxy.obj.bin"s, 0.5f);
+		mProxyModel->Initialize();		
 
-		using namespace std::placeholders;
-		mMaterial->SetUpdateMaterialCallback(bind(&BlinnPhongDemo::UpdateMaterial, this));
-		
-		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\DirectionalLightProxy.obj.bin"s, 0.5f);
-		mProxyModel->Initialize();
-		mProxyModel->SetPosition(10.0f, 0.0, 0.0f);
-		mProxyModel->ApplyRotation(XMMatrixRotationY(XM_PIDIV2));
-
-		mDirectionalLight = make_unique<DirectionalLight>(*mGame);
-		mMaterial->SetLightDirection(mDirectionalLight->DirectionToLight());
+		mPointLight = make_unique<PointLight>(*mGame);
+		SetLightPosition(XMFLOAT3(1.0f, 0.0, 8.0f));
 
 		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
 		if (firstPersonCamera != nullptr)
@@ -126,26 +146,42 @@ namespace Rendering
 				mMaterial->UpdateCameraPosition(mCamera->Position());
 			});
 		}
+
+		mCamera->SetViewMatrixUpdatedCallback([this]() {
+			UpdateMaterialTransforms();
+		});
+
+		mCamera->SetProjectionMatrixUpdatedCallback([this]() {
+			UpdateMaterialTransforms();
+		});
 	}
 
-	void BlinnPhongDemo::Update(const GameTime& gameTime)
+	void PointLightDemo::Update(const GameTime& gameTime)
 	{
 		if (mAnimationEnabled)
 		{
 			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));			
+			UpdateMaterialTransforms();
 		}
 
 		mProxyModel->Update(gameTime);
 	}
 
-	void BlinnPhongDemo::Draw(const GameTime& gameTime)
+	void PointLightDemo::Draw(const GameTime& gameTime)
 	{
 		mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 		mProxyModel->Draw(gameTime);
 	}
 
-	void BlinnPhongDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	void PointLightDemo::UpdateMaterialTransforms()
+	{
+		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+		mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
+	}
+
+	void PointLightDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
@@ -171,12 +207,5 @@ namespace Rendering
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
-	}
-
-	void BlinnPhongDemo::UpdateMaterial()
-	{
-		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
 	}
 }

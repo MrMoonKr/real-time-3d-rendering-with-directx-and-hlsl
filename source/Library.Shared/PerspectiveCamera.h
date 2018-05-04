@@ -19,7 +19,10 @@ namespace Library
 		virtual ~PerspectiveCamera() = default;
        
         float AspectRatio() const;
+		void SetAspectRatio(float aspectRatio);
+
         float FieldOfView() const;
+		void SetFieldOfView(float fieldOfView);
 
 		virtual void UpdateProjectionMatrix() override;
         

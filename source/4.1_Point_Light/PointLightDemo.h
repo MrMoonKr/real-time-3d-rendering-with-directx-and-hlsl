@@ -16,7 +16,7 @@ namespace Library
 {
 	class Camera;
 	class Mesh;
-	class DirectionalLight;
+	class PointLight;
 	class ProxyModel;
 	class VertexShader;
 	class PixelShader;
@@ -24,17 +24,17 @@ namespace Library
 
 namespace Rendering
 {
-	class DiffuseLightingMaterial;
+	class PointLightMaterial;
 
-	class DiffuseLightingDemo final : public Library::DrawableGameComponent
+	class PointLightDemo final : public Library::DrawableGameComponent
 	{
 	public:
-		DiffuseLightingDemo(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
-		DiffuseLightingDemo(const DiffuseLightingDemo&) = delete;
-		DiffuseLightingDemo(DiffuseLightingDemo&&) = default;
-		DiffuseLightingDemo& operator=(const DiffuseLightingDemo&) = default;		
-		DiffuseLightingDemo& operator=(DiffuseLightingDemo&&) = default;
-		~DiffuseLightingDemo();
+		PointLightDemo(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
+		PointLightDemo(const PointLightDemo&) = delete;
+		PointLightDemo(PointLightDemo&&) = default;
+		PointLightDemo& operator=(const PointLightDemo&) = default;		
+		PointLightDemo& operator=(PointLightDemo&&) = default;
+		~PointLightDemo();
 
 		bool AnimationEnabled() const;
 		void SetAnimationEnabled(bool enabled);
@@ -43,30 +43,41 @@ namespace Rendering
 		float AmbientLightIntensity() const;
 		void SetAmbientLightIntensity(float intensity);
 
-		float DirectionalLightIntensity() const;
-		void SetDirectionalLightIntensity(float intensity);
+		float PointLightIntensity() const;
+		void SetPointLightIntensity(float intensity);
 
-		const DirectX::XMFLOAT3& LightDirection() const;
-		void RotateDirectionalLight(DirectX::XMFLOAT2 amount);
+		const DirectX::XMFLOAT3& LightPosition() const;
+		const DirectX::XMVECTOR LightPositionVector() const;
+		void SetLightPosition(const DirectX::XMFLOAT3& position);
+		void SetLightPosition(DirectX::FXMVECTOR position);
+
+		float LightRadius() const;
+		void SetLightRadius(float radius);
+
+		float SpecularIntensity() const;
+		void SetSpecularIntensity(float intensity);
+
+		float SpecularPower() const;
+		void SetSpecularPower(float power);
 
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-		void UpdateMaterial();
+		void UpdateMaterialTransforms();
 		void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
 
 		inline static const float RotationRate{ DirectX::XM_PI };
 
-		std::shared_ptr<DiffuseLightingMaterial> mMaterial;
+		std::shared_ptr<PointLightMaterial> mMaterial;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
 		bool mAnimationEnabled{ true };
-		std::unique_ptr<Library::DirectionalLight> mDirectionalLight;
+		std::unique_ptr<Library::PointLight> mPointLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
 		float mModelRotationAngle{ 0.0f };
 	};

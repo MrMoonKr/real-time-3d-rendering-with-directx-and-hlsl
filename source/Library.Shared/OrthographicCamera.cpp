@@ -23,6 +23,7 @@ namespace Library
 		if (viewWidth > 0.0f)
 		{
 			mViewWidth = viewWidth;
+			mProjectionMatrixDataDirty = true;
 		}
 	}
 
@@ -36,12 +37,21 @@ namespace Library
 		if (viewHeight > 0.0f)
 		{
 			mViewHeight = viewHeight;
+			mProjectionMatrixDataDirty = true;
 		}
 	}
 
     void OrthographicCamera::UpdateProjectionMatrix()
     {
-		XMMATRIX projectionMatrix = XMMatrixOrthographicRH(mViewWidth, mViewHeight, mNearPlaneDistance, mFarPlaneDistance);
-        XMStoreFloat4x4(&mProjectionMatrix, projectionMatrix);
+		if (mProjectionMatrixDataDirty)
+		{
+			XMMATRIX projectionMatrix = XMMatrixOrthographicRH(mViewWidth, mViewHeight, mNearPlaneDistance, mFarPlaneDistance);
+			XMStoreFloat4x4(&mProjectionMatrix, projectionMatrix);
+
+			if (mProjectionMatrixUpdatedCallback != nullptr)
+			{
+				mProjectionMatrixUpdatedCallback();
+			}
+		}
     }
 }

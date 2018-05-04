@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "VectorHelper.h"
 
+using namespace std;
 using namespace DirectX;
 
 namespace Library
@@ -60,6 +61,16 @@ namespace Library
     {
         return mMovementRate;
     }
+
+	function<void()> FirstPersonCamera::PositionUpdatedCallback() const
+	{
+		return mPositionUpdatedCallback;
+	}
+
+	void FirstPersonCamera::SetPositionUpdatedCallback(function<void()> callback)
+	{
+		mPositionUpdatedCallback = callback;
+	}
 
 	void FirstPersonCamera::Initialize()
 	{
@@ -148,5 +159,10 @@ namespace Library
 		position += forward;
 
 		XMStoreFloat3(&mPosition, position);
+
+		if (mPositionUpdatedCallback != nullptr)
+		{
+			mPositionUpdatedCallback();
+		}
 	}
 }

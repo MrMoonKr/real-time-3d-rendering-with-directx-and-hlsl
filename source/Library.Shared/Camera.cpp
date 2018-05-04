@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "VectorHelper.h"
 
+using namespace std;
 using namespace DirectX;
 
 namespace Library
@@ -82,6 +83,26 @@ namespace Library
 		return XMMatrixMultiply(viewMatrix, projectionMatrix);
 	}
 
+	function<void()> Camera::ViewMatrixUpdatedCallback() const
+	{
+		return mViewMatrixUpdatedCallback;
+	}
+
+	void Camera::SetViewMatrixUpdatedCallback(function<void()> callback)
+	{
+		mViewMatrixUpdatedCallback = callback;
+	}
+
+	function<void()> Camera::ProjectionMatrixUpdatedCallback() const
+	{
+		return mProjectionMatrixUpdatedCallback;
+	}
+
+	void Camera::SetProjectionMatrixUpdatedCallback(function<void()> callback)
+	{
+		mProjectionMatrixUpdatedCallback = callback;
+	}
+
 	void Camera::SetPosition(float x, float y, float z)
 	{
 		XMVECTOR position = XMVectorSet(x, y, z, 1.0f);
@@ -91,11 +112,13 @@ namespace Library
 	void Camera::SetPosition(FXMVECTOR position)
 	{
 		XMStoreFloat3(&mPosition, position);
+		mViewMatrixDataDirty = true;
 	}
 
 	void Camera::SetPosition(const XMFLOAT3& position)
 	{
 		mPosition = position;
+		mViewMatrixDataDirty = true;
 	}
 
 	void Camera::Reset()
@@ -104,6 +127,7 @@ namespace Library
 		mDirection = Vector3Helper::Forward;
 		mUp = Vector3Helper::Up;
 		mRight = Vector3Helper::Right;
+		mViewMatrixDataDirty = true;
 
 		UpdateViewMatrix();
 	}
@@ -116,7 +140,10 @@ namespace Library
 
 	void Camera::Update(const GameTime&)
 	{
-		UpdateViewMatrix();
+		if (mViewMatrixDataDirty)
+		{
+			UpdateViewMatrix();
+		}
 	}
 
 	void Camera::UpdateViewMatrix()
@@ -127,6 +154,11 @@ namespace Library
 
 		XMMATRIX viewMatrix = XMMatrixLookToRH(eyePosition, direction, upDirection);
 		XMStoreFloat4x4(&mViewMatrix, viewMatrix);
+
+		if (mViewMatrixUpdatedCallback != nullptr)
+		{
+			mViewMatrixUpdatedCallback();
+		}
 	}
 
 	void Camera::ApplyRotation(CXMMATRIX transform)
@@ -146,6 +178,8 @@ namespace Library
 		XMStoreFloat3(&mDirection, direction);
 		XMStoreFloat3(&mUp, up);
 		XMStoreFloat3(&mRight, right);
+
+		mViewMatrixDataDirty = true;
 	}
 
 	void Camera::ApplyRotation(const XMFLOAT4X4& transform)

@@ -2,6 +2,7 @@
 
 #include "GameComponent.h"
 #include <DirectXMath.h>
+#include <functional>
 
 namespace Library
 {
@@ -36,6 +37,12 @@ namespace Library
 		DirectX::XMMATRIX ProjectionMatrix() const;
 		DirectX::XMMATRIX ViewProjectionMatrix() const;
 
+		std::function<void()> ViewMatrixUpdatedCallback() const;
+		void SetViewMatrixUpdatedCallback(std::function<void()> callback);
+
+		std::function<void()> ProjectionMatrixUpdatedCallback() const;
+		void SetProjectionMatrixUpdatedCallback(std::function<void()> callback);
+
 		virtual void SetPosition(float x, float y, float z);
 		virtual void SetPosition(DirectX::FXMVECTOR position);
 		virtual void SetPosition(const DirectX::XMFLOAT3& position);
@@ -62,5 +69,11 @@ namespace Library
 
 		DirectX::XMFLOAT4X4 mViewMatrix;
 		DirectX::XMFLOAT4X4 mProjectionMatrix;
+
+		bool mViewMatrixDataDirty{ true };
+		bool mProjectionMatrixDataDirty{ true };
+
+		std::function<void()> mViewMatrixUpdatedCallback;
+		std::function<void()> mProjectionMatrixUpdatedCallback;
 	};
 }
