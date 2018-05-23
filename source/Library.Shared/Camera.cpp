@@ -159,6 +159,8 @@ namespace Library
 		{
 			mViewMatrixUpdatedCallback();
 		}
+
+		mViewMatrixDataDirty = false;
 	}
 
 	void Camera::ApplyRotation(CXMMATRIX transform)

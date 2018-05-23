@@ -72,6 +72,33 @@ namespace Library
 		mPositionUpdatedCallback = callback;
 	}
 
+	void FirstPersonCamera::SetPosition(float x, float y, float z)
+	{
+		Camera::SetPosition(x, y, z);
+		if (mPositionUpdatedCallback != nullptr)
+		{
+			mPositionUpdatedCallback();
+		}
+	}
+
+	void FirstPersonCamera::SetPosition(FXMVECTOR position)
+	{
+		Camera::SetPosition(position);
+		if (mPositionUpdatedCallback != nullptr)
+		{
+			mPositionUpdatedCallback();
+		}
+	}
+
+	void FirstPersonCamera::SetPosition(const XMFLOAT3& position)
+	{
+		Camera::SetPosition(position);
+		if (mPositionUpdatedCallback != nullptr)
+		{
+			mPositionUpdatedCallback();
+		}		
+	}
+
 	void FirstPersonCamera::Initialize()
 	{
 		mGamePad = reinterpret_cast<GamePadComponent*>(mGame->Services().GetService(GamePadComponent::TypeIdClass()));
@@ -88,7 +115,11 @@ namespace Library
 		{
 			XMFLOAT2 movementAmount(gamePadState.thumbSticks.leftX, gamePadState.thumbSticks.leftY);
 			XMFLOAT2 rotationAmount(-gamePadState.thumbSticks.rightX, gamePadState.thumbSticks.rightY);
-			UpdatePosition(movementAmount, rotationAmount, gameTime);			
+
+			if (movementAmount.x != 0 || movementAmount.y != 0 || rotationAmount.x != 0 || rotationAmount.y != 0)
+			{
+				UpdatePosition(movementAmount, rotationAmount, gameTime);
+			}
 		}
 		else
 		{

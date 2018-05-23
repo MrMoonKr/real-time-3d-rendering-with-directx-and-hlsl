@@ -37,6 +37,10 @@ namespace Library
 		std::function<void()> PositionUpdatedCallback() const;
 		void SetPositionUpdatedCallback(std::function<void()> callback);
 
+		virtual void SetPosition(float x, float y, float z) override;
+		virtual void SetPosition(DirectX::FXMVECTOR position) override;
+		virtual void SetPosition(const DirectX::XMFLOAT3& position) override;
+
 		virtual void Initialize() override;
         virtual void Update(const GameTime& gameTime) override;
 
@@ -68,4 +72,3 @@ namespace Library
 		std::function<void()> mPositionUpdatedCallback;
     };
 }
-
