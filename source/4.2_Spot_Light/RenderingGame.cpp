@@ -5,7 +5,7 @@
 #include "MouseComponent.h"
 #include "GamePadComponent.h"
 #include "FpsComponent.h"
-#include "PointLightDemo.h"
+#include "SpotLightDemo.h"
 #include "Grid.h"
 #include "FirstPersonCamera.h"
 #include "SamplerStates.h"
@@ -53,8 +53,8 @@ namespace Rendering
 		mGrid = make_shared<Grid>(*this, camera);
 		mComponents.push_back(mGrid);
 
-		mPointLightDemo = make_shared<PointLightDemo>(*this, camera);
-		mComponents.push_back(mPointLightDemo);
+		mSpotLightDemo = make_shared<SpotLightDemo>(*this, camera);
+		mComponents.push_back(mSpotLightDemo);
 
 		auto imGui = make_shared<ImGuiComponent>(*this);
 		mComponents.push_back(imGui);
@@ -67,40 +67,55 @@ namespace Rendering
 			ImGui::Begin("Controls");
 			ImGui::SetNextWindowPos(ImVec2(10, 10));
 
-			stringstream fpsLabel;
-			fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
-			ImGui::Text(fpsLabel.str().c_str());
+			{
+				stringstream fpsLabel;
+				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+				ImGui::Text(fpsLabel.str().c_str());
+			}
 
 			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
-			ImGui::Text("Move Point Light (Num-Pad 8/2, 4/6, 3/9)");			
+			ImGui::Text("Move Spot Light (Num-Pad 8/2, 4/6, 3/9)");			
 
-			stringstream gridVisibleLabel;
-			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
-			ImGui::Text(gridVisibleLabel.str().c_str());
-
-			stringstream animationEnabledLabel;
-			animationEnabledLabel << "Toggle Animation (Space): " << (mPointLightDemo->AnimationEnabled() ? "Enabled" : "Disabled");
-			ImGui::Text(animationEnabledLabel.str().c_str());
-
-			stringstream ambientLightIntensityLabel;
-			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mPointLightDemo->AmbientLightIntensity();
-			ImGui::Text(ambientLightIntensityLabel.str().c_str());
-
-			stringstream directionalLightIntensityLabel;
-			directionalLightIntensityLabel << setprecision(2) << "Point Light Intensity (+Home/-End): " << mPointLightDemo->PointLightIntensity();
-			ImGui::Text(directionalLightIntensityLabel.str().c_str());
-
-			stringstream specularIntensityLabel;
-			specularIntensityLabel << setprecision(2) << "Specular Intensity (+Insert/-Delete): " << mPointLightDemo->SpecularIntensity();
-			ImGui::Text(specularIntensityLabel.str().c_str());
-
-			stringstream specularPowerLabel;
-			specularPowerLabel << "Specular Power (+O/-P): " << mPointLightDemo->SpecularPower();
-			ImGui::Text(specularPowerLabel.str().c_str());
-
-			stringstream pointLightRadiusLabel;
-			pointLightRadiusLabel << "Point Light Radius (+B/-N): " << mPointLightDemo->LightRadius();
-			ImGui::Text(pointLightRadiusLabel.str().c_str());
+			{
+				stringstream gridVisibleLabel;
+				gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
+				ImGui::Text(gridVisibleLabel.str().c_str());
+			}
+			{
+				stringstream ambientLightIntensityLabel;
+				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mSpotLightDemo->AmbientLightIntensity();
+				ImGui::Text(ambientLightIntensityLabel.str().c_str());
+			}
+			{
+				stringstream directionalLightIntensityLabel;
+				directionalLightIntensityLabel << setprecision(2) << "Spot Light Intensity (+Home/-End): " << mSpotLightDemo->SpotLightIntensity();
+				ImGui::Text(directionalLightIntensityLabel.str().c_str());
+			}
+			{
+				stringstream specularIntensityLabel;
+				specularIntensityLabel << setprecision(2) << "Specular Intensity (+Insert/-Delete): " << mSpotLightDemo->SpecularIntensity();
+				ImGui::Text(specularIntensityLabel.str().c_str());
+			}
+			{
+				stringstream specularPowerLabel;
+				specularPowerLabel << "Specular Power (+O/-P): " << mSpotLightDemo->SpecularPower();
+				ImGui::Text(specularPowerLabel.str().c_str());
+			}
+			{
+				stringstream spotLightRadiusLabel;
+				spotLightRadiusLabel << "Spot Light Radius (+B/-N): " << mSpotLightDemo->LightRadius();
+				ImGui::Text(spotLightRadiusLabel.str().c_str());
+			}
+			{
+				stringstream spotLightInnerAngleLabel;
+				spotLightInnerAngleLabel << "Spot Light Inner Angle(+Z/-X): " << mSpotLightDemo->SpotLightInnerAngle();
+				ImGui::Text(spotLightInnerAngleLabel.str().c_str());
+			}
+			{
+				stringstream spotLightOuterAngleLabel;
+				spotLightOuterAngleLabel << "Spot Light Outer Angle(+C/-V): " << mSpotLightDemo->SpotLightOuterAngle();
+				ImGui::Text(spotLightOuterAngleLabel.str().c_str());
+			}
 
 			ImGui::End();
 		});
@@ -112,11 +127,13 @@ namespace Rendering
 
 		Game::Initialize();
 		
-		camera->SetPosition(0.0f, 2.5f, 20.0f);
-		mAmbientLightIntensity = mPointLightDemo->AmbientLightIntensity();
-		mPointLightIntensity = mPointLightDemo->PointLightIntensity();
-		mSpecularIntensity = mPointLightDemo->SpecularIntensity();
-		mSpecularPower = mPointLightDemo->SpecularPower();
+		camera->SetPosition(0.0f, 5.0f, 20.0f);
+		mAmbientLightIntensity = mSpotLightDemo->AmbientLightIntensity();
+		mSpotLightIntensity = mSpotLightDemo->SpotLightIntensity();
+		mSpotLightInnerAngle = mSpotLightDemo->SpotLightInnerAngle();
+		mSpotLightOuterAngle = mSpotLightDemo->SpotLightOuterAngle();
+		mSpecularIntensity = mSpotLightDemo->SpecularIntensity();
+		mSpecularPower = mSpotLightDemo->SpecularPower();	
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -136,18 +153,13 @@ namespace Rendering
 			mMouse->SetMode(MouseModes::Absolute);
 		}
 
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-		{
-			mPointLightDemo->ToggleAnimation();
-		}
-
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::G))
 		{
 			mGrid->SetVisible(!mGrid->Visible());
 		}
 
 		UpdateAmbientLightIntensity(gameTime);
-		UpdatePointLight(gameTime);
+		UpdateSpotLight(gameTime);
 		UpdateSpecularLight(gameTime);
 
 		Game::Update(gameTime);
@@ -191,32 +203,32 @@ namespace Rendering
 		{
 			mAmbientLightIntensity += gameTime.ElapsedGameTimeSeconds().count();
 			mAmbientLightIntensity = min(mAmbientLightIntensity, 1.0f);
-			mPointLightDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
+			mSpotLightDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
 		}
 		else if (mKeyboard->IsKeyDown(Keys::PageDown) && mAmbientLightIntensity > 0.0f)
 		{
 			mAmbientLightIntensity -= gameTime.ElapsedGameTimeSeconds().count();
 			mAmbientLightIntensity = max(mAmbientLightIntensity, 0.0f);
-			mPointLightDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
+			mSpotLightDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
 		}
 	}
 
-	void RenderingGame::UpdatePointLight(const GameTime& gameTime)
+	void RenderingGame::UpdateSpotLight(const GameTime& gameTime)
 	{
 		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 		// Update light intensity
-		if (mKeyboard->IsKeyDown(Keys::Home) && mPointLightIntensity < 1.0f)
+		if (mKeyboard->IsKeyDown(Keys::Home) && mSpotLightIntensity < 1.0f)
 		{
-			mPointLightIntensity += elapsedTime;
-			mPointLightIntensity = min(mPointLightIntensity, 1.0f);
-			mPointLightDemo->SetPointLightIntensity(mPointLightIntensity);
+			mSpotLightIntensity += elapsedTime;
+			mSpotLightIntensity = min(mSpotLightIntensity, 1.0f);
+			mSpotLightDemo->SetSpotLightIntensity(mSpotLightIntensity);
 		}
-		else if (mKeyboard->IsKeyDown(Keys::End) && mPointLightIntensity > 0.0f)
+		else if (mKeyboard->IsKeyDown(Keys::End) && mSpotLightIntensity > 0.0f)
 		{
-			mPointLightIntensity -= elapsedTime;
-			mPointLightIntensity = max(mPointLightIntensity, 0.0f);
-			mPointLightDemo->SetPointLightIntensity(mPointLightIntensity);
+			mSpotLightIntensity -= elapsedTime;
+			mSpotLightIntensity = max(mSpotLightIntensity, 0.0f);
+			mSpotLightDemo->SetSpotLightIntensity(mSpotLightIntensity);
 		}
 
 		// Move light
@@ -256,21 +268,76 @@ namespace Rendering
 		if (movementAmount.x != 0.0f || movementAmount.y != 0.0f || movementAmount.z != 0.0f)
 		{
 			XMVECTOR movement = XMLoadFloat3(&movementAmount) * LightMovementRate * elapsedTime;
-			mPointLightDemo->SetLightPosition(mPointLightDemo->LightPositionVector() + movement);
+			mSpotLightDemo->SetLightPosition(mSpotLightDemo->LightPositionVector() + movement);
+		}
+
+		// Rotate light
+		XMFLOAT2 rotationAmount = Vector2Helper::Zero;
+		if (mKeyboard->IsKeyDown(Keys::Left))
+		{
+			rotationAmount.x += LightRotationRate.x * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Right))
+		{
+			rotationAmount.x -= LightRotationRate.x * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Up))
+		{
+			rotationAmount.y += LightRotationRate.y * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Down))
+		{
+			rotationAmount.y -= LightRotationRate.y * elapsedTime;
+		}
+
+		if (rotationAmount.x != 0.0f || rotationAmount.y != 0.0f)
+		{
+			mSpotLightDemo->RotateSpotLight(rotationAmount);
 		}
 
 		// Update the light's radius
 		if (mKeyboard->IsKeyDown(Keys::B))
 		{
-			float radius = mPointLightDemo->LightRadius() + LightModulationRate * elapsedTime;
-			mPointLightDemo->SetLightRadius(radius);
+			float radius = mSpotLightDemo->LightRadius() + LightModulationRate * elapsedTime;
+			mSpotLightDemo->SetLightRadius(radius);
 		}
 
 		if (mKeyboard->IsKeyDown(Keys::N))
 		{
-			float radius = mPointLightDemo->LightRadius() - LightModulationRate * elapsedTime;
+			float radius = mSpotLightDemo->LightRadius() - LightModulationRate * elapsedTime;
 			radius = max(radius, 0.0f);
-			mPointLightDemo->SetLightRadius(radius);
+			mSpotLightDemo->SetLightRadius(radius);
+		}
+
+		// Update inner and outer angles		
+		if (mKeyboard->IsKeyDown(Keys::Z) && mSpotLightInnerAngle < 1.0f)
+		{
+			mSpotLightInnerAngle += elapsedTime;
+			mSpotLightInnerAngle = min(mSpotLightInnerAngle, 1.0f);
+
+			mSpotLightDemo->SetSpotLightInnerAngle(mSpotLightInnerAngle);
+		}
+		else if (mKeyboard->IsKeyDown(Keys::X) && mSpotLightInnerAngle > 0.5f)
+		{
+			mSpotLightInnerAngle -= elapsedTime;
+			mSpotLightInnerAngle = max(mSpotLightInnerAngle, 0.5f);
+
+			mSpotLightDemo->SetSpotLightInnerAngle(mSpotLightInnerAngle);
+		}
+
+		if (mKeyboard->IsKeyDown(Keys::C) && mSpotLightOuterAngle < 0.5f)
+		{
+			mSpotLightOuterAngle += elapsedTime;
+			mSpotLightOuterAngle = min(mSpotLightOuterAngle, 0.5f);
+
+			mSpotLightDemo->SetSpotLightOuterAngle(mSpotLightOuterAngle);
+		}
+		else if (mKeyboard->IsKeyDown(Keys::V) && mSpotLightOuterAngle > 0.0f)
+		{
+			mSpotLightOuterAngle -= elapsedTime;
+			mSpotLightOuterAngle = max(mSpotLightOuterAngle, 0.0f);
+			
+			mSpotLightDemo->SetSpotLightOuterAngle(mSpotLightOuterAngle);
 		}
 	}
 
@@ -282,13 +349,13 @@ namespace Rendering
 		{
 			mSpecularIntensity += elapsedTime;
 			mSpecularIntensity = min(mSpecularIntensity, 1.0f);
-			mPointLightDemo->SetSpecularIntensity(mSpecularIntensity);
+			mSpotLightDemo->SetSpecularIntensity(mSpecularIntensity);
 		}
 		else if (mKeyboard->IsKeyDown(Keys::Delete) && mSpecularIntensity > 0.0f)
 		{
 			mSpecularIntensity -= elapsedTime;
 			mSpecularIntensity = max(mSpecularIntensity, 0.0f);
-			mPointLightDemo->SetSpecularIntensity(mSpecularIntensity);
+			mSpotLightDemo->SetSpecularIntensity(mSpecularIntensity);
 		}
 
 		const auto ModulationRate = numeric_limits<uint8_t>::max();
@@ -296,13 +363,13 @@ namespace Rendering
 		{
 			mSpecularPower += ModulationRate * elapsedTime;
 			mSpecularPower = min(mSpecularPower, static_cast<float>(numeric_limits<uint8_t>::max()));
-			mPointLightDemo->SetSpecularPower(mSpecularPower);
+			mSpotLightDemo->SetSpecularPower(mSpecularPower);
 		}
 		else if (mKeyboard->IsKeyDown(Keys::P) && mSpecularPower > 1.0f)
 		{
 			mSpecularPower -= ModulationRate * elapsedTime;
 			mSpecularPower = max(mSpecularPower, 1.0f);
-			mPointLightDemo->SetSpecularPower(mSpecularPower);
+			mSpotLightDemo->SetSpecularPower(mSpecularPower);
 		}
 	}
 }

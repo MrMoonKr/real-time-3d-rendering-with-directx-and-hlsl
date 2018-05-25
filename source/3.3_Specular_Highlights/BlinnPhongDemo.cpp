@@ -68,7 +68,7 @@ namespace Rendering
 		return mDirectionalLight->Direction();
 	}
 
-	void BlinnPhongDemo::RotateDirectionalLight(DirectX::XMFLOAT2 amount)
+	void BlinnPhongDemo::RotateDirectionalLight(const DirectX::XMFLOAT2& amount)
 	{
 		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mDirectionalLight->RightVector(), amount.y);
 		mDirectionalLight->ApplyRotation(lightRotationMatrix);

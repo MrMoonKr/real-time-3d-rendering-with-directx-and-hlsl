@@ -5,3 +5,4 @@ source/*/obj
 source/Tools/*/bin
 source/Tools/*/obj
 content/
+*.user

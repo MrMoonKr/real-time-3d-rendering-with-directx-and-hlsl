@@ -47,7 +47,7 @@ namespace Rendering
 		void SetDirectionalLightIntensity(float intensity);
 
 		const DirectX::XMFLOAT3& LightDirection() const;
-		void RotateDirectionalLight(DirectX::XMFLOAT2 amount);
+		void RotateDirectionalLight(const DirectX::XMFLOAT2& amount);
 
 		float SpecularIntensity() const;
 		void SetSpecularIntensity(float intensity);
