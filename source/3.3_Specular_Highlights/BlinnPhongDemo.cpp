@@ -7,7 +7,6 @@
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
 #include "ProxyModel.h"
-#include "DirectionalLight.h"
 #include "BlinnPhongMaterial.h"
 #include "Texture2D.h"
 
@@ -65,15 +64,15 @@ namespace Rendering
 
 	const DirectX::XMFLOAT3& BlinnPhongDemo::LightDirection() const
 	{
-		return mDirectionalLight->Direction();
+		return mDirectionalLight.Direction();
 	}
 
 	void BlinnPhongDemo::RotateDirectionalLight(const DirectX::XMFLOAT2& amount)
 	{
-		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mDirectionalLight->RightVector(), amount.y);
-		mDirectionalLight->ApplyRotation(lightRotationMatrix);
+		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mDirectionalLight.RightVector(), amount.y);
+		mDirectionalLight.ApplyRotation(lightRotationMatrix);
 		mProxyModel->ApplyRotation(lightRotationMatrix);
-		mMaterial->SetLightDirection(mDirectionalLight->DirectionToLight());
+		mMaterial->SetLightDirection(mDirectionalLight.DirectionToLight());
 	}
 
 	float BlinnPhongDemo::SpecularIntensity() const
@@ -108,22 +107,19 @@ namespace Rendering
 		mMaterial = make_shared<BlinnPhongMaterial>(*mGame, texture);
 		mMaterial->Initialize();
 
-		using namespace std::placeholders;
-		mMaterial->SetUpdateMaterialCallback(bind(&BlinnPhongDemo::UpdateMaterial, this));
-		
 		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\DirectionalLightProxy.obj.bin"s, 0.5f);
 		mProxyModel->Initialize();
 		mProxyModel->SetPosition(10.0f, 0.0, 0.0f);
 		mProxyModel->ApplyRotation(XMMatrixRotationY(XM_PIDIV2));
 
-		mDirectionalLight = make_unique<DirectionalLight>(*mGame);
-		mMaterial->SetLightDirection(mDirectionalLight->DirectionToLight());
+		mMaterial->SetLightDirection(mDirectionalLight.DirectionToLight());
 
 		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
 		if (firstPersonCamera != nullptr)
 		{
 			firstPersonCamera->SetPositionUpdatedCallback([this]() {
 				mMaterial->UpdateCameraPosition(mCamera->Position());
+				mUpdateMaterial = true;
 			});
 		}
 	}
@@ -134,6 +130,7 @@ namespace Rendering
 		{
 			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
 			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));
+			mUpdateMaterial = true;
 		}
 
 		mProxyModel->Update(gameTime);
@@ -141,6 +138,14 @@ namespace Rendering
 
 	void BlinnPhongDemo::Draw(const GameTime& gameTime)
 	{
+		if (mUpdateMaterial)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+			mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
+			mUpdateMaterial = false;
+		}
+
 		mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 		mProxyModel->Draw(gameTime);
 	}
@@ -171,12 +176,5 @@ namespace Rendering
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
-	}
-
-	void BlinnPhongDemo::UpdateMaterial()
-	{
-		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
 	}
 }

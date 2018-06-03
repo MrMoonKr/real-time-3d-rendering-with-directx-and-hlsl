@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TexturedModelDemo.h"
 #include "Utility.h"
-#include "Camera.h"
+#include "FirstPersonCamera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
@@ -62,7 +62,7 @@ namespace Rendering
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
 		mIndexCount = static_cast<uint32_t>(mesh->Indices().size());
 
-		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
+		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(CBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
@@ -70,16 +70,23 @@ namespace Rendering
 		// Load a texture
 		const wstring textureName = L"Content\\Textures\\EarthComposite.dds"s;
 		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
+	
+		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
+		if (firstPersonCamera != nullptr)
+		{
+			firstPersonCamera->SetPositionUpdatedCallback([this]() {
+				mUpdateConstantBuffer = true;
+			});
+		}
 	}
 
 	void TexturedModelDemo::Update(const GameTime& gameTime)
 	{
-		static float angle = 0.0f;
-
 		if (mAnimationEnabled)
 		{
-			angle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(angle));
+			mRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mRotationAngle));
+			mUpdateConstantBuffer = true;
 		}
 	}
 
@@ -98,13 +105,16 @@ namespace Rendering
 
 		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
 		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
-
-		XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
-		wvp = XMMatrixTranspose(wvp);
-		XMStoreFloat4x4(&mCBufferPerObject.WorldViewProjection, wvp);
-
-		direct3DDeviceContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCBufferPerObject, 0, 0);
+		
+		if (mUpdateConstantBuffer)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
+			wvp = XMMatrixTranspose(wvp);
+			XMStoreFloat4x4(&mCBufferPerObject.WorldViewProjection, wvp);
+			direct3DDeviceContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCBufferPerObject, 0, 0);
+ 			mUpdateConstantBuffer = false;
+		}
 		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 
 		direct3DDeviceContext->PSSetShaderResources(0, 1, mColorTexture.GetAddressOf());

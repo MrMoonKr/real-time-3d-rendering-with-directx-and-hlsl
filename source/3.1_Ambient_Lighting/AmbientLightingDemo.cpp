@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "AmbientLightingDemo.h"
-#include "Camera.h"
+#include "FirstPersonCamera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
@@ -54,8 +54,13 @@ namespace Rendering
 		mMaterial = make_shared<AmbientLightingMaterial>(*mGame, texture);
 		mMaterial->Initialize();
 
-		using namespace std::placeholders;
-		mMaterial->SetUpdateMaterialCallback(bind(&AmbientLightingDemo::UpdateMaterial, this));
+		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
+		if (firstPersonCamera != nullptr)
+		{
+			firstPersonCamera->SetPositionUpdatedCallback([this]() {
+				mUpdateMaterial = true;
+			});
+		}
 	}
 
 	void AmbientLightingDemo::Update(const GameTime& gameTime)
@@ -64,11 +69,20 @@ namespace Rendering
 		{
 			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
 			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));
+			mUpdateMaterial = true;
 		}
 	}
 
 	void AmbientLightingDemo::Draw(const GameTime&)
 	{
+		if (mUpdateMaterial)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+			mMaterial->UpdateTransforms(wvp);
+			mUpdateMaterial = false;
+		}
+
 		mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 	}
 
@@ -94,12 +108,5 @@ namespace Rendering
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
-	}
-
-	void AmbientLightingDemo::UpdateMaterial()
-	{
-		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateTransforms(wvp);
 	}
 }

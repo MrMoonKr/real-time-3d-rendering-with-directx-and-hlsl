@@ -2,7 +2,7 @@
 #include "ModelDemo.h"
 #include "Utility.h"
 #include "ColorHelper.h"
-#include "Camera.h"
+#include "FirstPersonCamera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
@@ -61,20 +61,27 @@ namespace Rendering
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), mIndexBuffer.ReleaseAndGetAddressOf());
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
-		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
+		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(CBufferPerObject));
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+	
+		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
+		if (firstPersonCamera != nullptr)
+		{
+			firstPersonCamera->SetPositionUpdatedCallback([this]() {
+				mUpdateConstantBuffer = true;
+			});
+		}
 	}
 
 	void ModelDemo::Update(const GameTime & gameTime)
 	{
-		static float angle = 0.0f;
-
 		if (mAnimationEnabled)
 		{
-			angle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(angle));
+			mRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mRotationAngle));
+			mUpdateConstantBuffer = true;
 		}
 	}
 
@@ -86,20 +93,23 @@ namespace Rendering
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
-		UINT stride = sizeof(VertexPositionColor);
-		UINT offset = 0;
+		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionColor));
+		uint32_t offset = 0;
 		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
 		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
 		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
 
-		XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
-		wvp = XMMatrixTranspose(wvp);
-		XMStoreFloat4x4(&mCBufferPerObject.WorldViewProjection, wvp);
-
-		direct3DDeviceContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCBufferPerObject, 0, 0);
+		if (mUpdateConstantBuffer)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
+			wvp = XMMatrixTranspose(wvp);
+			XMStoreFloat4x4(&mCBufferPerObject.WorldViewProjection, wvp);
+			direct3DDeviceContext->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, &mCBufferPerObject, 0, 0);
+			mUpdateConstantBuffer = false;
+		}
 		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 
 		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
@@ -133,12 +143,12 @@ namespace Rendering
 			}
 		}
 
-		D3D11_BUFFER_DESC vertexBufferDesc { 0 };
+		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
 		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionColor) * vertices.size());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData { 0 };
+		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}

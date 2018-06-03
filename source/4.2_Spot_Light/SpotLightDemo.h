@@ -11,12 +11,12 @@
 #include <memory>
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
+#include "SpotLight.h"
 
 namespace Library
 {
 	class Camera;
 	class Mesh;
-	class SpotLight;
 	class ProxyModel;
 	class VertexShader;
 	class PixelShader;
@@ -71,7 +71,6 @@ namespace Rendering
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-		void UpdateMaterialTransforms();
 		void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, Library::VertexPositionTextureNormal* vertices, std::uint32_t vertexCount, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
 
 		std::shared_ptr<SpotLightMaterial> mMaterial;
@@ -79,8 +78,9 @@ namespace Rendering
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mVertexCount{ 0 };
-		std::unique_ptr<Library::SpotLight> mSpotLight;
+		Library::SpotLight mSpotLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
 		float mModelRotationAngle{ 0.0f };
+		bool mUpdateMaterial{ true };
 	};
 }

@@ -7,12 +7,12 @@ namespace Library
 {
 	RTTI_DEFINITIONS(PointLight)	
 
-	PointLight::PointLight(Game& game, const DirectX::XMFLOAT3& position, float radius) :
-		Light(game), mPosition(position), mRadius(radius)
+	PointLight::PointLight(const DirectX::XMFLOAT3& position, float radius) :
+		mPosition(position), mRadius(radius)
 	{
 	}
 
-	XMFLOAT3& PointLight::Position()
+	const XMFLOAT3& PointLight::Position() const
 	{
 		return mPosition;
 	}

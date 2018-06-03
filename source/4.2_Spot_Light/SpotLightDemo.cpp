@@ -7,7 +7,6 @@
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
 #include "ProxyModel.h"
-#include "SpotLight.h"
 #include "SpotLightMaterial.h"
 #include "Texture2D.h"
 
@@ -50,24 +49,24 @@ namespace Rendering
 
 	const XMFLOAT3& SpotLightDemo::LightPosition() const
 	{
-		return mSpotLight->Position();
+		return mSpotLight.Position();
 	}
 
 	const XMVECTOR SpotLightDemo::LightPositionVector() const
 	{
-		return mSpotLight->PositionVector();
+		return mSpotLight.PositionVector();
 	}
 
 	void SpotLightDemo::SetLightPosition(const XMFLOAT3& position)
 	{
-		mSpotLight->SetPosition(position);
+		mSpotLight.SetPosition(position);
 		mProxyModel->SetPosition(position);
 		mMaterial->SetLightPosition(position);
 	}
 
 	void SpotLightDemo::SetLightPosition(FXMVECTOR position)
 	{
-		mSpotLight->SetPosition(position);
+		mSpotLight.SetPosition(position);
 		mProxyModel->SetPosition(position);
 
 		XMFLOAT3 materialPosition;
@@ -77,15 +76,15 @@ namespace Rendering
 
 	const XMFLOAT3& SpotLightDemo::LightLookAt() const
 	{
-		return mSpotLight->Direction();
+		return mSpotLight.Direction();
 	}
 
 	void SpotLightDemo::RotateSpotLight(const DirectX::XMFLOAT2& amount)
 	{
-		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mSpotLight->RightVector(), amount.y);
-		mSpotLight->ApplyRotation(lightRotationMatrix);
+		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mSpotLight.RightVector(), amount.y);
+		mSpotLight.ApplyRotation(lightRotationMatrix);
 		mProxyModel->ApplyRotation(lightRotationMatrix);
-		mMaterial->SetLightLookAt(mSpotLight->DirectionToLight());
+		mMaterial->SetLightLookAt(mSpotLight.DirectionToLight());
 	}
 
 	float SpotLightDemo::LightRadius() const
@@ -164,9 +163,8 @@ namespace Rendering
 		mProxyModel->ApplyRotation(XMMatrixRotationX(XM_PIDIV2));
 		mProxyModel->Initialize();		
 
-		mSpotLight = make_unique<SpotLight>(*mGame);
 		SetLightPosition(XMFLOAT3(0.0f, 5.0, 2.0f));
-		mMaterial->SetLightLookAt(mSpotLight->DirectionToLight());		
+		mMaterial->SetLightLookAt(mSpotLight.DirectionToLight());		
 
 		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
 		if (firstPersonCamera != nullptr)
@@ -176,13 +174,9 @@ namespace Rendering
 			});
 		}
 
-		mCamera->SetViewMatrixUpdatedCallback([this]() {
-			UpdateMaterialTransforms();
-		});
-
-		mCamera->SetProjectionMatrixUpdatedCallback([this]() {
-			UpdateMaterialTransforms();
-		});
+		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
+		mCamera->SetViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->SetProjectionMatrixUpdatedCallback(updateMaterialFunc);
 
 		XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(10.0f, 10.0f, 10.0f));
 	}
@@ -194,15 +188,16 @@ namespace Rendering
 
 	void SpotLightDemo::Draw(const GameTime& gameTime)
 	{
+		if (mUpdateMaterial)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+			mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
+			mUpdateMaterial = false;
+		}
+
 		mMaterial->Draw(mVertexBuffer.Get(), mVertexCount);
 		mProxyModel->Draw(gameTime);
-	}
-
-	void SpotLightDemo::UpdateMaterialTransforms()
-	{
-		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
 	}
 
 	void SpotLightDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, Library::VertexPositionTextureNormal* vertices, uint32_t vertexCount, not_null<ID3D11Buffer**> vertexBuffer) const

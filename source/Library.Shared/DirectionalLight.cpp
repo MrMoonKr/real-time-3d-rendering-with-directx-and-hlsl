@@ -7,11 +7,6 @@ namespace Library
 {
 	RTTI_DEFINITIONS(DirectionalLight)
 
-	DirectionalLight::DirectionalLight(Game& game) :
-		Light(game)
-	{
-	}
-
 	const XMFLOAT3& DirectionalLight::Direction() const
 	{
 		return mDirection;

@@ -10,7 +10,7 @@ namespace Library
 		RTTI_DECLARATIONS(DirectionalLight, Light)
 
 	public:
-		DirectionalLight(Game& game);
+		DirectionalLight() = default;
 		DirectionalLight(const DirectionalLight&) = default;
 		DirectionalLight& operator=(const DirectionalLight&) = default;
 		DirectionalLight& operator=(DirectionalLight&&) = default;

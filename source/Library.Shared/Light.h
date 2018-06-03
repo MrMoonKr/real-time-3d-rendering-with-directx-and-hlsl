@@ -1,17 +1,17 @@
 #pragma once
 
-#include "GameComponent.h"
+#include "RTTI.h"
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 
 namespace Library
 {
-	class Light : public GameComponent
+	class Light : public RTTI
 	{
-		RTTI_DECLARATIONS(Light, GameComponent)
+		RTTI_DECLARATIONS(Light, RTTI)
 
 	public:
-		Light(Game& game);
+		Light();
 		Light(const Light&) = default;
 		Light& operator=(const Light&) = default;
 		Light& operator=(Light&&) = default;

@@ -7,8 +7,8 @@ namespace Library
 {
 	RTTI_DEFINITIONS(SpotLight)
 
-	SpotLight::SpotLight(Game& game, const XMFLOAT3& position, float radius) :
-		PointLight(game, position, radius)
+	SpotLight::SpotLight(const XMFLOAT3& position, float radius) :
+		PointLight(position, radius)
 	{
 	}
 

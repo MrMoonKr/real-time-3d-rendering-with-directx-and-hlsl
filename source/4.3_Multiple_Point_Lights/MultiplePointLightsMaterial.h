@@ -1,10 +1,12 @@
 #pragma once
 
-#include <DirectXColors.h>
 #include "Material.h"
 #include "VectorHelper.h"
 #include "MatrixHelper.h"
 #include "SamplerStates.h"
+#include "PointLight.h"
+#include <array>
+#include <DirectXColors.h>
 
 namespace Library
 {
@@ -13,17 +15,18 @@ namespace Library
 
 namespace Rendering
 {
-	class PointLightMaterial : public Library::Material
+	class MultiplePointLightsMaterial : public Library::Material
 	{
-		RTTI_DECLARATIONS(PointLightMaterial, Library::Material)
+		RTTI_DECLARATIONS(MultiplePointLightsMaterial, Library::Material)
+		inline static const std::uint32_t LightCount{ 4 };
 
 	public:
-		PointLightMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> colormap, std::shared_ptr<Library::Texture2D> specularMap);
-		PointLightMaterial(const PointLightMaterial&) = default;
-		PointLightMaterial& operator=(const PointLightMaterial&) = default;
-		PointLightMaterial(PointLightMaterial&&) = default;
-		PointLightMaterial& operator=(PointLightMaterial&&) = default;
-		virtual ~PointLightMaterial() = default;
+		MultiplePointLightsMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> colormap, std::shared_ptr<Library::Texture2D> specularMap);
+		MultiplePointLightsMaterial(const MultiplePointLightsMaterial&) = default;
+		MultiplePointLightsMaterial& operator=(const MultiplePointLightsMaterial&) = default;
+		MultiplePointLightsMaterial(MultiplePointLightsMaterial&&) = default;
+		MultiplePointLightsMaterial& operator=(MultiplePointLightsMaterial&&) = default;
+		virtual ~MultiplePointLightsMaterial() = default;
 
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState() const;
 		void SetSamplerState(Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState);
@@ -37,14 +40,8 @@ namespace Rendering
 		const DirectX::XMFLOAT4& AmbientColor() const;
 		void SetAmbientColor(const DirectX::XMFLOAT4& color);
 
-		const DirectX::XMFLOAT3& LightPosition() const;
-		void SetLightPosition(const DirectX::XMFLOAT3& position);
-
-		const float LightRadius() const;
-		void SetLightRadius(float radius);
-
-		const DirectX::XMFLOAT4& LightColor() const;
-		void SetLightColor(const DirectX::XMFLOAT4& color);
+		const std::array<Library::PointLight, 4>& PointLights() const;
+		void SetPointLight(const Library::PointLight& light, std::uint32_t index);
 
 		const DirectX::XMFLOAT3& SpecularColor() const;
 		void SetSpecularColor(const DirectX::XMFLOAT3& color);
@@ -61,8 +58,13 @@ namespace Rendering
 	private:
 		struct VertexCBufferPerFrame
 		{
-			DirectX::XMFLOAT3 LightPosition{ Library::Vector3Helper::Zero };
-			float LightRadius{ 50.0f };
+			struct LightData
+			{
+				DirectX::XMFLOAT3 Position{ Library::Vector3Helper::Zero };
+				float Radius{ 50.0f };
+			};
+
+			LightData Lights[4];
 		};
 
 		struct VertexCBufferPerObject
@@ -73,12 +75,18 @@ namespace Rendering
 
 		struct PixelCBufferPerFrame
 		{
+			struct LightData
+			{
+				DirectX::XMFLOAT3 Position{ Library::Vector3Helper::Zero };
+				float Padding;
+				DirectX::XMFLOAT3 Color{ DirectX::Colors::Black };
+				float Padding2;
+			};
+
+			LightData Lights[4];
 			DirectX::XMFLOAT3 CameraPosition{ Library::Vector3Helper::Zero };
 			float Padding;
 			DirectX::XMFLOAT4 AmbientColor{ DirectX::Colors::Black };
-			DirectX::XMFLOAT3 LightPosition{ 0.0f, 0.0f, 0.0f };
-			float Padding2;
-			DirectX::XMFLOAT4 LightColor{ DirectX::Colors::White };
 		};
 
 		struct PixelCBufferPerObject
@@ -100,6 +108,7 @@ namespace Rendering
 		bool mVertexCBufferPerFrameDataDirty{ true };
 		bool mPixelCBufferPerFrameDataDirty{ true };
 		bool mPixelCBufferPerObjectDataDirty{ true };
+		std::array<Library::PointLight, 4> mLights;
 		std::shared_ptr<Library::Texture2D> mColorMap;
 		std::shared_ptr<Library::Texture2D> mSpecularMap;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };

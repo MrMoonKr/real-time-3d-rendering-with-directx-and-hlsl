@@ -7,7 +7,6 @@
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
 #include "ProxyModel.h"
-#include "PointLight.h"
 #include "PointLightMaterial.h"
 #include "Texture2D.h"
 
@@ -65,24 +64,24 @@ namespace Rendering
 
 	const XMFLOAT3& PointLightDemo::LightPosition() const
 	{
-		return mPointLight->Position();
+		return mPointLight.Position();
 	}
 
 	const XMVECTOR PointLightDemo::LightPositionVector() const
 	{
-		return mPointLight->PositionVector();
+		return mPointLight.PositionVector();
 	}
 
 	void PointLightDemo::SetLightPosition(const XMFLOAT3& position)
 	{
-		mPointLight->SetPosition(position);
+		mPointLight.SetPosition(position);
 		mProxyModel->SetPosition(position);
 		mMaterial->SetLightPosition(position);
 	}
 
 	void PointLightDemo::SetLightPosition(FXMVECTOR position)
 	{
-		mPointLight->SetPosition(position);
+		mPointLight.SetPosition(position);
 		mProxyModel->SetPosition(position);
 
 		XMFLOAT3 materialPosition;
@@ -136,7 +135,6 @@ namespace Rendering
 		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\PointLightProxy.obj.bin"s, 0.5f);
 		mProxyModel->Initialize();		
 
-		mPointLight = make_unique<PointLight>(*mGame);
 		SetLightPosition(XMFLOAT3(1.0f, 0.0, 8.0f));
 
 		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
@@ -144,16 +142,13 @@ namespace Rendering
 		{
 			firstPersonCamera->SetPositionUpdatedCallback([this]() {
 				mMaterial->UpdateCameraPosition(mCamera->Position());
+				mUpdateMaterial = true;
 			});
 		}
 
-		mCamera->SetViewMatrixUpdatedCallback([this]() {
-			UpdateMaterialTransforms();
-		});
-
-		mCamera->SetProjectionMatrixUpdatedCallback([this]() {
-			UpdateMaterialTransforms();
-		});
+		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
+		mCamera->SetViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->SetProjectionMatrixUpdatedCallback(updateMaterialFunc);
 	}
 
 	void PointLightDemo::Update(const GameTime& gameTime)
@@ -162,7 +157,7 @@ namespace Rendering
 		{
 			mModelRotationAngle += gameTime.ElapsedGameTimeSeconds().count() * RotationRate;
 			XMStoreFloat4x4(&mWorldMatrix, XMMatrixRotationY(mModelRotationAngle));			
-			UpdateMaterialTransforms();
+			mUpdateMaterial = true;
 		}
 
 		mProxyModel->Update(gameTime);
@@ -170,15 +165,16 @@ namespace Rendering
 
 	void PointLightDemo::Draw(const GameTime& gameTime)
 	{
+		if (mUpdateMaterial)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+			mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
+			mUpdateMaterial = false;
+		}
+
 		mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 		mProxyModel->Draw(gameTime);
-	}
-
-	void PointLightDemo::UpdateMaterialTransforms()
-	{
-		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(worldMatrix));
 	}
 
 	void PointLightDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const

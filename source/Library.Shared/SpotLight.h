@@ -10,7 +10,7 @@ namespace Library
 		RTTI_DECLARATIONS(SpotLight, PointLight)
 
 	public:
-		explicit SpotLight(Game& game, const DirectX::XMFLOAT3& position = Vector3Helper::Zero, float radius = DefaultRadius);
+		explicit SpotLight(const DirectX::XMFLOAT3& position = Vector3Helper::Zero, float radius = DefaultRadius);
 		virtual ~SpotLight() = default;
 	
 		const DirectX::XMFLOAT3& Direction() const;

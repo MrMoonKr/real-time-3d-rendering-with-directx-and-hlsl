@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "4_1_Point_Light", "..\sourc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "4_2_Spot_Light", "..\source\4.2_Spot_Light\4_2_Spot_Light.vcxproj", "{7F9C0AAE-7121-41E5-81BE-E3E92C7F5B44}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "4_3_Multiple_Point_Lights", "..\source\4.3_Multiple_Point_Lights\4_3_Multiple_Point_Lights.vcxproj", "{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -179,6 +181,14 @@ Global
 		{7F9C0AAE-7121-41E5-81BE-E3E92C7F5B44}.Release|Win32.Build.0 = Release|Win32
 		{7F9C0AAE-7121-41E5-81BE-E3E92C7F5B44}.Release|x64.ActiveCfg = Release|x64
 		{7F9C0AAE-7121-41E5-81BE-E3E92C7F5B44}.Release|x64.Build.0 = Release|x64
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Debug|Win32.ActiveCfg = Debug|Win32
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Debug|Win32.Build.0 = Debug|Win32
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Debug|x64.ActiveCfg = Debug|x64
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Debug|x64.Build.0 = Debug|x64
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Release|Win32.ActiveCfg = Release|Win32
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Release|Win32.Build.0 = Release|Win32
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Release|x64.ActiveCfg = Release|x64
+		{89C55A03-0E7C-48DA-ADE7-ECB57E25DF41}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

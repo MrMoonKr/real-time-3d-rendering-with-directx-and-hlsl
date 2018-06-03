@@ -40,13 +40,10 @@ namespace Rendering
 		struct CBufferPerObject
 		{
 			DirectX::XMFLOAT4X4 WorldViewProjection;
-
-			CBufferPerObject() = default;
-			CBufferPerObject(const DirectX::XMFLOAT4X4& wvp) : WorldViewProjection(wvp) { }
 		};
 	
 		void CreateVertexBuffer(gsl::not_null<Library::VertexPositionTexture*> vertices, std::uint32_t vertexCount, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
-		void CreateIndexBuffer(gsl::not_null<uint32_t*> indices, uint32_t indexCount, gsl::not_null<ID3D11Buffer**> indexBuffer) const;
+		void CreateIndexBuffer(gsl::not_null<uint16_t*> indices, uint32_t indexCount, gsl::not_null<ID3D11Buffer**> indexBuffer) const;
 
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		CBufferPerObject mCBufferPerObjectData;
@@ -61,5 +58,6 @@ namespace Rendering
 		std::uint32_t mIndexCount{ 0 };
 		AddressingModes mActiveAddressingMode{ AddressingModes::Wrap };
 		Library::KeyboardComponent* mKeyboard;
+		bool mUpdateConstantBuffer{ true };
 	};
 }

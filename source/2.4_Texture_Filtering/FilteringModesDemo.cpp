@@ -5,7 +5,7 @@
 #include "GameException.h"
 #include "VertexDeclarations.h"
 #include "KeyboardComponent.h"
-#include "Camera.h"
+#include "FirstPersonCamera.h"
 
 using namespace std;
 using namespace std::string_literals;
@@ -70,7 +70,7 @@ namespace Rendering
 		CreateVertexBuffer(vertices, ARRAYSIZE(vertices), mVertexBuffer.ReleaseAndGetAddressOf());
 
 		// Create an index buffer
-		uint32_t indices[] =
+		uint16_t indices[] =
 		{
 			0, 1, 2,
 			0, 2, 3
@@ -80,7 +80,7 @@ namespace Rendering
 		CreateIndexBuffer(indices, mIndexCount, mIndexBuffer.ReleaseAndGetAddressOf());
 
 		// Create constant buffers
-		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
+		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(CBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
@@ -121,6 +121,14 @@ namespace Rendering
 		}
 
 		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
+	
+		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
+		if (firstPersonCamera != nullptr)
+		{
+			firstPersonCamera->SetPositionUpdatedCallback([this]() {
+				mUpdateConstantBuffer = true;
+			});
+		}
 	}
 
 	void FilteringModesDemo::Update(const GameTime&)
@@ -146,19 +154,23 @@ namespace Rendering
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
-		UINT stride = sizeof(VertexPositionTexture);
-		UINT offset = 0;
+		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionTexture));
+		uint32_t offset = 0;
 		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
-		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
 		direct3DDeviceContext->PSSetShader(mPixelShader.Get(), nullptr, 0);
 
-		XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
-		wvp = XMMatrixTranspose(wvp);
-		XMStoreFloat4x4(&mCBufferPerObjectData.WorldViewProjection, wvp);
+		if (mUpdateConstantBuffer)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			XMMATRIX wvp = worldMatrix * mCamera->ViewProjectionMatrix();
+			wvp = XMMatrixTranspose(wvp);
+			XMStoreFloat4x4(&mCBufferPerObjectData.WorldViewProjection, wvp);
+			direct3DDeviceContext->UpdateSubresource(mCBufferPerObject.Get(), 0, nullptr, &mCBufferPerObjectData, 0, 0);
+			mUpdateConstantBuffer = false;
+		}
 
-		direct3DDeviceContext->UpdateSubresource(mCBufferPerObject.Get(), 0, nullptr, &mCBufferPerObjectData, 0, 0);
 		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mCBufferPerObject.GetAddressOf());
 		direct3DDeviceContext->PSSetShaderResources(0, 1, mColorTexture.GetAddressOf());
 		direct3DDeviceContext->PSSetSamplers(0, 1, mTextureSamplersByFilteringMode[mActiveFilteringMode].GetAddressOf());
@@ -173,15 +185,15 @@ namespace Rendering
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData = { 0 };
+		D3D11_SUBRESOURCE_DATA vertexSubResourceData { 0 };
 		vertexSubResourceData.pSysMem = vertices;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 
-	void FilteringModesDemo::CreateIndexBuffer(not_null<uint32_t*> indices, uint32_t indexCount, not_null<ID3D11Buffer**> indexBuffer) const
+	void FilteringModesDemo::CreateIndexBuffer(not_null<uint16_t*> indices, uint32_t indexCount, not_null<ID3D11Buffer**> indexBuffer) const
 	{
 		D3D11_BUFFER_DESC indexBufferDesc{ 0 };
-		indexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(uint32_t)) * indexCount;
+		indexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(uint16_t)) * indexCount;
 		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 

@@ -9,13 +9,14 @@
 #include <DirectXMath.h>
 #include <cstdint>
 #include <memory>
+#include <array>
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
-#include "DirectionalLight.h"
 
 namespace Library
 {
 	class Camera;
+	class PointLight;
 	class Mesh;
 	class ProxyModel;
 	class VertexShader;
@@ -24,17 +25,17 @@ namespace Library
 
 namespace Rendering
 {
-	class BlinnPhongMaterial;
+	class MultiplePointLightsMaterial;
 
-	class BlinnPhongDemo final : public Library::DrawableGameComponent
+	class MultiplePointLightsDemo final : public Library::DrawableGameComponent
 	{
 	public:
-		BlinnPhongDemo(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
-		BlinnPhongDemo(const BlinnPhongDemo&) = delete;
-		BlinnPhongDemo(BlinnPhongDemo&&) = default;
-		BlinnPhongDemo& operator=(const BlinnPhongDemo&) = default;		
-		BlinnPhongDemo& operator=(BlinnPhongDemo&&) = default;
-		~BlinnPhongDemo();
+		MultiplePointLightsDemo(Library::Game& game, const std::shared_ptr<Library::Camera>& camera);
+		MultiplePointLightsDemo(const MultiplePointLightsDemo&) = delete;
+		MultiplePointLightsDemo(MultiplePointLightsDemo&&) = default;
+		MultiplePointLightsDemo& operator=(const MultiplePointLightsDemo&) = default;		
+		MultiplePointLightsDemo& operator=(MultiplePointLightsDemo&&) = default;
+		~MultiplePointLightsDemo();
 
 		bool AnimationEnabled() const;
 		void SetAnimationEnabled(bool enabled);
@@ -43,12 +44,9 @@ namespace Rendering
 		float AmbientLightIntensity() const;
 		void SetAmbientLightIntensity(float intensity);
 
-		float DirectionalLightIntensity() const;
-		void SetDirectionalLightIntensity(float intensity);
-
-		const DirectX::XMFLOAT3& LightDirection() const;
-		void RotateDirectionalLight(const DirectX::XMFLOAT2& amount);
-
+		const std::array<Library::PointLight, 4>& PointLights() const;
+		void SetPointLight(const Library::PointLight& light, std::uint32_t index);
+		
 		float SpecularIntensity() const;
 		void SetSpecularIntensity(float intensity);
 
@@ -64,14 +62,13 @@ namespace Rendering
 
 		inline static const float RotationRate{ DirectX::XM_PI };
 
-		std::shared_ptr<BlinnPhongMaterial> mMaterial;
+		std::shared_ptr<MultiplePointLightsMaterial> mMaterial;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
-		Library::DirectionalLight mDirectionalLight;
-		std::unique_ptr<Library::ProxyModel> mProxyModel;
+		std::array<std::unique_ptr<Library::ProxyModel>, 4> mProxyModels;
 		float mModelRotationAngle{ 0.0f };
 		bool mAnimationEnabled{ true };
 		bool mUpdateMaterial{ true };

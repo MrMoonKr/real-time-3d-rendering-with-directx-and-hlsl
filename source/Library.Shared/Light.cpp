@@ -8,8 +8,8 @@ namespace Library
 {
 	RTTI_DEFINITIONS(Light)
 
-	Light::Light(Game& game) :
-		GameComponent(game), mColor(reinterpret_cast<const float*>(&Colors::White))
+	Light::Light() :
+		mColor(reinterpret_cast<const float*>(&Colors::White))
 	{
 	}
 

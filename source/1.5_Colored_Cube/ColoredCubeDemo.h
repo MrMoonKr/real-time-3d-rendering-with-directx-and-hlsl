@@ -31,9 +31,6 @@ namespace Rendering
 		struct CBufferPerObject
 		{
 			DirectX::XMFLOAT4X4 WorldViewProjection;
-
-			CBufferPerObject() = default;
-			CBufferPerObject(const DirectX::XMFLOAT4X4& wvp) : WorldViewProjection(wvp) { }
 		};
 
 		inline static const float RotationRate{ DirectX::XM_PI };
@@ -47,6 +44,8 @@ namespace Rendering
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer;		
 		std::uint32_t mIndexCount{ 0 };
+		float mRotationAngle{ 0.0f };
 		bool mAnimationEnabled{ true };
+		bool mUpdateConstantBuffer{ true };
 	};
 }
