@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TexturedModelDemo.h"
 #include "Utility.h"
-#include "FirstPersonCamera.h"
+#include "Camera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
@@ -71,13 +71,9 @@ namespace Rendering
 		const wstring textureName = L"Content\\Textures\\EarthComposite.dds"s;
 		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
 	
-		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
-		if (firstPersonCamera != nullptr)
-		{
-			firstPersonCamera->SetPositionUpdatedCallback([this]() {
-				mUpdateConstantBuffer = true;
-			});
-		}
+		auto updateConstantBufferFunc = [this]() { mUpdateConstantBuffer = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateConstantBufferFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateConstantBufferFunc);
 	}
 
 	void TexturedModelDemo::Update(const GameTime& gameTime)

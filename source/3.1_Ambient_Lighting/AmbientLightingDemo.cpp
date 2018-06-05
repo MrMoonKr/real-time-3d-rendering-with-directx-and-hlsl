@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "AmbientLightingDemo.h"
-#include "FirstPersonCamera.h"
+#include "Camera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
@@ -54,13 +54,9 @@ namespace Rendering
 		mMaterial = make_shared<AmbientLightingMaterial>(*mGame, texture);
 		mMaterial->Initialize();
 
-		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
-		if (firstPersonCamera != nullptr)
-		{
-			firstPersonCamera->SetPositionUpdatedCallback([this]() {
-				mUpdateMaterial = true;
-			});
-		}
+		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
 	}
 
 	void AmbientLightingDemo::Update(const GameTime& gameTime)

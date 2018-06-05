@@ -67,40 +67,50 @@ namespace Rendering
 			ImGui::Begin("Controls");
 			ImGui::SetNextWindowPos(ImVec2(10, 10));
 
-			stringstream fpsLabel;
-			fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
-			ImGui::Text(fpsLabel.str().c_str());
+			{
+				stringstream fpsLabel;
+				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+				ImGui::Text(fpsLabel.str().c_str());
+			}
 
 			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
 			ImGui::Text("Move Point Light (Num-Pad 8/2, 4/6, 3/9)");			
 
-			stringstream gridVisibleLabel;
-			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
-			ImGui::Text(gridVisibleLabel.str().c_str());
-
-			stringstream animationEnabledLabel;
-			animationEnabledLabel << "Toggle Animation (Space): " << (mPointLightDemo->AnimationEnabled() ? "Enabled" : "Disabled");
-			ImGui::Text(animationEnabledLabel.str().c_str());
-
-			stringstream ambientLightIntensityLabel;
-			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mPointLightDemo->AmbientLightIntensity();
-			ImGui::Text(ambientLightIntensityLabel.str().c_str());
-
-			stringstream pointLightIntensityLabel;
-			pointLightIntensityLabel << setprecision(2) << "Point Light Intensity (+Home/-End): " << mPointLightDemo->PointLightIntensity();
-			ImGui::Text(pointLightIntensityLabel.str().c_str());
-
-			stringstream specularIntensityLabel;
-			specularIntensityLabel << setprecision(2) << "Specular Intensity (+Insert/-Delete): " << mPointLightDemo->SpecularIntensity();
-			ImGui::Text(specularIntensityLabel.str().c_str());
-
-			stringstream specularPowerLabel;
-			specularPowerLabel << "Specular Power (+O/-P): " << mPointLightDemo->SpecularPower();
-			ImGui::Text(specularPowerLabel.str().c_str());
-
-			stringstream pointLightRadiusLabel;
-			pointLightRadiusLabel << "Point Light Radius (+B/-N): " << mPointLightDemo->LightRadius();
-			ImGui::Text(pointLightRadiusLabel.str().c_str());
+			{
+				stringstream gridVisibleLabel;
+				gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
+				ImGui::Text(gridVisibleLabel.str().c_str());
+			}
+			{
+				stringstream animationEnabledLabel;
+				animationEnabledLabel << "Toggle Animation (Space): " << (mPointLightDemo->AnimationEnabled() ? "Enabled" : "Disabled");
+				ImGui::Text(animationEnabledLabel.str().c_str());
+			}
+			{
+				stringstream ambientLightIntensityLabel;
+				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mPointLightDemo->AmbientLightIntensity();
+				ImGui::Text(ambientLightIntensityLabel.str().c_str());
+			}
+			{
+				stringstream pointLightIntensityLabel;
+				pointLightIntensityLabel << setprecision(2) << "Point Light Intensity (+Home/-End): " << mPointLightDemo->PointLightIntensity();
+				ImGui::Text(pointLightIntensityLabel.str().c_str());
+			}
+			{
+				stringstream specularIntensityLabel;
+				specularIntensityLabel << setprecision(2) << "Specular Intensity (+Insert/-Delete): " << mPointLightDemo->SpecularIntensity();
+				ImGui::Text(specularIntensityLabel.str().c_str());
+			}
+			{
+				stringstream specularPowerLabel;
+				specularPowerLabel << "Specular Power (+O/-P): " << mPointLightDemo->SpecularPower();
+				ImGui::Text(specularPowerLabel.str().c_str());
+			}
+			{
+				stringstream pointLightRadiusLabel;
+				pointLightRadiusLabel << "Point Light Radius (+B/-N): " << mPointLightDemo->LightRadius();
+				ImGui::Text(pointLightRadiusLabel.str().c_str());
+			}
 
 			ImGui::End();
 		});

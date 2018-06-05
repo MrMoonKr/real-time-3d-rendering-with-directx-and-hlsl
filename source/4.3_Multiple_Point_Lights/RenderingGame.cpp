@@ -122,7 +122,7 @@ namespace Rendering
 
 		Game::Initialize();
 		
-		camera->SetPosition(0.0f, 2.5f, 20.0f);		
+		camera->SetPosition(0.0f, 2.5f, 32.0f);		
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)

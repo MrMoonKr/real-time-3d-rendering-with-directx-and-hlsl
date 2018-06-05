@@ -28,12 +28,10 @@ namespace Library
 		~Skybox() = default;
 
 		virtual void Initialize() override;
-		virtual void Update(const GameTime& gameTime) override;
 		virtual void Draw(const GameTime& gameTime) override;
 
 	private:
 		void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
-		void UpdateMaterial();
 
 		std::wstring mCubeMapFileName;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ MatrixHelper::Identity };
@@ -42,6 +40,6 @@ namespace Library
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
 		std::uint32_t mIndexCount{ 0 };
-		DirectX::XMFLOAT3 mLastPosition;
+		bool mUpdateMaterial{ true };
 	};
 }

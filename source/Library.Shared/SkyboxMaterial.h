@@ -28,7 +28,7 @@ namespace Library
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
-		void UpdateConstantBuffer(DirectX::CXMMATRIX worldViewProjectionMatrix);
+		void UpdateTransforms(DirectX::CXMMATRIX worldViewProjectionMatrix);
 
 	private:
 		virtual void BeginDraw() override;

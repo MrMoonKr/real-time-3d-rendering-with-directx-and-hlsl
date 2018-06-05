@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "DiffuseLightingDemo.h"
-#include "FirstPersonCamera.h"
+#include "Camera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
@@ -94,13 +94,9 @@ namespace Rendering
 
 		mMaterial->SetLightDirection(mDirectionalLight.DirectionToLight());
 
-		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
-		if (firstPersonCamera != nullptr)
-		{
-			firstPersonCamera->SetPositionUpdatedCallback([this]() {
-				mUpdateMaterial = true;
-			});
-		}
+		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
 	}
 
 	void DiffuseLightingDemo::Update(const GameTime& gameTime)

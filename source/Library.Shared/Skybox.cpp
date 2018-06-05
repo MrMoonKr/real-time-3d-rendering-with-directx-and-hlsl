@@ -2,7 +2,7 @@
 #include "Skybox.h"
 #include "Game.h"
 #include "GameException.h"
-#include "Camera.h"
+#include "FirstPersonCamera.h"
 #include "..\Library.Shared\Model.h"
 #include "..\Library.Shared\Mesh.h"
 #include "SkyboxMaterial.h"
@@ -36,23 +36,30 @@ namespace Library
 		mMaterial = make_shared<SkyboxMaterial>(*mGame, textureCube);
 		mMaterial->Initialize();
 
-		using namespace std::placeholders;
-		mMaterial->SetUpdateMaterialCallback(bind(&Skybox::UpdateMaterial, this));
-	}
+		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
 
-	void Skybox::Update(const GameTime&)
-	{		
-		const XMFLOAT3& currentPosition = mCamera->Position();
-		if (Vector3Helper::Equals(mLastPosition, currentPosition) == false)
+		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
+		if (firstPersonCamera != nullptr)
 		{
-			XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(mScale, mScale, mScale) * XMMatrixTranslation(currentPosition.x, currentPosition.y, currentPosition.z));
+			firstPersonCamera->AddPositionUpdatedCallback([this]() {
+				const XMFLOAT3& currentPosition = mCamera->Position();
+				XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(mScale, mScale, mScale) * XMMatrixTranslation(currentPosition.x, currentPosition.y, currentPosition.z));
+			});
 		}
-
-		mLastPosition = currentPosition;
 	}
-
+	
 	void Skybox::Draw(const GameTime&)
 	{
+		if (mUpdateMaterial)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+			mMaterial->UpdateTransforms(wvp);
+			mUpdateMaterial = false;
+		}
+
 		mMaterial->DrawIndexed(mVertexBuffer.Get(), mIndexBuffer.Get(), mIndexCount);
 	}
 
@@ -68,7 +75,7 @@ namespace Library
 		{
 			const XMFLOAT3& position = sourceVertices.at(i);
 			const XMFLOAT3& uv = textureCoordinates.at(i);
-			vertices.push_back(VertexPositionTexture(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y)));
+			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y));
 		}
 
 		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
@@ -79,12 +86,5 @@ namespace Library
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
-	}
-
-	void Skybox::UpdateMaterial()
-	{
-		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateConstantBuffer(wvp);
 	}
 }

@@ -77,8 +77,8 @@ namespace Library
 		mGame->Direct3DDeviceContext()->RSSetState(nullptr);
 	}
 
-	void SkyboxMaterial::UpdateConstantBuffer(CXMMATRIX worldViewProjectionMatrix)
+	void SkyboxMaterial::UpdateTransforms(CXMMATRIX worldViewProjectionMatrix)
 	{
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, reinterpret_cast<const float*>(worldViewProjectionMatrix.r), 0, 0);
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mConstantBuffer.Get(), 0, nullptr, worldViewProjectionMatrix.r, 0, 0);
 	}
 }

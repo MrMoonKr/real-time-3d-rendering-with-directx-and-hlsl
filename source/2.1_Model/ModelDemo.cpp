@@ -2,7 +2,7 @@
 #include "ModelDemo.h"
 #include "Utility.h"
 #include "ColorHelper.h"
-#include "FirstPersonCamera.h"
+#include "Camera.h"
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
@@ -66,13 +66,9 @@ namespace Rendering
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 	
-		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
-		if (firstPersonCamera != nullptr)
-		{
-			firstPersonCamera->SetPositionUpdatedCallback([this]() {
-				mUpdateConstantBuffer = true;
-			});
-		}
+		auto updateConstantBufferFunc = [this]() { mUpdateConstantBuffer = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateConstantBufferFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateConstantBufferFunc);
 	}
 
 	void ModelDemo::Update(const GameTime & gameTime)

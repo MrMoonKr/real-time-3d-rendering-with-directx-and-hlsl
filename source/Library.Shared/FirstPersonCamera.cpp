@@ -62,41 +62,32 @@ namespace Library
         return mMovementRate;
     }
 
-	function<void()> FirstPersonCamera::PositionUpdatedCallback() const
+	const vector<function<void()>>& FirstPersonCamera::PositionUpdatedCallbacks() const
 	{
-		return mPositionUpdatedCallback;
+		return mPositionUpdatedCallbacks;
 	}
 
-	void FirstPersonCamera::SetPositionUpdatedCallback(function<void()> callback)
+	void FirstPersonCamera::AddPositionUpdatedCallback(function<void()> callback)
 	{
-		mPositionUpdatedCallback = callback;
+		mPositionUpdatedCallbacks.push_back(callback);
 	}
 
 	void FirstPersonCamera::SetPosition(float x, float y, float z)
 	{
 		Camera::SetPosition(x, y, z);
-		if (mPositionUpdatedCallback != nullptr)
-		{
-			mPositionUpdatedCallback();
-		}
+		InvokePositionUpdatedCallbacks();
 	}
 
 	void FirstPersonCamera::SetPosition(FXMVECTOR position)
 	{
 		Camera::SetPosition(position);
-		if (mPositionUpdatedCallback != nullptr)
-		{
-			mPositionUpdatedCallback();
-		}
+		InvokePositionUpdatedCallbacks();
 	}
 
 	void FirstPersonCamera::SetPosition(const XMFLOAT3& position)
 	{
 		Camera::SetPosition(position);
-		if (mPositionUpdatedCallback != nullptr)
-		{
-			mPositionUpdatedCallback();
-		}		
+		InvokePositionUpdatedCallbacks();
 	}
 
 	void FirstPersonCamera::Initialize()
@@ -191,9 +182,14 @@ namespace Library
 
 		XMStoreFloat3(&mPosition, position);
 
-		if (mPositionUpdatedCallback != nullptr)
+		InvokePositionUpdatedCallbacks();
+	}
+
+	inline void FirstPersonCamera::InvokePositionUpdatedCallbacks()
+	{
+		for (auto& callback : mPositionUpdatedCallbacks)
 		{
-			mPositionUpdatedCallback();
+			callback();
 		}
 	}
 }

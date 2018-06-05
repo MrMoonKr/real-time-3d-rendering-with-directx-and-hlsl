@@ -140,9 +140,8 @@ namespace Rendering
 		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
 		if (firstPersonCamera != nullptr)
 		{
-			firstPersonCamera->SetPositionUpdatedCallback([this]() {
+			firstPersonCamera->AddPositionUpdatedCallback([this]() {
 				mMaterial->UpdateCameraPosition(mCamera->Position());
-				mUpdateMaterial = true;
 			});
 		}
 

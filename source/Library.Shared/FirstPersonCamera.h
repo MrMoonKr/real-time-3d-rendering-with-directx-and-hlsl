@@ -3,6 +3,7 @@
 #include "PerspectiveCamera.h"
 #include "GamePadComponent.h"
 #include <functional>
+#include <vector>
 
 namespace Library
 {	
@@ -34,8 +35,8 @@ namespace Library
         float& RotationRate();
         float& MovementRate();
         
-		std::function<void()> PositionUpdatedCallback() const;
-		void SetPositionUpdatedCallback(std::function<void()> callback);
+		const std::vector<std::function<void()>>& PositionUpdatedCallbacks() const;
+		void AddPositionUpdatedCallback(std::function<void()> callback);
 
 		virtual void SetPosition(float x, float y, float z) override;
 		virtual void SetPosition(DirectX::FXMVECTOR position) override;
@@ -50,6 +51,7 @@ namespace Library
 
 	private:
 		void UpdatePosition(const DirectX::XMFLOAT2& movementAmount, const DirectX::XMFLOAT2& rotationAmount, const GameTime& gameTime);
+		void InvokePositionUpdatedCallbacks();
 		
 		inline bool IsGamePadConnected(DirectX::GamePad::State& gamePadState)
 		{
@@ -69,6 +71,6 @@ namespace Library
 		float mMouseSensitivity{ DefaultMouseSensitivity };
 		float mRotationRate{ DefaultRotationRate };
         float mMovementRate{ DefaultMovementRate };
-		std::function<void()> mPositionUpdatedCallback;
+		std::vector<std::function<void()>> mPositionUpdatedCallbacks;
     };
 }
