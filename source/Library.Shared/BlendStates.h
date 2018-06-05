@@ -12,8 +12,8 @@ namespace Library
 	class BlendStates final
 	{
 	public:
-		static Microsoft::WRL::ComPtr<ID3D11BlendState> AlphaBlending;
-		static Microsoft::WRL::ComPtr<ID3D11BlendState> MultiplicativeBlending;
+		inline static Microsoft::WRL::ComPtr<ID3D11BlendState> AlphaBlending;
+		inline static Microsoft::WRL::ComPtr<ID3D11BlendState> MultiplicativeBlending;
 
 		static void Initialize(gsl::not_null<ID3D11Device*> direct3DDevice);
 		static void Shutdown();

@@ -12,6 +12,7 @@
 #include <array>
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
+#include "PointLight.h"
 
 namespace Library
 {
@@ -45,8 +46,13 @@ namespace Rendering
 		void SetAmbientLightIntensity(float intensity);
 
 		const std::array<Library::PointLight, 4>& PointLights() const;
-		void SetPointLight(const Library::PointLight& light, std::uint32_t index);
-		
+		void SetPointLight(const Library::PointLight& light, size_t index);
+				
+		const size_t SelectedLightIndex() const;
+		const Library::PointLight& SelectedLight() const;
+		void UpdateSelectedLight(const Library::PointLight& light);
+		void SelectLight(size_t index);
+
 		float SpecularIntensity() const;
 		void SetSpecularIntensity(float intensity);
 
@@ -69,6 +75,7 @@ namespace Rendering
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
 		std::array<std::unique_ptr<Library::ProxyModel>, 4> mProxyModels;
+		size_t mSelectedLightIndex{ 0 };
 		float mModelRotationAngle{ 0.0f };
 		bool mAnimationEnabled{ true };
 		bool mUpdateMaterial{ true };

@@ -478,5 +478,8 @@
     <None Include="$(MSBuildThisFileDirectory)StopWatch.inl">
       <Filter>Misc</Filter>
     </None>
+    <None Include="$(MSBuildThisFileDirectory)Light.inl">
+      <Filter>Lights</Filter>
+    </None>
   </ItemGroup>
 </Project>

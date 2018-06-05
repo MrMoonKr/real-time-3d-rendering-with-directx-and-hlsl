@@ -34,6 +34,7 @@ namespace Library
 		static const DirectX::XMFLOAT3 Left;
 
 		static std::string ToString(const DirectX::XMFLOAT3& vector);
+		static DirectX::XMFLOAT3 ToFloat3(const DirectX::XMFLOAT4& vector);
 		static bool Equals(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs);
 
 		Vector3Helper() = delete;

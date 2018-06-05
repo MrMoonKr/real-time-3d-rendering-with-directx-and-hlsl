@@ -130,7 +130,7 @@ namespace Rendering
 			{
 				const XMFLOAT3& position = sourceVertices.at(i);
 				const XMFLOAT4& color = vertexColors.at(i);
-				vertices.push_back(VertexPositionColor(XMFLOAT4(position.x, position.y, position.z, 1.0f), color));
+				vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
 			}
 		}
 		else
@@ -139,7 +139,7 @@ namespace Rendering
 			{
 				const XMFLOAT3& position = sourceVertices.at(i);
 				XMFLOAT4 color = ColorHelper::RandomColor();
-				vertices.push_back(VertexPositionColor(XMFLOAT4(position.x, position.y, position.z, 1.0f), color));
+				vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), color);
 			}
 		}
 

@@ -16,14 +16,18 @@ namespace Library
 		BasicMaterial& operator=(BasicMaterial&&) = default;
 		virtual ~BasicMaterial() = default;
 
+		void SetSurfaceColor(const DirectX::XMFLOAT4& color);
+
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
-		void UpdateConstantBuffer(DirectX::CXMMATRIX worldViewProjectionMatrix);
+		void UpdateTransform(DirectX::CXMMATRIX worldViewProjectionMatrix);
 
 	private:
 		virtual void BeginDraw() override;
+		void SetSurfaceColor(const float* color);
 
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> mVSConstantBuffer;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> mPSConstantBuffer;
 	};
 }

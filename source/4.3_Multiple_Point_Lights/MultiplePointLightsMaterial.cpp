@@ -69,9 +69,10 @@ namespace Rendering
 		return mLights;
 	}
 
-	void MultiplePointLightsMaterial::SetPointLight(const PointLight& light, uint32_t index)
+	void MultiplePointLightsMaterial::SetPointLight(const PointLight& light, size_t index)
 	{
 		assert(index < mLights.size());
+		mLights[index] = light;
 
 		auto& vsLightToSet = mVertexCBufferPerFrameData.Lights[index];
 		vsLightToSet.Position = light.Position();
@@ -80,19 +81,8 @@ namespace Rendering
 
 		auto& psLightToSet = mPixelCBufferPerFrameData.Lights[index];
 		psLightToSet.Position = light.Position();
-		psLightToSet.Color = ColorHelper::ToFloat3(light.Color(), true);
+		psLightToSet.Color = Vector3Helper::ToFloat3(light.Color());
 		mPixelCBufferPerFrameDataDirty = true;
-	}
-
-	const DirectX::XMFLOAT3& MultiplePointLightsMaterial::SpecularColor() const
-	{
-		return mPixelCBufferPerObjectData.SpecularColor;
-	}
-
-	void MultiplePointLightsMaterial::SetSpecularColor(const DirectX::XMFLOAT3& color)
-	{
-		mPixelCBufferPerObjectData.SpecularColor = color;
-		mPixelCBufferPerObjectDataDirty = true;
 	}
 
 	const float MultiplePointLightsMaterial::SpecularPower() const

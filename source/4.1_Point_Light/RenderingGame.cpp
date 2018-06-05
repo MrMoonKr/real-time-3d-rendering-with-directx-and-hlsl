@@ -265,8 +265,7 @@ namespace Rendering
 			float radius = mPointLightDemo->LightRadius() + LightModulationRate * elapsedTime;
 			mPointLightDemo->SetLightRadius(radius);
 		}
-
-		if (mKeyboard->IsKeyDown(Keys::N))
+		else if (mKeyboard->IsKeyDown(Keys::N))
 		{
 			float radius = mPointLightDemo->LightRadius() - LightModulationRate * elapsedTime;
 			radius = max(radius, 0.0f);

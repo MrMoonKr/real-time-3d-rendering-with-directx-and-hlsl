@@ -2,6 +2,7 @@
 
 #include "GameComponent.h"
 #include <DirectXMath.h>
+#include <vector>
 #include <functional>
 
 namespace Library
@@ -37,11 +38,11 @@ namespace Library
 		DirectX::XMMATRIX ProjectionMatrix() const;
 		DirectX::XMMATRIX ViewProjectionMatrix() const;
 
-		std::function<void()> ViewMatrixUpdatedCallback() const;
-		void SetViewMatrixUpdatedCallback(std::function<void()> callback);
+		const std::vector<std::function<void()>>& ViewMatrixUpdatedCallbacks() const;
+		void AddViewMatrixUpdatedCallback(std::function<void()> callback);
 
-		std::function<void()> ProjectionMatrixUpdatedCallback() const;
-		void SetProjectionMatrixUpdatedCallback(std::function<void()> callback);
+		const std::vector<std::function<void()>>& ProjectionMatrixUpdatedCallbacks() const;
+		void AddProjectionMatrixUpdatedCallback(std::function<void()> callback);
 
 		virtual void SetPosition(float x, float y, float z);
 		virtual void SetPosition(DirectX::FXMVECTOR position);
@@ -73,7 +74,7 @@ namespace Library
 		bool mViewMatrixDataDirty{ true };
 		bool mProjectionMatrixDataDirty{ true };
 
-		std::function<void()> mViewMatrixUpdatedCallback;
-		std::function<void()> mProjectionMatrixUpdatedCallback;
+		std::vector<std::function<void()>> mViewMatrixUpdatedCallbacks;
+		std::vector<std::function<void()>> mProjectionMatrixUpdatedCallbacks;
 	};
 }

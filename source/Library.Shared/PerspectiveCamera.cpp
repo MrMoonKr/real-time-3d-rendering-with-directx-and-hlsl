@@ -42,9 +42,9 @@ namespace Library
 			XMMATRIX projectionMatrix = XMMatrixPerspectiveFovRH(mFieldOfView, mAspectRatio, mNearPlaneDistance, mFarPlaneDistance);
 			XMStoreFloat4x4(&mProjectionMatrix, projectionMatrix);
 
-			if (mProjectionMatrixUpdatedCallback != nullptr)
+			for (auto& callback : mProjectionMatrixUpdatedCallbacks)
 			{
-				mProjectionMatrixUpdatedCallback();
+				callback();
 			}
 		}
     }

@@ -36,6 +36,11 @@ namespace Library
 		return stream.str();
 	}
 
+	XMFLOAT3 Vector3Helper::ToFloat3(const XMFLOAT4& vector)
+	{
+		return XMFLOAT3(vector.x, vector.y, vector.z);
+	}
+
 	const XMFLOAT4 Vector4Helper::Zero = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	const XMFLOAT4 Vector4Helper::One = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 

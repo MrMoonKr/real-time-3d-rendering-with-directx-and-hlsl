@@ -83,24 +83,24 @@ namespace Library
 		return XMMatrixMultiply(viewMatrix, projectionMatrix);
 	}
 
-	function<void()> Camera::ViewMatrixUpdatedCallback() const
+	const vector<function<void()>>& Camera::ViewMatrixUpdatedCallbacks() const
 	{
-		return mViewMatrixUpdatedCallback;
+		return mViewMatrixUpdatedCallbacks;
 	}
 
-	void Camera::SetViewMatrixUpdatedCallback(function<void()> callback)
+	void Camera::AddViewMatrixUpdatedCallback(function<void()> callback)
 	{
-		mViewMatrixUpdatedCallback = callback;
+		mViewMatrixUpdatedCallbacks.push_back(callback);
 	}
 
-	function<void()> Camera::ProjectionMatrixUpdatedCallback() const
+	const vector<function<void()>>& Camera::ProjectionMatrixUpdatedCallbacks() const
 	{
-		return mProjectionMatrixUpdatedCallback;
+		return mProjectionMatrixUpdatedCallbacks;
 	}
 
-	void Camera::SetProjectionMatrixUpdatedCallback(function<void()> callback)
+	void Camera::AddProjectionMatrixUpdatedCallback(function<void()> callback)
 	{
-		mProjectionMatrixUpdatedCallback = callback;
+		mProjectionMatrixUpdatedCallbacks.push_back(callback);
 	}
 
 	void Camera::SetPosition(float x, float y, float z)
@@ -155,9 +155,9 @@ namespace Library
 		XMMATRIX viewMatrix = XMMatrixLookToRH(eyePosition, direction, upDirection);
 		XMStoreFloat4x4(&mViewMatrix, viewMatrix);
 
-		if (mViewMatrixUpdatedCallback != nullptr)
+		for (auto& callback : mViewMatrixUpdatedCallbacks)
 		{
-			mViewMatrixUpdatedCallback();
+			callback();
 		}
 
 		mViewMatrixDataDirty = false;

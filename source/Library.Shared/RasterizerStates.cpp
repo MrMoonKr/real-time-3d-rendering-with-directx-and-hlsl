@@ -4,11 +4,6 @@
 
 namespace Library
 {
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> RasterizerStates::BackCulling;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> RasterizerStates::FrontCulling;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> RasterizerStates::DisabledCulling;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> RasterizerStates::Wireframe;
-
 	void RasterizerStates::Initialize(gsl::not_null<ID3D11Device*> direct3DDevice)
 	{
 		D3D11_RASTERIZER_DESC rasterizerStateDesc;

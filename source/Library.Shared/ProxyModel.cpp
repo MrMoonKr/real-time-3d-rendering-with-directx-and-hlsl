@@ -112,6 +112,11 @@ namespace Library
 		ApplyRotation(transformMatrix);
 	}
 
+	void ProxyModel::SetColor(const DirectX::XMFLOAT4& color)
+	{
+		mMaterial->SetSurfaceColor(color);
+	}
+
 	void ProxyModel::Initialize()
 	{
 		const auto model = mGame->Content().Load<Model>(Utility::ToWideString(mModelFileName));
@@ -154,32 +159,16 @@ namespace Library
 	{
 		const std::vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 
-		std::vector<VertexPositionColor> vertices;
+		std::vector<VertexPosition> vertices;
 		vertices.reserve(sourceVertices.size());
-		if (mesh.VertexColors().size() > 0)
+		for (size_t i = 0; i < sourceVertices.size(); i++)
 		{
-			const std::vector<XMFLOAT4>& vertexColors = mesh.VertexColors().at(0);
-			assert(vertexColors.size() == sourceVertices.size());
-
-			for (size_t i = 0; i < sourceVertices.size(); i++)
-			{
-				const XMFLOAT3& position = sourceVertices.at(i);
-				const XMFLOAT4& color = vertexColors.at(i);
-				vertices.push_back(VertexPositionColor(XMFLOAT4(position.x, position.y, position.z, 1.0f), color));
-			}
-		}
-		else
-		{
-			XMFLOAT4 color = XMFLOAT4(reinterpret_cast<const float*>(&Colors::White));
-			for (size_t i = 0; i < sourceVertices.size(); i++)
-			{
-				const XMFLOAT3& position = sourceVertices.at(i);
-				vertices.push_back(VertexPositionColor(XMFLOAT4(position.x, position.y, position.z, 1.0f), color));
-			}
+			const XMFLOAT3& position = sourceVertices.at(i);
+			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f));
 		}
 
 		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionColor) * vertices.size());
+		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPosition) * vertices.size());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -192,6 +181,6 @@ namespace Library
 	{
 		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
 		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateConstantBuffer(wvp);
+		mMaterial->UpdateTransform(wvp);
 	}
 }

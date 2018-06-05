@@ -175,8 +175,8 @@ namespace Rendering
 		}
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
-		mCamera->SetViewMatrixUpdatedCallback(updateMaterialFunc);
-		mCamera->SetProjectionMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
 
 		XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(10.0f, 10.0f, 10.0f));
 	}

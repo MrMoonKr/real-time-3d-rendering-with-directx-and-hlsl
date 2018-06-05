@@ -48,9 +48,9 @@ namespace Library
 			XMMATRIX projectionMatrix = XMMatrixOrthographicRH(mViewWidth, mViewHeight, mNearPlaneDistance, mFarPlaneDistance);
 			XMStoreFloat4x4(&mProjectionMatrix, projectionMatrix);
 
-			if (mProjectionMatrixUpdatedCallback != nullptr)
+			for (auto& callback : mProjectionMatrixUpdatedCallbacks)
 			{
-				mProjectionMatrixUpdatedCallback();
+				callback();
 			}
 		}
     }

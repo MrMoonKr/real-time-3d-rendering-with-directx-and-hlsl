@@ -41,10 +41,7 @@ namespace Rendering
 		void SetAmbientColor(const DirectX::XMFLOAT4& color);
 
 		const std::array<Library::PointLight, 4>& PointLights() const;
-		void SetPointLight(const Library::PointLight& light, std::uint32_t index);
-
-		const DirectX::XMFLOAT3& SpecularColor() const;
-		void SetSpecularColor(const DirectX::XMFLOAT3& color);
+		void SetPointLight(const Library::PointLight& light, size_t index);
 
 		const float SpecularPower() const;
 		void SetSpecularPower(float power);
@@ -90,9 +87,9 @@ namespace Rendering
 		};
 
 		struct PixelCBufferPerObject
-		{
-			DirectX::XMFLOAT3 SpecularColor{ 1.0f, 1.0f, 1.0f };
+		{			
 			float SpecularPower{ 128.0f };
+			DirectX::XMFLOAT3 Padding;
 		};
 
 		virtual void BeginDraw() override;

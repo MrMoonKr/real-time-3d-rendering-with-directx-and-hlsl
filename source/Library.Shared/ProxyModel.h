@@ -47,6 +47,8 @@ namespace Library
 		void ApplyRotation(DirectX::CXMMATRIX transform);
 		void ApplyRotation(const DirectX::XMFLOAT4X4& transform);
 
+		void SetColor(const DirectX::XMFLOAT4& color);
+
 		virtual void Initialize() override;
 		virtual void Update(const GameTime& gameTime) override;		
 		virtual void Draw(const GameTime& gameTime) override;

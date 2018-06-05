@@ -13,17 +13,17 @@ namespace Library
 	class SamplerStates final
 	{
 	public:
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinearWrap;
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinearMirror;
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinearClamp;
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinerBorder;
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> PointClamp;
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> DepthMap;
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> ShadowMap;
-		static Microsoft::WRL::ComPtr<ID3D11SamplerState> PcfShadowMap;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinearWrap;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinearMirror;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinearClamp;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> TrilinerBorder;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> PointClamp;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> DepthMap;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> ShadowMap;
+		inline static Microsoft::WRL::ComPtr<ID3D11SamplerState> PcfShadowMap;
 
-		static DirectX::XMVECTORF32 BorderColor;
-		static DirectX::XMVECTORF32 ShadowMapBorderColor;
+		inline static DirectX::XMVECTORF32 SamplerStates::BorderColor{ 0.0f, 0.0f, 0.0f, 1.0f };
+		inline static DirectX::XMVECTORF32 SamplerStates::ShadowMapBorderColor{ DirectX::Colors::White };
 
 		static void Initialize(gsl::not_null<ID3D11Device*> direct3DDevice);
 		static void Shutdown();

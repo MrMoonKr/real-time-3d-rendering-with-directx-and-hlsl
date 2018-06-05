@@ -67,40 +67,50 @@ namespace Rendering
 			ImGui::Begin("Controls");
 			ImGui::SetNextWindowPos(ImVec2(10, 10));
 
-			stringstream fpsLabel;
-			fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
-			ImGui::Text(fpsLabel.str().c_str());
+			{
+				stringstream fpsLabel;
+				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+				ImGui::Text(fpsLabel.str().c_str());
+			}
 
 			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
-			ImGui::Text("Move Point Light (Num-Pad 8/2, 4/6, 3/9)");			
+			ImGui::Text("Move Point Light (Num-Pad 8/2, 4/6, 3/9)");
 
-			stringstream gridVisibleLabel;
-			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
-			ImGui::Text(gridVisibleLabel.str().c_str());
-
-			stringstream animationEnabledLabel;
-			animationEnabledLabel << "Toggle Animation (Space): " << (mMultiplePointLightsDemo->AnimationEnabled() ? "Enabled" : "Disabled");
-			ImGui::Text(animationEnabledLabel.str().c_str());
-
-			stringstream ambientLightIntensityLabel;
-			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mMultiplePointLightsDemo->AmbientLightIntensity();
-			ImGui::Text(ambientLightIntensityLabel.str().c_str());
-
-			//stringstream directionalLightIntensityLabel;
-			//directionalLightIntensityLabel << setprecision(2) << "Point Light Intensity (+Home/-End): " << mMultiplePointLightsDemo->PointLightIntensity();
-			//ImGui::Text(directionalLightIntensityLabel.str().c_str());
-
-			stringstream specularIntensityLabel;
-			specularIntensityLabel << setprecision(2) << "Specular Intensity (+Insert/-Delete): " << mMultiplePointLightsDemo->SpecularIntensity();
-			ImGui::Text(specularIntensityLabel.str().c_str());
-
-			stringstream specularPowerLabel;
-			specularPowerLabel << "Specular Power (+O/-P): " << mMultiplePointLightsDemo->SpecularPower();
-			ImGui::Text(specularPowerLabel.str().c_str());
-
-			//stringstream pointLightRadiusLabel;
-			//pointLightRadiusLabel << "Point Light Radius (+B/-N): " << mMultiplePointLightsDemo->LightRadius();
-			//ImGui::Text(pointLightRadiusLabel.str().c_str());
+			{
+				stringstream gridVisibleLabel;
+				gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
+				ImGui::Text(gridVisibleLabel.str().c_str());
+			}
+			{
+				stringstream animationEnabledLabel;
+				animationEnabledLabel << "Toggle Animation (Space): " << (mMultiplePointLightsDemo->AnimationEnabled() ? "Enabled" : "Disabled");
+				ImGui::Text(animationEnabledLabel.str().c_str());
+			}
+			{
+				stringstream ambientLightIntensityLabel;
+				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mMultiplePointLightsDemo->AmbientLightIntensity();
+				ImGui::Text(ambientLightIntensityLabel.str().c_str());
+			}
+			{
+				stringstream selectedLightLabel;
+				selectedLightLabel << "Selected Point Light (+Tab/-Shift-Tab): " << mMultiplePointLightsDemo->SelectedLightIndex();
+				ImGui::Text(selectedLightLabel.str().c_str());
+			}
+			{
+				stringstream lightIntensityLabel;
+				lightIntensityLabel << setprecision(2) << "Point Light Intensity (+Home/-End): " << mMultiplePointLightsDemo->SelectedLight().Color().x;
+				ImGui::Text(lightIntensityLabel.str().c_str());
+			}
+			{
+				stringstream pointLightRadiusLabel;
+				pointLightRadiusLabel << "Point Light Radius (+B/-N): " << mMultiplePointLightsDemo->SelectedLight().Radius();
+				ImGui::Text(pointLightRadiusLabel.str().c_str());
+			}
+			{
+				stringstream specularPowerLabel;
+				specularPowerLabel << "Specular Power (+O/-P): " << mMultiplePointLightsDemo->SpecularPower();
+				ImGui::Text(specularPowerLabel.str().c_str());
+			}			
 
 			ImGui::End();
 		});
@@ -112,10 +122,7 @@ namespace Rendering
 
 		Game::Initialize();
 		
-		camera->SetPosition(0.0f, 2.5f, 20.0f);
-		mAmbientLightIntensity = mMultiplePointLightsDemo->AmbientLightIntensity();
-		mSpecularIntensity = mMultiplePointLightsDemo->SpecularIntensity();
-		mSpecularPower = mMultiplePointLightsDemo->SpecularPower();
+		camera->SetPosition(0.0f, 2.5f, 20.0f);		
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -146,8 +153,9 @@ namespace Rendering
 		}
 
 		UpdateAmbientLightIntensity(gameTime);
+		UpdateSelectedPointLight();
 		UpdatePointLight(gameTime);
-		UpdateSpecularLight(gameTime);
+		UpdateSpecularPower(gameTime);
 
 		Game::Update(gameTime);
 	}
@@ -186,123 +194,141 @@ namespace Rendering
 
 	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
 	{
-		if (mKeyboard->IsKeyDown(Keys::PageUp) && mAmbientLightIntensity < 1.0f)
+		auto lightIntensity = mMultiplePointLightsDemo->AmbientLightIntensity();
+		if (mKeyboard->IsKeyDown(Keys::PageUp) && lightIntensity < 1.0f)
 		{
-			mAmbientLightIntensity += gameTime.ElapsedGameTimeSeconds().count();
-			mAmbientLightIntensity = min(mAmbientLightIntensity, 1.0f);
-			mMultiplePointLightsDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
+			lightIntensity += gameTime.ElapsedGameTimeSeconds().count();
+			lightIntensity = min(lightIntensity, 1.0f);
+			mMultiplePointLightsDemo->SetAmbientLightIntensity(lightIntensity);
 		}
-		else if (mKeyboard->IsKeyDown(Keys::PageDown) && mAmbientLightIntensity > 0.0f)
+		else if (mKeyboard->IsKeyDown(Keys::PageDown) && lightIntensity > 0.0f)
 		{
-			mAmbientLightIntensity -= gameTime.ElapsedGameTimeSeconds().count();
-			mAmbientLightIntensity = max(mAmbientLightIntensity, 0.0f);
-			mMultiplePointLightsDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
+			lightIntensity -= gameTime.ElapsedGameTimeSeconds().count();
+			lightIntensity = max(lightIntensity, 0.0f);
+			mMultiplePointLightsDemo->SetAmbientLightIntensity(lightIntensity);
 		}
 	}
 
 	void RenderingGame::UpdatePointLight(const GameTime& gameTime)
 	{
 		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
-		elapsedTime;
+		PointLight selectedLight = mMultiplePointLightsDemo->SelectedLight();
+		bool updateSelectedLight = false;
 
-		//// Update light intensity
-		//if (mKeyboard->IsKeyDown(Keys::Home) && mPointLightIntensity < 1.0f)
-		//{
-		//	mPointLightIntensity += elapsedTime;
-		//	mPointLightIntensity = min(mPointLightIntensity, 1.0f);
-		//	mMultiplePointLightsDemo->SetPointLightIntensity(mPointLightIntensity);
-		//}
-		//else if (mKeyboard->IsKeyDown(Keys::End) && mPointLightIntensity > 0.0f)
-		//{
-		//	mPointLightIntensity -= elapsedTime;
-		//	mPointLightIntensity = max(mPointLightIntensity, 0.0f);
-		//	mMultiplePointLightsDemo->SetPointLightIntensity(mPointLightIntensity);
-		//}
+		// Update light intensity
+		auto lightIntensity = selectedLight.Color().x;
+		if (mKeyboard->IsKeyDown(Keys::Home) && lightIntensity < 1.0f)
+		{		
+			lightIntensity += elapsedTime;
+			lightIntensity = min(lightIntensity, 1.0f);
+			selectedLight.SetColor(lightIntensity, lightIntensity, lightIntensity, 1.0f);
+			updateSelectedLight = true;
+		}
+		else if (mKeyboard->IsKeyDown(Keys::End) && lightIntensity > 0.0f)
+		{
+			lightIntensity -= elapsedTime;
+			lightIntensity = max(lightIntensity, 0.0f);
+			selectedLight.SetColor(lightIntensity, lightIntensity, lightIntensity, 1.0f);
+			updateSelectedLight = true;
+		}
 
-		//// Move light
-		//XMFLOAT3 movementAmount = Vector3Helper::Zero;
-		//if (mKeyboard->IsKeyDown(Keys::NumPad4))
-		//{
-		//	movementAmount.x = -1.0f;
-		//}
+		// Move light
+		XMFLOAT3 movementAmount = Vector3Helper::Zero;
+		if (mKeyboard->IsKeyDown(Keys::NumPad4))
+		{
+			movementAmount.x = -1.0f;
+		}
 
-		//if (mKeyboard->IsKeyDown(Keys::NumPad6))
-		//{
-		//	movementAmount.x = 1.0f;
-		//}
+		if (mKeyboard->IsKeyDown(Keys::NumPad6))
+		{
+			movementAmount.x = 1.0f;
+		}
 
-		//if (mKeyboard->IsKeyDown(Keys::NumPad9))
-		//{
-		//	movementAmount.y = 1.0f;
-		//}
+		if (mKeyboard->IsKeyDown(Keys::NumPad9))
+		{
+			movementAmount.y = 1.0f;
+		}
 
-		//if (mKeyboard->IsKeyDown(Keys::NumPad3))
-		//{
-		//	movementAmount.y = -1.0f;
-		//}
+		if (mKeyboard->IsKeyDown(Keys::NumPad3))
+		{
+			movementAmount.y = -1.0f;
+		}
 
-		//if (mKeyboard->IsKeyDown(Keys::NumPad8))
-		//{
-		//	movementAmount.z = -1.0f;
-		//}
+		if (mKeyboard->IsKeyDown(Keys::NumPad8))
+		{
+			movementAmount.z = -1.0f;
+		}
 
-		//if (mKeyboard->IsKeyDown(Keys::NumPad2))
-		//{
-		//	movementAmount.z = 1.0f;
-		//}
+		if (mKeyboard->IsKeyDown(Keys::NumPad2))
+		{
+			movementAmount.z = 1.0f;
+		}
 
-		//const float LightMovementRate = 10.0f;
-		//const float LightModulationRate = static_cast<float>(numeric_limits<uint8_t>::max());
-		//if (movementAmount.x != 0.0f || movementAmount.y != 0.0f || movementAmount.z != 0.0f)
-		//{
-		//	XMVECTOR movement = XMLoadFloat3(&movementAmount) * LightMovementRate * elapsedTime;
-		//	mMultiplePointLightsDemo->SetLightPosition(mMultiplePointLightsDemo->LightPositionVector() + movement);
-		//}
+		const float LightMovementRate = 10.0f;
+		const float LightModulationRate = static_cast<float>(numeric_limits<uint8_t>::max());
+		if (movementAmount.x != 0.0f || movementAmount.y != 0.0f || movementAmount.z != 0.0f)
+		{
+			XMVECTOR movement = XMLoadFloat3(&movementAmount) * LightMovementRate * elapsedTime;
+			selectedLight.SetPosition(selectedLight.PositionVector() + movement);
+			updateSelectedLight = true;
+		}
 
-		//// Update the light's radius
-		//if (mKeyboard->IsKeyDown(Keys::B))
-		//{
-		//	float radius = mMultiplePointLightsDemo->LightRadius() + LightModulationRate * elapsedTime;
-		//	mMultiplePointLightsDemo->SetLightRadius(radius);
-		//}
+		// Update the light's radius
+		if (mKeyboard->IsKeyDown(Keys::B))
+		{
+			float radius = selectedLight.Radius() + LightModulationRate * elapsedTime;
+			selectedLight.SetRadius(radius);
+			updateSelectedLight = true;
+		}
+		else if (mKeyboard->IsKeyDown(Keys::N))
+		{
+			float radius = selectedLight.Radius() - LightModulationRate * elapsedTime;
+			radius = max(radius, 0.0f);
+			selectedLight.SetRadius(radius);
+			updateSelectedLight = true;
+		}
 
-		//if (mKeyboard->IsKeyDown(Keys::N))
-		//{
-		//	float radius = mMultiplePointLightsDemo->LightRadius() - LightModulationRate * elapsedTime;
-		//	radius = max(radius, 0.0f);
-		//	mMultiplePointLightsDemo->SetLightRadius(radius);
-		//}
+		if (updateSelectedLight)
+		{
+			mMultiplePointLightsDemo->UpdateSelectedLight(selectedLight);
+		}
 	}
 
-	void RenderingGame::UpdateSpecularLight(const Library::GameTime & gameTime)
+	void RenderingGame::UpdateSpecularPower(const Library::GameTime & gameTime)
 	{
 		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
-		if (mKeyboard->IsKeyDown(Keys::Insert) && mSpecularIntensity < 1.0f)
-		{
-			mSpecularIntensity += elapsedTime;
-			mSpecularIntensity = min(mSpecularIntensity, 1.0f);
-			mMultiplePointLightsDemo->SetSpecularIntensity(mSpecularIntensity);
-		}
-		else if (mKeyboard->IsKeyDown(Keys::Delete) && mSpecularIntensity > 0.0f)
-		{
-			mSpecularIntensity -= elapsedTime;
-			mSpecularIntensity = max(mSpecularIntensity, 0.0f);
-			mMultiplePointLightsDemo->SetSpecularIntensity(mSpecularIntensity);
-		}
-
+		auto specularPower = mMultiplePointLightsDemo->SpecularPower();
 		const auto ModulationRate = numeric_limits<uint8_t>::max();
-		if (mKeyboard->IsKeyDown(Keys::O) && mSpecularPower < numeric_limits<uint8_t>::max())
+		if (mKeyboard->IsKeyDown(Keys::O) && specularPower < numeric_limits<uint8_t>::max())
 		{
-			mSpecularPower += ModulationRate * elapsedTime;
-			mSpecularPower = min(mSpecularPower, static_cast<float>(numeric_limits<uint8_t>::max()));
-			mMultiplePointLightsDemo->SetSpecularPower(mSpecularPower);
+			specularPower += ModulationRate * elapsedTime;
+			specularPower = min(specularPower, static_cast<float>(numeric_limits<uint8_t>::max()));
+			mMultiplePointLightsDemo->SetSpecularPower(specularPower);
 		}
-		else if (mKeyboard->IsKeyDown(Keys::P) && mSpecularPower > 1.0f)
+		else if (mKeyboard->IsKeyDown(Keys::P) && specularPower > 1.0f)
 		{
-			mSpecularPower -= ModulationRate * elapsedTime;
-			mSpecularPower = max(mSpecularPower, 1.0f);
-			mMultiplePointLightsDemo->SetSpecularPower(mSpecularPower);
+			specularPower -= ModulationRate * elapsedTime;
+			specularPower = max(specularPower, 1.0f);
+			mMultiplePointLightsDemo->SetSpecularPower(specularPower);
+		}
+	}
+
+	void RenderingGame::UpdateSelectedPointLight()
+	{
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Tab))
+		{
+			size_t lightIndex = mMultiplePointLightsDemo->SelectedLightIndex();
+			if (mKeyboard->IsKeyDown(Keys::LeftShift) || mKeyboard->IsKeyDown(Keys::RightShift))
+			{
+				lightIndex = (lightIndex == 0 ? mMultiplePointLightsDemo->PointLights().size() - 1 : --lightIndex);
+			}
+			else
+			{
+				lightIndex = (lightIndex == mMultiplePointLightsDemo->PointLights().size() - 1 ? 0 : ++lightIndex);
+			}
+
+			mMultiplePointLightsDemo->SelectLight(lightIndex);
 		}
 	}
 }

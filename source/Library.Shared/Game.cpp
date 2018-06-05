@@ -252,7 +252,7 @@ namespace Library
 				{
 					D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS
 				};
-				D3D11_INFO_QUEUE_FILTER filter = { 0 };
+				D3D11_INFO_QUEUE_FILTER filter{ 0 };
 				filter.DenyList.NumIDs = _countof(hide);
 				filter.DenyList.pIDList = hide;
 				d3dInfoQueue->AddStorageFilterEntries(&filter);
@@ -277,7 +277,7 @@ namespace Library
 		mGetRenderTargetSize(mRenderTargetSize);
 		if (mSwapChain == nullptr)
 		{
-			DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
+			DXGI_SWAP_CHAIN_DESC1 swapChainDesc{ 0 };
 
 			swapChainDesc.Width = mRenderTargetSize.cx;
 			swapChainDesc.Height = mRenderTargetSize.cy;
@@ -311,7 +311,7 @@ namespace Library
 			void* window = mGetWindow();
 
 #if (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
-			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullScreenDesc = { 0 };
+			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullScreenDesc{ 0 };
 			fullScreenDesc.RefreshRate.Numerator = mFrameRate;
 			fullScreenDesc.RefreshRate.Denominator = 1;
 			fullScreenDesc.Windowed = !mIsFullScreen;
@@ -349,7 +349,7 @@ namespace Library
 		ThrowIfFailed(mDirect3DDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, mRenderTargetView.GetAddressOf()), "IDXGIDevice::CreateRenderTargetView() failed.");
 
 		// Create a depth-stencil view
-		D3D11_TEXTURE2D_DESC depthStencilDesc = { 0 };
+		D3D11_TEXTURE2D_DESC depthStencilDesc{ 0 };
 		depthStencilDesc.Width = mRenderTargetSize.cx;
 		depthStencilDesc.Height = mRenderTargetSize.cy;
 		depthStencilDesc.MipLevels = 1;

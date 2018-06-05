@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	game.UpdateRenderTargetSize();
 	game.Initialize();
 
-	MSG message = { 0 };
+	MSG message{ 0 };
 
 	try
 	{

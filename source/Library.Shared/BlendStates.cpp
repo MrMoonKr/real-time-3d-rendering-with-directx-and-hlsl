@@ -4,12 +4,9 @@
 
 namespace Library
 {
-	Microsoft::WRL::ComPtr<ID3D11BlendState> BlendStates::AlphaBlending;
-	Microsoft::WRL::ComPtr<ID3D11BlendState> BlendStates::MultiplicativeBlending;
-
 	void BlendStates::Initialize(gsl::not_null<ID3D11Device*> direct3DDevice)
 	{
-		D3D11_BLEND_DESC blendStateDesc = { 0 };
+		D3D11_BLEND_DESC blendStateDesc{ 0 };
 		blendStateDesc.RenderTarget[0].BlendEnable = true;
 		blendStateDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
 		blendStateDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;

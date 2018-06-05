@@ -63,23 +63,27 @@ namespace Rendering
 			ImGui::Begin("Controls");
 			ImGui::SetNextWindowPos(ImVec2(10, 10));
 
-			stringstream fpsLabel;
-			fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
-			ImGui::Text(fpsLabel.str().c_str());
-
+			{
+				stringstream fpsLabel;
+				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+				ImGui::Text(fpsLabel.str().c_str());
+			}
 			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
-			
-			stringstream gridVisibleLabel;
-			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
-			ImGui::Text(gridVisibleLabel.str().c_str());
-
-			stringstream animationEnabledLabel;
-			animationEnabledLabel << "Toggle Animation (Space): " << (mAmbientLightingDemo->AnimationEnabled() ? "Enabled" : "Disabled");
-			ImGui::Text(animationEnabledLabel.str().c_str());
-
-			stringstream ambientLightIntensityLabel;
-			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mAmbientLightingDemo->AmbientLightIntensity();
-			ImGui::Text(ambientLightIntensityLabel.str().c_str());
+			{
+				stringstream gridVisibleLabel;
+				gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
+				ImGui::Text(gridVisibleLabel.str().c_str());
+			}
+			{
+				stringstream animationEnabledLabel;
+				animationEnabledLabel << "Toggle Animation (Space): " << (mAmbientLightingDemo->AnimationEnabled() ? "Enabled" : "Disabled");
+				ImGui::Text(animationEnabledLabel.str().c_str());
+			}
+			{
+				stringstream ambientLightIntensityLabel;
+				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mAmbientLightingDemo->AmbientLightIntensity();
+				ImGui::Text(ambientLightIntensityLabel.str().c_str());
+			}
 
 			ImGui::End();
 		});

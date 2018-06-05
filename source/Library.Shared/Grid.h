@@ -30,7 +30,6 @@ namespace Library
 		void SetPosition(const DirectX::XMFLOAT3& position);
 		void SetPosition(float x, float y, float z);
 
-		const DirectX::XMFLOAT4 Color() const;
 		void SetColor(const DirectX::XMFLOAT4& color);
 
 		const std::uint32_t Size() const;
@@ -44,7 +43,6 @@ namespace Library
 
 	private:
 		void InitializeGrid();
-		void UpdateMaterial();
 
 		inline static const std::uint32_t DefaultSize{ 16 };
 		inline static const std::uint32_t DefaultScale{ 16 };
@@ -57,5 +55,6 @@ namespace Library
 		std::uint32_t mScale{ DefaultScale };
 		DirectX::XMFLOAT4 mColor{ DefaultColor };
 		DirectX::XMFLOAT4X4 mWorldMatrix{ MatrixHelper::Identity };
+		bool mUpdateMaterial{ true };
 	};
 }

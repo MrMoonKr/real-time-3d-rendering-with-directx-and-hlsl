@@ -34,7 +34,8 @@ namespace Rendering
 
 		void UpdateAmbientLightIntensity(const Library::GameTime& gameTime);
 		void UpdatePointLight(const Library::GameTime& gameTime);
-		void UpdateSpecularLight(const Library::GameTime& gameTime);
+		void UpdateSpecularPower(const Library::GameTime& gameTime);
+		void UpdateSelectedPointLight();
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::MouseComponent> mMouse;
@@ -42,8 +43,5 @@ namespace Rendering
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<Library::Grid> mGrid;
 		std::shared_ptr<MultiplePointLightsDemo> mMultiplePointLightsDemo;
-		float mAmbientLightIntensity{ 0.0f };
-		float mSpecularIntensity{ 0.0f };
-		float mSpecularPower{ 128.0f };
 	};
 }

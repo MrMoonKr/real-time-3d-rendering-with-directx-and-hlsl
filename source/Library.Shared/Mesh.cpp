@@ -77,12 +77,12 @@ const vector<uint32_t>& Mesh::Indices() const
 
 void Mesh::CreateIndexBuffer(ID3D11Device& device, gsl::not_null<ID3D11Buffer**> indexBuffer)
 {
-	D3D11_BUFFER_DESC indexBufferDesc = { 0 };
+	D3D11_BUFFER_DESC indexBufferDesc{ 0 };
 	indexBufferDesc.ByteWidth = static_cast<uint32_t>(sizeof(uint32_t) * mData.Indices.size());
 	indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA indexSubResourceData = { 0 };
+	D3D11_SUBRESOURCE_DATA indexSubResourceData{ 0 };
 	indexSubResourceData.pSysMem = &mData.Indices[0];
 
 	ThrowIfFailed(device.CreateBuffer(&indexBufferDesc, &indexSubResourceData, indexBuffer), "ID3D11Device::CreateBuffer() failed.");

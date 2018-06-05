@@ -4,9 +4,6 @@
 
 namespace Library
 {
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthStencilStates::DefaultDepthCulling;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthStencilStates::NoDepthCulling;
-
 	void DepthStencilStates::Initialize(gsl::not_null<ID3D11Device*> direct3DDevice)
 	{
 		D3D11_DEPTH_STENCIL_DESC depthStencilDesc;

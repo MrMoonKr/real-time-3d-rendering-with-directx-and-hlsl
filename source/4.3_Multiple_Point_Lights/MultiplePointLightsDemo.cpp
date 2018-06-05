@@ -53,12 +53,12 @@ namespace Rendering
 		mMaterial->SetAmbientColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
 	}
 
-	const std::array<Library::PointLight, 4>& MultiplePointLightsDemo::PointLights() const
+	const array<Library::PointLight, 4>& MultiplePointLightsDemo::PointLights() const
 	{
 		return mMaterial->PointLights();
 	}
 
-	void MultiplePointLightsDemo::SetPointLight(const Library::PointLight& light, std::uint32_t index)
+	void MultiplePointLightsDemo::SetPointLight(const Library::PointLight& light, size_t index)
 	{
 		mMaterial->SetPointLight(light, index);
 		
@@ -66,14 +66,31 @@ namespace Rendering
 		mProxyModels[index]->SetPosition(light.Position());
 	}
 
-	float MultiplePointLightsDemo::SpecularIntensity() const
+	const size_t MultiplePointLightsDemo::SelectedLightIndex() const
 	{
-		return mMaterial->SpecularColor().x;
+		return mSelectedLightIndex;
 	}
 
-	void MultiplePointLightsDemo::SetSpecularIntensity(float intensity)
+	const PointLight& MultiplePointLightsDemo::SelectedLight() const
 	{
-		mMaterial->SetSpecularColor(XMFLOAT3(intensity, intensity, intensity));
+		return mMaterial->PointLights()[mSelectedLightIndex];
+	}
+
+	void MultiplePointLightsDemo::UpdateSelectedLight(const PointLight& light)
+	{
+		SetPointLight(light, mSelectedLightIndex);
+	}
+
+	void MultiplePointLightsDemo::SelectLight(size_t index)
+	{
+		assert(index < mMaterial->PointLights().size());
+
+		const XMFLOAT4 selectedColor{ Colors::Yellow.f };
+		const XMFLOAT4 unSelectedColor{ Colors::White.f };
+
+		mProxyModels[mSelectedLightIndex]->SetColor(unSelectedColor);
+		mSelectedLightIndex = index;
+		mProxyModels[mSelectedLightIndex]->SetColor(selectedColor);
 	}
 
 	float MultiplePointLightsDemo::SpecularPower() const
@@ -99,7 +116,7 @@ namespace Rendering
 		mMaterial = make_shared<MultiplePointLightsMaterial>(*mGame, colorMap, specularMap);
 		mMaterial->Initialize();
 
-		for (uint32_t i = 0; i < mProxyModels.size(); ++i)
+		for (size_t i = 0; i < mProxyModels.size(); ++i)
 		{
 			auto& proxyModel = mProxyModels[i];
 
@@ -108,9 +125,10 @@ namespace Rendering
 		}
 				
 		SetPointLight(PointLight(XMFLOAT3(10.0f, 0.0, 0.0f)), 0);
-		SetPointLight(PointLight(XMFLOAT3(-10.0f, 0.0, 0.0f)), 1);
-		SetPointLight(PointLight(XMFLOAT3(0.0f, 10.0, 0.0f)), 2);
-		SetPointLight(PointLight(XMFLOAT3(0.0f, -10.0, 0.0f)), 3);
+		SetPointLight(PointLight(XMFLOAT3(0.0f, -10.0, 0.0f)), 1);
+		SetPointLight(PointLight(XMFLOAT3(-10.0f, 0.0, 0.0f)), 2);
+		SetPointLight(PointLight(XMFLOAT3(0.0f, +10.0, 0.0f)), 3);
+		SelectLight(0);
 
 		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
 		if (firstPersonCamera != nullptr)
@@ -121,8 +139,8 @@ namespace Rendering
 		}
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
-		mCamera->SetViewMatrixUpdatedCallback(updateMaterialFunc);
-		mCamera->SetProjectionMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
 	}
 
 	void MultiplePointLightsDemo::Update(const GameTime& gameTime)

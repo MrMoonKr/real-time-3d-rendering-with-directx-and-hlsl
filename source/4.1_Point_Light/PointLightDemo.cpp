@@ -147,8 +147,8 @@ namespace Rendering
 		}
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
-		mCamera->SetViewMatrixUpdatedCallback(updateMaterialFunc);
-		mCamera->SetProjectionMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
 	}
 
 	void PointLightDemo::Update(const GameTime& gameTime)

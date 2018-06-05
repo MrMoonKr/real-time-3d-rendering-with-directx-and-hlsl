@@ -6,18 +6,6 @@ using namespace DirectX;
 
 namespace Library
 {
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::TrilinearWrap;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::TrilinearMirror;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::TrilinearClamp;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::TrilinerBorder;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::PointClamp;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::DepthMap;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::ShadowMap;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerStates::PcfShadowMap;
-
-	XMVECTORF32 SamplerStates::BorderColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-	XMVECTORF32 SamplerStates::ShadowMapBorderColor = Colors::White;
-
 	void SamplerStates::Initialize(gsl::not_null<ID3D11Device*> direct3DDevice)
 	{
 		D3D11_SAMPLER_DESC samplerStateDesc;

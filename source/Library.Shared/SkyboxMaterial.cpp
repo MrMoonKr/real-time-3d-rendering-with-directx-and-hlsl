@@ -55,7 +55,7 @@ namespace Library
 		mVertexShader->CreateInputLayout(mGame->Direct3DDevice(), const_cast<D3D11_INPUT_ELEMENT_DESC*>(VertexPosition::InputElements), VertexPosition::InputElementCount);
 		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\SkyboxPS.cso");
 
-		D3D11_BUFFER_DESC constantBufferDesc = { 0 };
+		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(XMFLOAT4X4);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
