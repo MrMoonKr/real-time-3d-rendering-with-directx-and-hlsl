@@ -2,6 +2,7 @@
 #include "ModelProcessor.h"
 
 using namespace std;
+using namespace std::string_literals;
 using namespace ModelPipeline;
 using namespace Library;
 
@@ -15,7 +16,7 @@ int main(int argc, char* argv[])
 	{
 		if (argc < 2)
 		{
-			throw exception("Usage: ...TODO");
+			throw exception("Usage: ModelPipeline.exe inputfilename");
 		}
 
 		string inputFile = argv[1];
@@ -27,15 +28,20 @@ int main(int argc, char* argv[])
 			inputDirectory = UtilityWin32::CurrentDirectory();
 		}
 
-		SetCurrentDirectory(Library::Utility::ToWideString(inputDirectory).c_str());		
+		SetCurrentDirectory(Library::Utility::ToWideString(inputDirectory).c_str());
+
+		cout << "Reading: "s << inputFilename << endl;
 		Model model = ModelProcessor::LoadModel(inputFilename, true);
 		
-		string outputFilename = inputFilename + ".bin";		
+		string outputFilename = inputFilename + ".bin"s;
+		cout << "Writing: "s << outputFilename << endl;
 		model.Save(outputFilename);
+		cout << "Finished."s << endl;
+
 	}
 	catch (exception ex)
 	{
-		cout << ex.what();
+		cout << ex.what() << endl;
 	}
 
 	return 0;

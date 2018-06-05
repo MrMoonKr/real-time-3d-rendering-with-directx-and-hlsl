@@ -11,6 +11,7 @@ namespace ModelPipeline
 		{ TextureType::Diffuse, aiTextureType_DIFFUSE },
 		{ TextureType::SpecularMap, aiTextureType_SPECULAR },
 		{ TextureType::Ambient, aiTextureType_AMBIENT },
+		{ TextureType::Emissive, aiTextureType_EMISSIVE },
 		{ TextureType::Heightmap, aiTextureType_HEIGHT },
 		{ TextureType::NormalMap, aiTextureType_NORMALS },
 		{ TextureType::SpecularPowerMap, aiTextureType_SHININESS },
