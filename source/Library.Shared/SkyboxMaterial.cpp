@@ -9,6 +9,7 @@
 #include "RasterizerStates.h"
 
 using namespace std;
+using namespace gsl;
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
@@ -52,7 +53,7 @@ namespace Library
 		Material::Initialize();
 
 		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\SkyboxVS.cso");
-		mVertexShader->CreateInputLayout(mGame->Direct3DDevice(), const_cast<D3D11_INPUT_ELEMENT_DESC*>(VertexPosition::InputElements), VertexPosition::InputElementCount);
+		mVertexShader->CreateInputLayout(mGame->Direct3DDevice(), not_null<const D3D11_INPUT_ELEMENT_DESC*>(&VertexPosition::InputElements[0]), VertexPosition::InputElementCount);
 		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\SkyboxPS.cso");
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };

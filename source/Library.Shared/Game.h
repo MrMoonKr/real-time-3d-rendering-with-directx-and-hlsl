@@ -52,11 +52,11 @@ namespace Library
 		Game& operator=(Game&&) = delete;
 		virtual ~Game() = default;
 
-		ID3D11Device5* Direct3DDevice() const;
-		ID3D11DeviceContext4* Direct3DDeviceContext() const;
-		IDXGISwapChain1* SwapChain() const;
-		ID3D11RenderTargetView* RenderTargetView() const;
-		ID3D11DepthStencilView* DepthStencilView() const;
+		gsl::not_null<ID3D11Device5*> Direct3DDevice() const;
+		gsl::not_null<ID3D11DeviceContext4*> Direct3DDeviceContext() const;
+		gsl::not_null<IDXGISwapChain1*> SwapChain() const;
+		gsl::not_null<ID3D11RenderTargetView*> RenderTargetView() const;
+		gsl::not_null<ID3D11DepthStencilView*> DepthStencilView() const;
 		SIZE RenderTargetSize() const;
 		float AspectRatio() const;
 		bool IsFullScreen() const;

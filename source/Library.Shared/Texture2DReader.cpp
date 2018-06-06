@@ -6,6 +6,7 @@
 #include "TextureHelper.h"
 
 using namespace std;
+using namespace gsl;
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
@@ -33,7 +34,7 @@ namespace Library
 
 		ComPtr<ID3D11Texture2D> texture;
 		ThrowIfFailed(resource.As(&texture), "Invalid ID3D11Resource returned from CreateTextureFromFile. Should be a ID3D11Texture2D.");
-		Point textureSize = TextureHelper::GetTextureSize(texture.Get());
+		Point textureSize = TextureHelper::GetTextureSize(not_null<ID3D11Texture2D*>(texture.Get()));
 
 		return make_shared<Texture2D>(move(shaderResourceView), textureSize.X, textureSize.Y);
 	}

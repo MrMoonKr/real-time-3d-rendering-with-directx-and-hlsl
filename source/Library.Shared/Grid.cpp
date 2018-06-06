@@ -10,6 +10,7 @@
 #include "BasicMaterial.h"
 
 using namespace std;
+using namespace gsl;
 using namespace DirectX;
 
 namespace Library
@@ -92,7 +93,7 @@ namespace Library
 			mUpdateMaterial = false;
 		}
 
-		mMaterial->Draw(mVertexBuffer.Get(), (mSize + 1) * 4, 0);
+		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.Get()), (mSize + 1) * 4, 0);
 	}
 
 	void Grid::InitializeGrid()

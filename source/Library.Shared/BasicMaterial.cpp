@@ -7,6 +7,7 @@
 #include "PixelShader.h"
 
 using namespace std;
+using namespace gsl;
 using namespace DirectX;
 
 namespace Library
@@ -34,7 +35,7 @@ namespace Library
 
 		auto direct3DDevice = mGame->Direct3DDevice();
 		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\BasicVS.cso");
-		mVertexShader->CreateInputLayout(direct3DDevice, const_cast<D3D11_INPUT_ELEMENT_DESC*>(VertexPosition::InputElements), VertexPosition::InputElementCount);
+		mVertexShader->CreateInputLayout(direct3DDevice, not_null<const D3D11_INPUT_ELEMENT_DESC*>(&VertexPosition::InputElements[0]), VertexPosition::InputElementCount);
 		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\BasicPS.cso");
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };

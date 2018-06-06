@@ -6,6 +6,7 @@
 #include "ContentTypeReaderManager.h"
 
 using namespace std;
+using namespace gsl;
 using namespace Library;
 using namespace Microsoft::WRL;
 using namespace DirectX;
@@ -25,29 +26,29 @@ namespace Library
 		CreateDeviceResources();
 	}
 
-	ID3D11Device5* Game::Direct3DDevice() const
+	not_null<ID3D11Device5*> Game::Direct3DDevice() const
 	{
-		return mDirect3DDevice.Get();
+		return not_null<ID3D11Device5*>(mDirect3DDevice.Get());
 	}
 
-	ID3D11DeviceContext4* Game::Direct3DDeviceContext() const
+	not_null<ID3D11DeviceContext4*> Game::Direct3DDeviceContext() const
 	{
-		return mDirect3DDeviceContext.Get();
+		return not_null<ID3D11DeviceContext4*>(mDirect3DDeviceContext.Get());
 	}
 
-	IDXGISwapChain1* Game::SwapChain() const
+	not_null<IDXGISwapChain1*> Game::SwapChain() const
 	{
-		return mSwapChain.Get();
+		return not_null<IDXGISwapChain1*>(mSwapChain.Get());
 	}
 
-	ID3D11RenderTargetView* Game::RenderTargetView() const
+	not_null<ID3D11RenderTargetView*> Game::RenderTargetView() const
 	{
-		return mRenderTargetView.Get();
+		return not_null<ID3D11RenderTargetView*>(mRenderTargetView.Get());
 	}
 
-	ID3D11DepthStencilView* Game::DepthStencilView() const
+	not_null<ID3D11DepthStencilView*> Game::DepthStencilView() const
 	{
-		return mDepthStencilView.Get();
+		return not_null<ID3D11DepthStencilView*>(mDepthStencilView.Get());
 	}
 
 	SIZE Game::RenderTargetSize() const
@@ -189,12 +190,12 @@ namespace Library
 
 	void Game::Begin()
 	{
-		RenderTarget::Begin(mDirect3DDeviceContext.Get(), 1, mRenderTargetView.GetAddressOf(), mDepthStencilView.Get(), mViewport);
+		RenderTarget::Begin(Direct3DDeviceContext(), 1, not_null<ID3D11RenderTargetView**>(mRenderTargetView.GetAddressOf()), gsl::not_null<ID3D11DepthStencilView*>(mDepthStencilView.Get()), mViewport);
 	}
 
 	void Game::End()
 	{
-		RenderTarget::End(mDirect3DDeviceContext.Get());
+		RenderTarget::End(Direct3DDeviceContext());
 	}
 
 	void Game::CreateDeviceIndependentResources()

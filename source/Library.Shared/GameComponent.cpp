@@ -17,7 +17,7 @@ namespace Library
 
 	void GameComponent::SetGame(Game& game)
 	{
-		mGame = &game;
+		mGame = gsl::not_null<Game*>(&game);
 	}
 
 	bool GameComponent::Enabled() const
