@@ -13,9 +13,19 @@ namespace Library
 		RTTI_DECLARATIONS(ImGuiComponent, DrawableGameComponent)
 
 	public:
+		enum class Styles
+		{
+			Classic,
+			Light,
+			Dark
+		};
+
 		typedef std::function<void(void)> RenderBlock;
 
-		ImGuiComponent(Game& game, bool useCustomDraw = false);
+		ImGuiComponent(Game& game, Styles style = Styles::Dark, bool useCustomDraw = false);
+
+		Styles Style() const;
+		void SetStyle(Styles style);
 
 		virtual void Initialize() override;
 		virtual void Shutdown() override;
@@ -31,8 +41,9 @@ namespace Library
 		void AddRenderBlock(std::shared_ptr<RenderBlock> block);
 		void RemoveRenderBlock(std::shared_ptr<RenderBlock> block);
 
-	private:
+	private:		
 		std::vector<std::shared_ptr<RenderBlock>> mRenderBlocks;
+		Styles mStyle;
 		bool mUseCustomDraw;
 	};
 }

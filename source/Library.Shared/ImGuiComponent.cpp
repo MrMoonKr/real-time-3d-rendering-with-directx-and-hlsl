@@ -2,6 +2,7 @@
 #include "ImGuiComponent.h"
 #include "imgui_impl_dx11.h"
 #include "Game.h"
+#include <map>
 
 using namespace std;
 using namespace DirectX;
@@ -10,35 +11,59 @@ namespace Library
 {
 	RTTI_DEFINITIONS(ImGuiComponent)
 
-	ImGuiComponent::ImGuiComponent(Game& game, bool useCustomDraw) :
-		DrawableGameComponent(game), mUseCustomDraw(useCustomDraw)
+	ImGuiComponent::ImGuiComponent(Game& game, Styles style, bool useCustomDraw) :
+		DrawableGameComponent(game), mStyle(style), mUseCustomDraw(useCustomDraw)
 	{
+	}
+
+	ImGuiComponent::Styles ImGuiComponent::Style() const
+	{
+		return mStyle;
+	}
+
+	void ImGuiComponent::SetStyle(Styles style)
+	{
+		static const map<Styles, function<void(ImGuiStyle*)>> styleMap
+		{
+			{ Styles::Classic, ImGui::StyleColorsClassic },
+			{ Styles::Light, ImGui::StyleColorsLight },
+			{ Styles::Dark, ImGui::StyleColorsDark }
+		};
+
+		mStyle = style;
+		styleMap.at(mStyle)(nullptr);
 	}
 
 	void ImGuiComponent::Initialize()
 	{
+		ImGui::CreateContext();
+
 		auto getWindow = mGame->GetWindowCallback();
 		HWND window = reinterpret_cast<HWND>(getWindow());
 		ImGui_ImplDX11_Init(window, mGame->Direct3DDevice(), mGame->Direct3DDeviceContext());
+
+		SetStyle(mStyle);
 	}
 
 	void ImGuiComponent::Shutdown()
-	{
+	{		
 		ImGui_ImplDX11_Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	void ImGuiComponent::Draw(const GameTime&)
 	{
-		ImGui_ImplDX11_NewFrame();
-
 		if (mUseCustomDraw == false)
 		{
+			ImGui_ImplDX11_NewFrame();
+
 			for (auto& block : mRenderBlocks)
 			{
 				(*block)();
 			}
 
 			ImGui::Render();
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 		}
 	}
 
