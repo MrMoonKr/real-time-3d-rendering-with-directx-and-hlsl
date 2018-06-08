@@ -84,20 +84,22 @@ namespace Rendering
 	{
 		Material::Initialize();
 
+		auto direct3DDevice = mGame->Direct3DDevice();
 		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\DiffuseLightingDemoVS.cso"s);
-		mVertexShader->CreateInputLayout<VertexPositionTextureNormal>(mGame->Direct3DDevice());
+		mVertexShader->CreateInputLayout<VertexPositionTextureNormal>(direct3DDevice);
 		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\DiffuseLightingDemoPS.cso");
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 	}
 
 	void DiffuseLightingMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
@@ -115,7 +117,7 @@ namespace Rendering
 
 		if (mPixelCBufferPerFrameDataDirty)
 		{
-			mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 			mPixelCBufferPerFrameDataDirty = false;
 		}
 

@@ -30,8 +30,9 @@ namespace Rendering
 
 	void RenderingGame::Initialize()
 	{
-		SamplerStates::Initialize(Direct3DDevice()); 
-		RasterizerStates::Initialize(Direct3DDevice());
+		auto direct3DDevice = Direct3DDevice();
+		SamplerStates::Initialize(direct3DDevice); 
+		RasterizerStates::Initialize(direct3DDevice);
 
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
@@ -65,29 +66,36 @@ namespace Rendering
 		{
 			ImGui::Begin("Controls");
 			ImGui::SetNextWindowPos(ImVec2(10, 10));
-
-			stringstream fpsLabel;
-			fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
-			ImGui::Text(fpsLabel.str().c_str());
-
+			
+			{
+				stringstream fpsLabel;
+				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+				ImGui::Text(fpsLabel.str().c_str());
+			}
+			
 			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");			
 			ImGui::Text("Rotate Directional Light (Arrow Keys)");
 
-			stringstream gridVisibleLabel;
-			gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
-			ImGui::Text(gridVisibleLabel.str().c_str());
-
-			stringstream animationEnabledLabel;
-			animationEnabledLabel << "Toggle Animation (Space): " << (mDiffuseLightingDemo->AnimationEnabled() ? "Enabled" : "Disabled");
-			ImGui::Text(animationEnabledLabel.str().c_str());
-
-			stringstream ambientLightIntensityLabel;
-			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mDiffuseLightingDemo->AmbientLightIntensity();
-			ImGui::Text(ambientLightIntensityLabel.str().c_str());
-
-			stringstream directionalLightIntensityLabel;
-			directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (Home/End): " << mDiffuseLightingDemo->DirectionalLightIntensity();
-			ImGui::Text(directionalLightIntensityLabel.str().c_str());
+			{
+				stringstream gridVisibleLabel;
+				gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
+				ImGui::Text(gridVisibleLabel.str().c_str());
+			}
+			{
+				stringstream animationEnabledLabel;
+				animationEnabledLabel << "Toggle Animation (Space): " << (mDiffuseLightingDemo->AnimationEnabled() ? "Enabled" : "Disabled");
+				ImGui::Text(animationEnabledLabel.str().c_str());
+			}
+			{
+				stringstream ambientLightIntensityLabel;
+				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mDiffuseLightingDemo->AmbientLightIntensity();
+				ImGui::Text(ambientLightIntensityLabel.str().c_str());
+			}
+			{
+				stringstream directionalLightIntensityLabel;
+				directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (Home/End): " << mDiffuseLightingDemo->DirectionalLightIntensity();
+				ImGui::Text(directionalLightIntensityLabel.str().c_str());
+			}
 
 			ImGui::End();
 		});

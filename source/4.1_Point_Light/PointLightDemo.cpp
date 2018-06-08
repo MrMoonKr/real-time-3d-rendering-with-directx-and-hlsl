@@ -123,7 +123,7 @@ namespace Rendering
 	{
 		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin"s);
 		Mesh* mesh = model->Meshes().at(0).get();
-		CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
+		CreateVertexBuffer(*mesh, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
@@ -176,7 +176,7 @@ namespace Rendering
 		mProxyModel->Draw(gameTime);
 	}
 
-	void PointLightDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
+	void PointLightDemo::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
@@ -201,6 +201,6 @@ namespace Rendering
 
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
-		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 }

@@ -140,7 +140,7 @@ namespace Rendering
 	void SpotLightDemo::Initialize()
 	{
 		// Create a vertex buffer
-		VertexPositionTextureNormal sourceVertices[]
+		const VertexPositionTextureNormal sourceVertices[]
 		{
 			VertexPositionTextureNormal(XMFLOAT4(-0.5f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 1.0f), Vector3Helper::Backward),
 			VertexPositionTextureNormal(XMFLOAT4(-0.5f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f), Vector3Helper::Backward),
@@ -151,9 +151,9 @@ namespace Rendering
 			VertexPositionTextureNormal(XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 1.0f), Vector3Helper::Backward),
 		};
 
-		const span<VertexPositionTextureNormal> vertices{ sourceVertices };
+		const span<const VertexPositionTextureNormal> vertices{ sourceVertices };
 		mVertexCount = narrow<uint32_t>(vertices.size());
-		CreateVertexBuffer(mGame->Direct3DDevice(), vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
+		CreateVertexBuffer(vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
 
 		auto colorMap = mGame->Content().Load<Texture2D>(L"Textures\\Checkerboard.png"s);
 		auto specularMap = mGame->Content().Load<Texture2D>(L"Textures\\CheckerboardSpecularMap.png"s);
@@ -201,7 +201,7 @@ namespace Rendering
 		mProxyModel->Draw(gameTime);
 	}
 
-	void SpotLightDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, const span<Library::VertexPositionTextureNormal>& vertices, not_null<ID3D11Buffer**> vertexBuffer) const
+	void SpotLightDemo::CreateVertexBuffer(const span<const VertexPositionTextureNormal>& vertices, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
 		vertexBufferDesc.ByteWidth = narrow<uint32_t>(vertices.size_bytes());
@@ -210,6 +210,6 @@ namespace Rendering
 
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = &vertices[0];
-		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 }

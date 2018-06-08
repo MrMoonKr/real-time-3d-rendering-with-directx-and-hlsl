@@ -71,7 +71,7 @@ namespace Rendering
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-		void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const gsl::span<Library::VertexPositionTextureNormal>& vertices, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
+		void CreateVertexBuffer(const gsl::span<const Library::VertexPositionTextureNormal>& vertices, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
 
 		std::shared_ptr<SpotLightMaterial> mMaterial;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };

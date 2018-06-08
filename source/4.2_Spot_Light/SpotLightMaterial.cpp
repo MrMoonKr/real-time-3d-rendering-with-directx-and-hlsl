@@ -163,28 +163,30 @@ namespace Rendering
 	{
 		Material::Initialize();
 
+		auto direct3DDevice = mGame->Direct3DDevice();
 		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\SpotLightDemoVS.cso"s);
-		mVertexShader->CreateInputLayout<VertexPositionTextureNormal>(mGame->Direct3DDevice());
+		mVertexShader->CreateInputLayout<VertexPositionTextureNormal>(direct3DDevice);
 		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\SpotLightDemoPS.cso");
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerFrame);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerFrame.Get(), 0, nullptr, &mVertexCBufferPerFrameData, 0, 0);
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.Get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerFrame.Get(), 0, nullptr, &mVertexCBufferPerFrameData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.Get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 	}
 
 	void SpotLightMaterial::UpdateCameraPosition(const XMFLOAT3& position)
@@ -208,29 +210,29 @@ namespace Rendering
 
 		if (mVertexCBufferPerFrameDataDirty)
 		{
-			mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerFrame.Get(), 0, nullptr, &mVertexCBufferPerFrameData, 0, 0);
+			direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerFrame.Get(), 0, nullptr, &mVertexCBufferPerFrameData, 0, 0);
 			mVertexCBufferPerFrameDataDirty = false;
 		}
 
 		if (mPixelCBufferPerFrameDataDirty)
 		{
-			mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 			mPixelCBufferPerFrameDataDirty = false;
 		}
 
 		if (mPixelCBufferPerObjectDataDirty)
 		{
-			mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.Get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
+			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.Get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 			mPixelCBufferPerObjectDataDirty = false;
 		}
 
-		ID3D11Buffer* VSConstantBuffers[]{ mVertexCBufferPerFrame.Get(), mVertexCBufferPerObject.Get() };
+		ID3D11Buffer* const VSConstantBuffers[]{ mVertexCBufferPerFrame.Get(), mVertexCBufferPerObject.Get() };
 		direct3DDeviceContext->VSSetConstantBuffers(0, ARRAYSIZE(VSConstantBuffers), VSConstantBuffers);
 		
-		ID3D11Buffer* PSConstantBuffers[] { mPixelCBufferPerFrame.Get(), mPixelCBufferPerObject.Get() };
+		ID3D11Buffer* const PSConstantBuffers[] { mPixelCBufferPerFrame.Get(), mPixelCBufferPerObject.Get() };
 		direct3DDeviceContext->PSSetConstantBuffers(0, ARRAYSIZE(PSConstantBuffers), PSConstantBuffers);
 
-		ID3D11ShaderResourceView* PSShaderResources[] = { mColorMap->ShaderResourceView().Get(), mSpecularMap->ShaderResourceView().Get() };
+		ID3D11ShaderResourceView* const PSShaderResources[] = { mColorMap->ShaderResourceView().Get(), mSpecularMap->ShaderResourceView().Get() };
 		direct3DDeviceContext->PSSetShaderResources(0, ARRAYSIZE(PSShaderResources), PSShaderResources);
 
 		direct3DDeviceContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
