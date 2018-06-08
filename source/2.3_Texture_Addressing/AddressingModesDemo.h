@@ -42,8 +42,8 @@ namespace Rendering
 			DirectX::XMFLOAT4X4 WorldViewProjection;
 		};
 	
-		void CreateVertexBuffer(gsl::not_null<Library::VertexPositionTexture*> vertices, std::uint32_t vertexCount, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
-		void CreateIndexBuffer(gsl::not_null<uint16_t*> indices, uint32_t indexCount, gsl::not_null<ID3D11Buffer**> indexBuffer) const;
+		void CreateVertexBuffer(const gsl::span<const Library::VertexPositionTexture>& vertices, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
+		void CreateIndexBuffer(const gsl::span<const uint16_t>& indices, gsl::not_null<ID3D11Buffer**> indexBuffer) const;
 
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		CBufferPerObject mCBufferPerObjectData;

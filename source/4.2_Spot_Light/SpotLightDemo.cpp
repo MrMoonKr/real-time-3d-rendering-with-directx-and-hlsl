@@ -140,7 +140,7 @@ namespace Rendering
 	void SpotLightDemo::Initialize()
 	{
 		// Create a vertex buffer
-		VertexPositionTextureNormal vertices[] =
+		VertexPositionTextureNormal sourceVertices[]
 		{
 			VertexPositionTextureNormal(XMFLOAT4(-0.5f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 1.0f), Vector3Helper::Backward),
 			VertexPositionTextureNormal(XMFLOAT4(-0.5f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f), Vector3Helper::Backward),
@@ -151,8 +151,9 @@ namespace Rendering
 			VertexPositionTextureNormal(XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 1.0f), Vector3Helper::Backward),
 		};
 
-		mVertexCount = narrow<uint32_t>(ARRAYSIZE(vertices));
-		CreateVertexBuffer(mGame->Direct3DDevice(), vertices, mVertexCount, &mVertexBuffer);
+		const span<VertexPositionTextureNormal> vertices{ sourceVertices };
+		mVertexCount = narrow<uint32_t>(vertices.size());
+		CreateVertexBuffer(mGame->Direct3DDevice(), vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
 
 		auto colorMap = mGame->Content().Load<Texture2D>(L"Textures\\Checkerboard.png"s);
 		auto specularMap = mGame->Content().Load<Texture2D>(L"Textures\\CheckerboardSpecularMap.png"s);
@@ -196,14 +197,14 @@ namespace Rendering
 			mUpdateMaterial = false;
 		}
 
-		mMaterial->Draw(mVertexBuffer.Get(), mVertexCount);
+		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.Get()), mVertexCount);
 		mProxyModel->Draw(gameTime);
 	}
 
-	void SpotLightDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, Library::VertexPositionTextureNormal* vertices, uint32_t vertexCount, not_null<ID3D11Buffer**> vertexBuffer) const
+	void SpotLightDemo::CreateVertexBuffer(not_null<ID3D11Device*> device, const span<Library::VertexPositionTextureNormal>& vertices, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionTextureNormal) * vertexCount);
+		vertexBufferDesc.ByteWidth = narrow<uint32_t>(vertices.size_bytes());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 

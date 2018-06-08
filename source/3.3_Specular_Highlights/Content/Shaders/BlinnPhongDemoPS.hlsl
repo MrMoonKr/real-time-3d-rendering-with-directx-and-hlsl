@@ -27,7 +27,7 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 {
 	float3 normal = normalize(IN.Normal);
 	float3 viewDirection = normalize(CameraPosition - IN.WorldPosition);
-	float n_dot_l = dot(LightDirection, normal);
+	float n_dot_l = dot(normal, LightDirection);
 	float3 halfVector = normalize(LightDirection + viewDirection);
 	float n_dot_h = dot(normal, halfVector);
 

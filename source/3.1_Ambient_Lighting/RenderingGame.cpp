@@ -28,7 +28,7 @@ namespace Rendering
 
 	void RenderingGame::Initialize()
 	{
-		SamplerStates::Initialize(mDirect3DDevice.Get());
+		SamplerStates::Initialize(Direct3DDevice()); 
 
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
@@ -96,6 +96,7 @@ namespace Rendering
 		Game::Initialize();
 		
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
+		mAmbientIntensity = mAmbientLightingDemo->AmbientLightIntensity();
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -132,7 +133,7 @@ namespace Rendering
 
 	void RenderingGame::Draw(const GameTime &gameTime)
 	{
-		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), reinterpret_cast<const float*>(&BackgroundColor));
+		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), BackgroundColor.f);
 		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		Game::Draw(gameTime);
@@ -163,19 +164,17 @@ namespace Rendering
 
 	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
 	{
-		static float ambientIntensity = mAmbientLightingDemo->AmbientLightIntensity();
-
-		if (mKeyboard->IsKeyDown(Keys::PageUp) && ambientIntensity < 1.0f)
+		if (mKeyboard->IsKeyDown(Keys::PageUp) && mAmbientIntensity < 1.0f)
 		{
-			ambientIntensity += gameTime.ElapsedGameTimeSeconds().count();
-			ambientIntensity = min(ambientIntensity, 1.0f);
-			mAmbientLightingDemo->SetAmbientLightIntensity(ambientIntensity);
+			mAmbientIntensity += gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientIntensity = min(mAmbientIntensity, 1.0f);
+			mAmbientLightingDemo->SetAmbientLightIntensity(mAmbientIntensity);
 		}
-		else if (mKeyboard->IsKeyDown(Keys::PageDown) && ambientIntensity > 0.0f)
+		else if (mKeyboard->IsKeyDown(Keys::PageDown) && mAmbientIntensity > 0.0f)
 		{
-			ambientIntensity -= gameTime.ElapsedGameTimeSeconds().count();
-			ambientIntensity = max(ambientIntensity, 0.0f);
-			mAmbientLightingDemo->SetAmbientLightIntensity(ambientIntensity);
+			mAmbientIntensity -= gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientIntensity = max(mAmbientIntensity, 0.0f);
+			mAmbientLightingDemo->SetAmbientLightIntensity(mAmbientIntensity);
 		}
 	}
 }

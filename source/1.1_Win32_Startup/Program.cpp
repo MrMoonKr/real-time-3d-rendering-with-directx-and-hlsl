@@ -47,7 +47,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 		else
 		{
 			const XMVECTORF32 BackgroundColor = { 0.392f, 0.584f, 0.929f, 1.0f };
-			mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), reinterpret_cast<const float*>(&BackgroundColor));
+			mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), BackgroundColor.f);
 			mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 			// Game-specific code

@@ -31,8 +31,8 @@ namespace Rendering
 
 	void RenderingGame::Initialize()
 	{
-		SamplerStates::Initialize(mDirect3DDevice.Get());
-		RasterizerStates::Initialize(mDirect3DDevice.Get());
+		SamplerStates::Initialize(Direct3DDevice()); 
+		RasterizerStates::Initialize(Direct3DDevice());
 
 		mKeyboard = make_shared<KeyboardComponent>(*this);
 		mComponents.push_back(mKeyboard);
@@ -165,7 +165,7 @@ namespace Rendering
 
 	void RenderingGame::Draw(const GameTime &gameTime)
 	{
-		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), reinterpret_cast<const float*>(&BackgroundColor));
+		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), BackgroundColor.f);
 		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		Game::Draw(gameTime);

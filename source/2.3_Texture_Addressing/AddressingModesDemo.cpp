@@ -5,7 +5,7 @@
 #include "GameException.h"
 #include "VertexDeclarations.h"
 #include "KeyboardComponent.h"
-#include "FirstPersonCamera.h"
+#include "Camera.h"
 
 using namespace std;
 using namespace std::string_literals;
@@ -48,7 +48,7 @@ namespace Rendering
 		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
 
 		// Create an input layout
-		D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[] =
+		const D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -60,7 +60,7 @@ namespace Rendering
 		const float halfSize = size / 2.0f;
 
 		// Create a vertex buffer
-		VertexPositionTexture vertices[] =
+		const VertexPositionTexture vertices[] =
 		{
 			VertexPositionTexture(XMFLOAT4(-halfSize, 1.0f, 0.0, 1.0f), XMFLOAT2(0.0f, 3.0f)),
 			VertexPositionTexture(XMFLOAT4(-halfSize, size + 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f)),
@@ -68,17 +68,18 @@ namespace Rendering
 			VertexPositionTexture(XMFLOAT4(halfSize, 1.0f, 0.0f, 1.0f), XMFLOAT2(3.0f, 3.0f))
 		};
 
-		CreateVertexBuffer(vertices, ARRAYSIZE(vertices), mVertexBuffer.ReleaseAndGetAddressOf());
+		CreateVertexBuffer(vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
 
 		// Create an index buffer
-		uint16_t indices[] =
+		const uint16_t sourceIndices[] =
 		{
 			0, 1, 2,
 			0, 2, 3
 		};
 
-		mIndexCount = ARRAYSIZE(indices);
-		CreateIndexBuffer(indices, mIndexCount, mIndexBuffer.ReleaseAndGetAddressOf());
+		const span<const uint16_t> indices{ sourceIndices };
+		mIndexCount = narrow<uint32_t>(indices.size());
+		CreateIndexBuffer(indices, not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
 
 		// Create constant buffers
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
@@ -132,14 +133,10 @@ namespace Rendering
 		}
 
 		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
-	
-		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
-		if (firstPersonCamera != nullptr)
-		{
-			firstPersonCamera->AddPositionUpdatedCallback([this]() {
-				mUpdateConstantBuffer = true;
-			});
-		}
+
+		auto updateConstantBufferFunc = [this]() { mUpdateConstantBuffer = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateConstantBufferFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateConstantBufferFunc);
 	}
 
 	void AddressingModesDemo::Update(const GameTime&)
@@ -165,8 +162,8 @@ namespace Rendering
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.Get());
 
-		uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionTexture));
-		uint32_t offset = 0;
+		const uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionTexture));
+		const uint32_t offset = 0;
 		direct3DDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer.GetAddressOf(), &stride, &offset);
 		direct3DDeviceContext->IASetIndexBuffer(mIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 		direct3DDeviceContext->VSSetShader(mVertexShader.Get(), nullptr, 0);
@@ -189,27 +186,27 @@ namespace Rendering
 		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
 	}
 
-	void AddressingModesDemo::CreateVertexBuffer(not_null<VertexPositionTexture*> vertices, uint32_t vertexCount, not_null<ID3D11Buffer**> vertexBuffer) const
+	void AddressingModesDemo::CreateVertexBuffer(const span<const VertexPositionTexture>& vertices, not_null<ID3D11Buffer**> vertexBuffer) const
 	{
 		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPositionTexture)) * vertexCount;
+		vertexBufferDesc.ByteWidth = narrow<uint32_t>(vertices.size_bytes());
 		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
-		vertexSubResourceData.pSysMem = vertices;
+		vertexSubResourceData.pSysMem = &vertices[0];
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 
-	void AddressingModesDemo::CreateIndexBuffer(not_null<uint16_t*> indices, uint32_t indexCount, not_null<ID3D11Buffer**> indexBuffer) const
+	void AddressingModesDemo::CreateIndexBuffer(const span<const uint16_t>& indices, not_null<ID3D11Buffer**> indexBuffer) const
 	{
 		D3D11_BUFFER_DESC indexBufferDesc{ 0 };
-		indexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(uint16_t)) * indexCount;
+		indexBufferDesc.ByteWidth = narrow<uint32_t>(indices.size_bytes());
 		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
 		D3D11_SUBRESOURCE_DATA indexSubResourceData{ 0 };
-		indexSubResourceData.pSysMem = indices;
+		indexSubResourceData.pSysMem = &indices[0];
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&indexBufferDesc, &indexSubResourceData, indexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 }

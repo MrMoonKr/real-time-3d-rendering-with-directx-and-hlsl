@@ -37,7 +37,7 @@ namespace Library
 		samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-		memcpy(samplerStateDesc.BorderColor, reinterpret_cast<FLOAT*>(&BorderColor), sizeof(FLOAT) * 4);
+		memcpy(samplerStateDesc.BorderColor, BorderColor.f, sizeof(FLOAT) * 4);
 		ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerStateDesc, TrilinerBorder.ReleaseAndGetAddressOf()), "ID3D11Device::CreateSamplerState() failed.");
 
 		samplerStateDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
@@ -50,7 +50,7 @@ namespace Library
 		samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-		memcpy(samplerStateDesc.BorderColor, reinterpret_cast<FLOAT*>(&BorderColor), sizeof(FLOAT) * 4);
+		memcpy(samplerStateDesc.BorderColor, BorderColor.f, sizeof(FLOAT) * 4);
 		ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerStateDesc, DepthMap.ReleaseAndGetAddressOf()), "ID3D11Device::CreateSamplerState() failed.");
 
 		samplerStateDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;

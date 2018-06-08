@@ -29,7 +29,7 @@ namespace Library
 		template <typename T>
 		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, bool releaseCompiledShader = false)
 		{
-			CreateInputLayout(device, &T::InputElements[0], T::InputElementCount, releaseCompiledShader);
+			CreateInputLayout(device, gsl::not_null<const D3D11_INPUT_ELEMENT_DESC*>(&T::InputElements[0]), T::InputElementCount, releaseCompiledShader);
 		}
 
 		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, gsl::not_null<const D3D11_INPUT_ELEMENT_DESC*> inputElementDescriptions, std::uint32_t inputElementCount, bool releaseCompiledShader = false);

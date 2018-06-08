@@ -40,5 +40,6 @@ namespace Rendering
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<Library::Grid> mGrid;
 		std::shared_ptr<AmbientLightingDemo> mAmbientLightingDemo;
+		float mAmbientIntensity{ 0.0f };
 	};
 }
