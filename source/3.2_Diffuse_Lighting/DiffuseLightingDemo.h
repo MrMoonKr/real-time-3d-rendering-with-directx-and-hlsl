@@ -54,8 +54,6 @@ namespace Rendering
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-		void CreateVertexBuffer(const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
-
 		inline static const float RotationRate{ DirectX::XM_PI };
 
 		std::shared_ptr<DiffuseLightingMaterial> mMaterial;

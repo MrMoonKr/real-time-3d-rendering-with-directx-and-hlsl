@@ -121,7 +121,7 @@ namespace Library
 	{
 		const auto model = mGame->Content().Load<Model>(Utility::ToWideString(mModelFileName));
 		Mesh* mesh = model->Meshes().at(0).get();
-		CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
+		VertexPosition::CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
@@ -153,28 +153,6 @@ namespace Library
 		{
 			mMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.Get()), not_null<ID3D11Buffer*>(mIndexBuffer.Get()), mIndexCount);
 		}
-	}
-
-	void ProxyModel::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const
-	{
-		const std::vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
-
-		std::vector<VertexPosition> vertices;
-		vertices.reserve(sourceVertices.size());
-		for (size_t i = 0; i < sourceVertices.size(); i++)
-		{
-			const XMFLOAT3& position = sourceVertices.at(i);
-			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f));
-		}
-
-		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(VertexPosition) * vertices.size());
-		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
-		vertexSubResourceData.pSysMem = &vertices[0];
-		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 
 	void ProxyModel::UpdateMaterial()

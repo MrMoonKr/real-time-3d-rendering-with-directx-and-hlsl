@@ -1,10 +1,15 @@
 #pragma once
 
+#include <cstdint>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <gsl\gsl>
 
 namespace Library
 {
+	void CreateIndexBuffer(gsl::not_null<ID3D11Device*> device, const gsl::span<const std::uint16_t>& indices, gsl::not_null<ID3D11Buffer**> indexBuffer);
+	void CreateIndexBuffer(gsl::not_null<ID3D11Device*> device, const gsl::span<const std::uint32_t>& indices, gsl::not_null<ID3D11Buffer**> indexBuffer);
+
 	inline float ConvertDipsToPixels(float dips, float dpi)
 	{
 		static const float dipsPerInch = 96.0f;

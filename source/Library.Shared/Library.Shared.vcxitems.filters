@@ -244,6 +244,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)SkyboxMaterial.cpp">
       <Filter>Materials</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)VertexDeclarations.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DirectXHelper.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">

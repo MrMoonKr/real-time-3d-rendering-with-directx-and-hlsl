@@ -44,10 +44,12 @@ namespace Rendering
 
 	void AmbientLightingDemo::Initialize()
 	{
+		auto direct3DDevice = mGame->Direct3DDevice();
+
 		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin"s);
 		Mesh* mesh = model->Meshes().at(0).get();
-		CreateVertexBuffer(*mesh, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
-		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
+		VertexPositionTexture::CreateVertexBuffer(direct3DDevice, *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
+		mesh->CreateIndexBuffer(*direct3DDevice, not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
 		auto texture = mGame->Content().Load<Texture2D>(L"Textures\\EarthComposite.dds"s);
@@ -80,29 +82,5 @@ namespace Rendering
 		}
 
 		mMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.Get()), not_null<ID3D11Buffer*>(mIndexBuffer.Get()), mIndexCount);
-	}
-
-	void AmbientLightingDemo::CreateVertexBuffer(const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer) const
-	{
-		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
-		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
-
-		vector<VertexPositionTexture> vertices;
-		vertices.reserve(sourceVertices.size());
-		for (size_t i = 0; i < sourceVertices.size(); i++)
-		{
-			const XMFLOAT3& position = sourceVertices.at(i);
-			const XMFLOAT3& uv = sourceUVs.at(i);
-			vertices.emplace_back(XMFLOAT4(position.x, position.y, position.z, 1.0f), XMFLOAT2(uv.x, uv.y));
-		}
-
-		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = sizeof(VertexPositionTexture) * static_cast<uint32_t>(vertices.size());
-		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
-		vertexSubResourceData.pSysMem = &vertices[0];
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 }

@@ -29,10 +29,10 @@ namespace Library
 		template <typename T>
 		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, bool releaseCompiledShader = false)
 		{
-			CreateInputLayout(device, gsl::not_null<const D3D11_INPUT_ELEMENT_DESC*>(&T::InputElements[0]), T::InputElementCount, releaseCompiledShader);
+			CreateInputLayout(device, T::InputElements, releaseCompiledShader);
 		}
 
-		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, gsl::not_null<const D3D11_INPUT_ELEMENT_DESC*> inputElementDescriptions, std::uint32_t inputElementCount, bool releaseCompiledShader = false);
+		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, const gsl::span<const D3D11_INPUT_ELEMENT_DESC>& inputElementDescriptions, bool releaseCompiledShader = false);
 
 	private:
 		friend class VertexShaderReader;

@@ -53,7 +53,7 @@ namespace Library
 		Material::Initialize();
 
 		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\SkyboxVS.cso");
-		mVertexShader->CreateInputLayout(mGame->Direct3DDevice(), not_null<const D3D11_INPUT_ELEMENT_DESC*>(&VertexPosition::InputElements[0]), VertexPosition::InputElementCount);
+		mVertexShader->CreateInputLayout<VertexPosition>(mGame->Direct3DDevice());
 		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\SkyboxPS.cso");
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };

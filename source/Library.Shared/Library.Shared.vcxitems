@@ -23,6 +23,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ContentTypeReaderManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DepthStencilStates.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalLight.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DirectXHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DrawableGameComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FpsComponent.cpp" />
@@ -84,6 +85,7 @@
       <PreprocessorDefinitions>HAS_DIRECTXTK;_SILEN%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)VectorHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)VertexDeclarations.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VertexShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)VertexShaderReader.cpp" />
   </ItemGroup>

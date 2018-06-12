@@ -6,6 +6,7 @@
 #include "VertexDeclarations.h"
 #include "KeyboardComponent.h"
 #include "Camera.h"
+#include "DirectXHelper.h"
 
 using namespace std;
 using namespace std::string_literals;
@@ -37,15 +38,17 @@ namespace Rendering
 
 	void AddressingModesDemo::Initialize()
 	{
+		auto direct3DDevice = mGame->Direct3DDevice();
+
 		// Load a compiled vertex shader
 		vector<char> compiledVertexShader;
 		Utility::LoadBinaryFile(L"Content\\Shaders\\AddressingModesDemoVS.cso", compiledVertexShader);		
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
+		ThrowIfFailed(direct3DDevice->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
 
 		// Load a compiled pixel shader
 		vector<char> compiledPixelShader;
 		Utility::LoadBinaryFile(L"Content\\Shaders\\AddressingModesDemoPS.cso", compiledPixelShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
+		ThrowIfFailed(direct3DDevice->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
 
 		// Create an input layout
 		const D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[] =
@@ -54,7 +57,7 @@ namespace Rendering
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, ARRAYSIZE(inputElementDescriptions), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
+		ThrowIfFailed(direct3DDevice->CreateInputLayout(inputElementDescriptions, ARRAYSIZE(inputElementDescriptions), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
 				
 		const float size = 10.0f;
 		const float halfSize = size / 2.0f;
@@ -68,7 +71,7 @@ namespace Rendering
 			VertexPositionTexture(XMFLOAT4(halfSize, 1.0f, 0.0f, 1.0f), XMFLOAT2(3.0f, 3.0f))
 		};
 
-		CreateVertexBuffer(vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
+		VertexPositionTexture::CreateVertexBuffer(direct3DDevice, vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
 
 		// Create an index buffer
 		const uint16_t sourceIndices[] =
@@ -79,17 +82,17 @@ namespace Rendering
 
 		const span<const uint16_t> indices{ sourceIndices };
 		mIndexCount = narrow<uint32_t>(indices.size());
-		CreateIndexBuffer(indices, not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
+		CreateIndexBuffer(direct3DDevice, indices, not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
 
 		// Create constant buffers
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = narrow<uint32_t>(sizeof(CBufferPerObject));
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
 
 		// Load a texture
 		const wstring textureName = L"Content\\Textures\\Cow.png";
-		ThrowIfFailed(DirectX::CreateWICTextureFromFile(mGame->Direct3DDevice(), mGame->Direct3DDeviceContext(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+		ThrowIfFailed(DirectX::CreateWICTextureFromFile(direct3DDevice, mGame->Direct3DDeviceContext(), textureName.c_str(), nullptr, mColorTexture.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
 
 		// Create texture samplers
 		for (AddressingModes mode = AddressingModes(0); mode < AddressingModes::End; mode = AddressingModes(static_cast<int>(mode) + 1))
@@ -129,7 +132,7 @@ namespace Rendering
 				throw GameException("Unsupported texture addressing mode.");
 			}
 
-			ThrowIfFailed(mGame->Direct3DDevice()->CreateSamplerState(&samplerDesc, mTextureSamplersByAddressingMode[mode].ReleaseAndGetAddressOf()), "ID3D11Device::CreateSamplerState() failed.");
+			ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerDesc, mTextureSamplersByAddressingMode[mode].ReleaseAndGetAddressOf()), "ID3D11Device::CreateSamplerState() failed.");
 		}
 
 		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
@@ -184,29 +187,5 @@ namespace Rendering
 		direct3DDeviceContext->PSSetSamplers(0, 1, mTextureSamplersByAddressingMode[mActiveAddressingMode].GetAddressOf());
 
 		direct3DDeviceContext->DrawIndexed(mIndexCount, 0, 0);
-	}
-
-	void AddressingModesDemo::CreateVertexBuffer(const span<const VertexPositionTexture>& vertices, not_null<ID3D11Buffer**> vertexBuffer) const
-	{
-		D3D11_BUFFER_DESC vertexBufferDesc{ 0 };
-		vertexBufferDesc.ByteWidth = narrow<uint32_t>(vertices.size_bytes());
-		vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
-		vertexSubResourceData.pSysMem = &vertices[0];
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
-	}
-
-	void AddressingModesDemo::CreateIndexBuffer(const span<const uint16_t>& indices, not_null<ID3D11Buffer**> indexBuffer) const
-	{
-		D3D11_BUFFER_DESC indexBufferDesc{ 0 };
-		indexBufferDesc.ByteWidth = narrow<uint32_t>(indices.size_bytes());
-		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-
-		D3D11_SUBRESOURCE_DATA indexSubResourceData{ 0 };
-		indexSubResourceData.pSysMem = &indices[0];
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&indexBufferDesc, &indexSubResourceData, indexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 }

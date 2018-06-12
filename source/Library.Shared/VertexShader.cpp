@@ -36,9 +36,9 @@ namespace Library
 		return mInputLayout;
 	}
 
-	void VertexShader::CreateInputLayout(not_null<ID3D11Device*> device, not_null<const D3D11_INPUT_ELEMENT_DESC*> inputElementDescriptions, uint32_t inputElementCount, bool releaseCompiledShader)
+	void VertexShader::CreateInputLayout(not_null<ID3D11Device*> device, const span<const D3D11_INPUT_ELEMENT_DESC>& inputElementDescriptions, bool releaseCompiledShader)
 	{
-		ThrowIfFailed(device->CreateInputLayout(inputElementDescriptions, inputElementCount, &mCompiledShader[0], mCompiledShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
+		ThrowIfFailed(device->CreateInputLayout(&inputElementDescriptions[0], narrow<uint32_t>(inputElementDescriptions.size()), &mCompiledShader[0], mCompiledShader.size(), mInputLayout.ReleaseAndGetAddressOf()), "ID3D11Device::CreateInputLayout() failed.");
 
 		if (releaseCompiledShader)
 		{

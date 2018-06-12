@@ -20,7 +20,6 @@ namespace Library
 	class ProxyModel;
 	class VertexShader;
 	class PixelShader;
-	struct VertexPositionTextureNormal;
 }
 
 namespace Rendering
@@ -71,8 +70,6 @@ namespace Rendering
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-		void CreateVertexBuffer(const gsl::span<const Library::VertexPositionTextureNormal>& vertices, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
-
 		std::shared_ptr<SpotLightMaterial> mMaterial;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;

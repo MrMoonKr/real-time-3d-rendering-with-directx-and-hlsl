@@ -7,7 +7,6 @@
 namespace Library
 {
 	class KeyboardComponent;
-	struct VertexPositionTexture;
 }
 
 namespace Rendering
@@ -43,9 +42,6 @@ namespace Rendering
 			CBufferPerObject() = default;
 			CBufferPerObject(const DirectX::XMFLOAT4X4& wvp) : WorldViewProjection(wvp) { }
 		};
-	
-		void CreateVertexBuffer(const gsl::span<const Library::VertexPositionTexture>& vertices, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;
-		void CreateIndexBuffer(const gsl::span<const uint16_t>& indices, gsl::not_null<ID3D11Buffer**> indexBuffer) const;
 
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		CBufferPerObject mCBufferPerObjectData;

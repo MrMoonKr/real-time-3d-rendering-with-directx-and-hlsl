@@ -183,7 +183,7 @@ void InitializeDirectX()
 	ComPtr<IDXGIFactory2> dxgiFactory;
 	ThrowIfFailed(dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory)));
 
-	DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullScreenDesc = { 0 };
+	DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullScreenDesc{ 0 };
 	fullScreenDesc.RefreshRate.Numerator = 60;
 	fullScreenDesc.RefreshRate.Denominator = 1;
 	fullScreenDesc.Windowed = true;
@@ -193,7 +193,7 @@ void InitializeDirectX()
 	ThrowIfFailed(mSwapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer)), "IDXGISwapChain1::GetBuffer() failed.");
 	ThrowIfFailed(mDirect3DDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, mRenderTargetView.GetAddressOf()), "IDXGIDevice::CreateRenderTargetView() failed.");
 
-	D3D11_TEXTURE2D_DESC depthStencilDesc = { 0 };
+	D3D11_TEXTURE2D_DESC depthStencilDesc{ 0 };
 	depthStencilDesc.Width = RenderTargetSize.cx;
 	depthStencilDesc.Height = RenderTargetSize.cy;
 	depthStencilDesc.MipLevels = 1;
