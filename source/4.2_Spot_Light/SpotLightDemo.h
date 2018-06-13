@@ -16,10 +16,7 @@
 namespace Library
 {
 	class Camera;
-	class Mesh;
 	class ProxyModel;
-	class VertexShader;
-	class PixelShader;
 }
 
 namespace Rendering

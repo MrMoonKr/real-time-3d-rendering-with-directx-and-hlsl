@@ -43,6 +43,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "4_3_Multiple_Point_Lights",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_1_Skybox", "..\source\5.1_Skybox\5_1_Skybox.vcxproj", "{38007FBC-1431-462F-B214-EC12AB4F02B5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_2_Environment_Mapping", "..\source\5.2_Environment_Mapping\5_2_Environment_Mapping.vcxproj", "{05B806E4-315E-44F8-8605-BAFA9E957E8A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -199,6 +201,14 @@ Global
 		{38007FBC-1431-462F-B214-EC12AB4F02B5}.Release|Win32.Build.0 = Release|Win32
 		{38007FBC-1431-462F-B214-EC12AB4F02B5}.Release|x64.ActiveCfg = Release|x64
 		{38007FBC-1431-462F-B214-EC12AB4F02B5}.Release|x64.Build.0 = Release|x64
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Debug|Win32.Build.0 = Debug|Win32
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Debug|x64.ActiveCfg = Debug|x64
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Debug|x64.Build.0 = Debug|x64
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Release|Win32.ActiveCfg = Release|Win32
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Release|Win32.Build.0 = Release|Win32
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Release|x64.ActiveCfg = Release|x64
+		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
