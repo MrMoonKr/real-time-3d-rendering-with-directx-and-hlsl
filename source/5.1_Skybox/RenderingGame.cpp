@@ -52,7 +52,7 @@ namespace Rendering
 		mGrid = make_shared<Grid>(*this, camera);
 		mComponents.push_back(mGrid);
 
-		auto skybox = make_shared<Skybox>(*this, camera, L"Textures\\Maskonaive2_1024.dds", 5000.0f);
+		auto skybox = make_shared<Skybox>(*this, camera, L"Textures\\Maskonaive2_1024.dds", 500.0f);
 		mComponents.push_back(skybox);
 
 		auto imGui = make_shared<ImGuiComponent>(*this);

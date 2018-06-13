@@ -5,16 +5,6 @@ using namespace DirectX;
 
 namespace Library
 {
-	const XMFLOAT4X4 MatrixHelper::Identity = XMFLOAT4X4(1.0f, 0.0f, 0.0f, 0.0f,
-														 0.0f, 1.0f, 0.0f, 0.0f,
-														 0.0f, 0.0f, 1.0f, 0.0f,
-														 0.0f, 0.0f, 0.0f, 1.0f);
-
-	const XMFLOAT4X4 MatrixHelper::Zero = XMFLOAT4X4(0.0f, 0.0f, 0.0f, 0.0f,
-														 0.0f, 0.0f, 0.0f, 0.0f,
-														 0.0f, 0.0f, 0.0f, 0.0f,
-														 0.0f, 0.0f, 0.0f, 0.0f);
-
 	void MatrixHelper::GetForward(CXMMATRIX matrix, XMFLOAT3 &vector)
 	{
 		XMFLOAT4 m3;
