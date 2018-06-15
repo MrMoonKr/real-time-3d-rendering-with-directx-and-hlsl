@@ -4,8 +4,8 @@
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
-#include "..\Library.Shared\Model.h"
-#include "..\Library.Shared\Mesh.h"
+#include "Model.h"
+#include "Mesh.h"
 #include "ProxyModel.h"
 #include "DiffuseLightingMaterial.h"
 #include "Texture2D.h"
@@ -62,12 +62,12 @@ namespace Rendering
 		mMaterial->SetLightColor(XMFLOAT4(intensity, intensity, intensity, 1.0f));
 	}
 
-	const DirectX::XMFLOAT3& DiffuseLightingDemo::LightDirection() const
+	const XMFLOAT3& DiffuseLightingDemo::LightDirection() const
 	{
 		return mDirectionalLight.Direction();
 	}
 
-	void DiffuseLightingDemo::RotateDirectionalLight(DirectX::XMFLOAT2 amount)
+	void DiffuseLightingDemo::RotateDirectionalLight(XMFLOAT2 amount)
 	{
 		XMMATRIX lightRotationMatrix = XMMatrixRotationY(amount.x) * XMMatrixRotationAxis(mDirectionalLight.RightVector(), amount.y);
 		mDirectionalLight.ApplyRotation(lightRotationMatrix);

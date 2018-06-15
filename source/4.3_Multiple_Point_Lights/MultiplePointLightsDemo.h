@@ -64,7 +64,6 @@ namespace Rendering
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
 		std::array<std::unique_ptr<Library::ProxyModel>, 4> mProxyModels;
 		size_t mSelectedLightIndex{ 0 };

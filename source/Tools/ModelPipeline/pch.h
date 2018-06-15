@@ -31,9 +31,9 @@
 
 // Library
 #include "Utility.h"
-#include "..\Library.Shared\Model.h"
-#include "..\Library.Shared\Mesh.h"
-#include "..\Library.Shared\ModelMaterial.h"
+#include "Model.h"
+#include "Mesh.h"
+#include "ModelMaterial.h"
 
 // Library.Desktop
 #include "UtilityWin32.h"

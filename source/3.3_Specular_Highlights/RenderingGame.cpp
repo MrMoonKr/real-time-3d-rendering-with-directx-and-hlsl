@@ -83,19 +83,19 @@ namespace Rendering
 			ImGui::Text(animationEnabledLabel.str().c_str());
 
 			stringstream ambientLightIntensityLabel;
-			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mBlinnPhongDemo->AmbientLightIntensity();
+			ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mBlinnPhongDemo->AmbientLightIntensity();
 			ImGui::Text(ambientLightIntensityLabel.str().c_str());
 
 			stringstream directionalLightIntensityLabel;
-			directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (Home/End): " << mBlinnPhongDemo->DirectionalLightIntensity();
+			directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (+Home/-End): " << mBlinnPhongDemo->DirectionalLightIntensity();
 			ImGui::Text(directionalLightIntensityLabel.str().c_str());
 
 			stringstream specularIntensityLabel;
-			specularIntensityLabel << setprecision(2) << "Specular Intensity (Insert/Delete): " << mBlinnPhongDemo->SpecularIntensity();
+			specularIntensityLabel << setprecision(2) << "Specular Intensity (+Insert/-Delete): " << mBlinnPhongDemo->SpecularIntensity();
 			ImGui::Text(specularIntensityLabel.str().c_str());
 
 			stringstream specularPowerLabel;
-			specularPowerLabel << "Specular Power (O/P): " << mBlinnPhongDemo->SpecularPower();
+			specularPowerLabel << "Specular Power (+O/-P): " << mBlinnPhongDemo->SpecularPower();
 			ImGui::Text(specularPowerLabel.str().c_str());
 
 			ImGui::End();

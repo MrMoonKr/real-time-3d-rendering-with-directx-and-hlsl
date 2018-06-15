@@ -6,8 +6,8 @@
 #include "Camera.h"
 #include "VertexDeclarations.h"
 #include "RasterizerStates.h"
-#include "..\Library.Shared\Model.h"
-#include "..\Library.Shared\Mesh.h"
+#include "Model.h"
+#include "Mesh.h"
 #include "BasicMaterial.h"
 #include <gsl\gsl>
 

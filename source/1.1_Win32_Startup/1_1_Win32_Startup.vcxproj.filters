@@ -9,7 +9,4 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="GameException.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
 </Project>

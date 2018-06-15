@@ -31,9 +31,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="Content\Textures\EarthComposite.dds">
       <Filter>Content\Textures</Filter>
     </Image>

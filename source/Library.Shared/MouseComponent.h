@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameComponent.h"
-#include <Mouse.h>
+#include <DirectXTK\Mouse.h>
 #include <memory>
 #include <windows.h>
 

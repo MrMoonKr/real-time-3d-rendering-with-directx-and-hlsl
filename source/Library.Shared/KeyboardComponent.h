@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameComponent.h"
-#include <Keyboard.h>
+#include <DirectXTK\Keyboard.h>
 #include <memory>
 
 namespace Library

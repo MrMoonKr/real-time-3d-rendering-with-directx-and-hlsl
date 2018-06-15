@@ -44,7 +44,7 @@ namespace Rendering
 
 	shared_ptr<Texture2D> SpotLightMaterial::SpecularMap() const
 	{
-		return mColorMap;
+		return mSpecularMap;
 	}
 
 	void SpotLightMaterial::SetSpecularMap(shared_ptr<Texture2D> texture)

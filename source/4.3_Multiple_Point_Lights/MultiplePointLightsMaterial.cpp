@@ -45,7 +45,7 @@ namespace Rendering
 
 	shared_ptr<Texture2D> MultiplePointLightsMaterial::SpecularMap() const
 	{
-		return mColorMap;
+		return mSpecularMap;
 	}
 
 	void MultiplePointLightsMaterial::SetSpecularMap(shared_ptr<Texture2D> texture)

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "VertexDeclarations.h"
 #include "GameException.h"
-#include "..\Library.Shared\Mesh.h"
+#include "Mesh.h"
 
 using namespace std;
 using namespace gsl;

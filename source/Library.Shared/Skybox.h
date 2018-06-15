@@ -12,7 +12,6 @@
 
 namespace Library
 {
-	class Mesh;
 	class SkyboxMaterial;
 
 	class Skybox final : public DrawableGameComponent

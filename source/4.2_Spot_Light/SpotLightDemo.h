@@ -70,7 +70,6 @@ namespace Rendering
 		std::shared_ptr<SpotLightMaterial> mMaterial;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mVertexCount{ 0 };
 		Library::SpotLight mSpotLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;

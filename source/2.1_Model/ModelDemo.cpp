@@ -6,8 +6,8 @@
 #include "VertexDeclarations.h"
 #include "Game.h"
 #include "GameException.h"
-#include "..\Library.Shared\Model.h"
-#include "..\Library.Shared\Mesh.h"
+#include "Model.h"
+#include "Mesh.h"
 
 using namespace std;
 using namespace gsl;

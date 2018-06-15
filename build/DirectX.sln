@@ -45,6 +45,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_1_Skybox", "..\source\5.1
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_2_Environment_Mapping", "..\source\5.2_Environment_Mapping\5_2_Environment_Mapping.vcxproj", "{05B806E4-315E-44F8-8605-BAFA9E957E8A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_3_Fog", "..\source\5.3_Fog\5_3_Fog.vcxproj", "{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -209,6 +211,14 @@ Global
 		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Release|Win32.Build.0 = Release|Win32
 		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Release|x64.ActiveCfg = Release|x64
 		{05B806E4-315E-44F8-8605-BAFA9E957E8A}.Release|x64.Build.0 = Release|x64
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Debug|Win32.Build.0 = Debug|Win32
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Debug|x64.ActiveCfg = Debug|x64
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Debug|x64.Build.0 = Debug|x64
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Release|Win32.ActiveCfg = Release|Win32
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Release|Win32.Build.0 = Release|Win32
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Release|x64.ActiveCfg = Release|x64
+		{D6D2E4E5-2926-43CA-AFD3-00C6AD9D7E23}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

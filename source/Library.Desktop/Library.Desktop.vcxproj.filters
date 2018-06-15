@@ -35,6 +35,5 @@
     <None Include="Content\Fonts\Arial_14_Regular.spritefont">
       <Filter>Content\Fonts</Filter>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

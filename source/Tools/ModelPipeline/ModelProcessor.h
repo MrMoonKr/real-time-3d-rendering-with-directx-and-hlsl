@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "..\Library.Shared\Model.h"
+#include "Model.h"
 
 struct aiNode;
 

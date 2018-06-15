@@ -39,10 +39,10 @@
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
-#include <DDSTextureLoader.h>
-#include <WICTextureLoader.h>
-#include <SpriteBatch.h>
-#include <SpriteFont.h>
-#include <GamePad.h>
-#include <Keyboard.h>
-#include <Mouse.h>
+#include <DirectXTK\DDSTextureLoader.h>
+#include <DirectXTK\WICTextureLoader.h>
+#include <DirectXTK\SpriteBatch.h>
+#include <DirectXTK\SpriteFont.h>
+#include <DirectXTK\GamePad.h>
+#include <DirectXTK\Keyboard.h>
+#include <DirectXTK\Mouse.h>

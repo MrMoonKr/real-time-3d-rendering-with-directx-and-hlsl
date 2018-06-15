@@ -84,11 +84,11 @@ namespace Rendering
 		VertexCBufferPerFrame mVertexCBufferPerFrameData;
 		VertexCBufferPerObject mVertexCBufferPerObjectData;
 		PixelCBufferPerFrame mPixelCBufferPerFrameData;
-		PixelCBufferPerObject mPixelCBufferPerObjectData;
-		bool mPixelCBufferPerFrameDataDirty{ true };
-		bool mPixelCBufferPerObjectDataDirty{ true };
+		PixelCBufferPerObject mPixelCBufferPerObjectData;		
 		std::shared_ptr<Library::Texture2D> mColorMap;
 		std::shared_ptr<Library::TextureCube> mEnvironmentMap;
 		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };
+		bool mPixelCBufferPerFrameDataDirty{ true };
+		bool mPixelCBufferPerObjectDataDirty{ true };
 	};
 }
