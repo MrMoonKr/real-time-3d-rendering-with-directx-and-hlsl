@@ -23,7 +23,7 @@ namespace Library
 	{
 		if (reload == false)
 		{
-			map<wstring, shared_ptr<RTTI>>::iterator it = mLoadedAssets.find(assetName);
+			auto it = mLoadedAssets.find(assetName);
 			if (it != mLoadedAssets.end())
 			{
 				return static_pointer_cast<T>(it->second);
@@ -31,7 +31,7 @@ namespace Library
 		}
 
 		uint64_t targetTypeId = T::TypeIdClass();
-		shared_ptr<RTTI> asset = ReadAsset(targetTypeId, mRootDirectory + assetName);
+		auto asset = ReadAsset(targetTypeId, mRootDirectory + assetName);		
 		mLoadedAssets[assetName] = asset;
 
 		return static_pointer_cast<T>(asset);

@@ -254,7 +254,7 @@ namespace Library
 					D3D11_MESSAGE_ID_SETPRIVATEDATA_CHANGINGPARAMS
 				};
 				D3D11_INFO_QUEUE_FILTER filter{ 0 };
-				filter.DenyList.NumIDs = _countof(hide);
+				filter.DenyList.NumIDs = narrow_cast<uint32_t>(size(hide));
 				filter.DenyList.pIDList = hide;
 				d3dInfoQueue->AddStorageFilterEntries(&filter);
 			}

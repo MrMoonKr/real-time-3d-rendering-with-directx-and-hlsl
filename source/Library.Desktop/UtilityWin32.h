@@ -13,7 +13,7 @@ namespace Library
 	public:
 		typedef std::function<bool(HWND, UINT, WPARAM, LPARAM)> WndProcHandler;
 
-		static void InitializeWindow(WNDCLASSEX& window, HWND& windowHandle, HINSTANCE instance, const std::wstring& className, const std::wstring windowTitle, const SIZE& renderTargetSize, int showCommand);
+		static void InitializeWindow(WNDCLASSEX& window, HWND& windowHandle, HINSTANCE instance, const std::wstring& className, const std::wstring& windowTitle, const SIZE& renderTargetSize, int showCommand);
 		static LRESULT WINAPI WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
 		static POINT CenterWindow(const SIZE& windowSize);
 
@@ -34,6 +34,6 @@ namespace Library
 		~UtilityWin32() = default;
 
 	private:
-		static std::vector<std::shared_ptr<WndProcHandler>> sWndProcHandlers;
+		inline static std::vector<std::shared_ptr<WndProcHandler>> sWndProcHandlers;
 	};
 }
