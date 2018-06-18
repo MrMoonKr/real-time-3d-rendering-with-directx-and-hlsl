@@ -152,7 +152,7 @@ namespace Rendering
 		};
 
 		const span<const VertexPositionTextureNormal> vertices{ sourceVertices };
-		mVertexCount = narrow<uint32_t>(vertices.size());
+		mVertexCount = narrow_cast<uint32_t>(vertices.size());
 		VertexPositionTextureNormal::CreateVertexBuffer(mGame->Direct3DDevice(), vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
 
 		auto colorMap = mGame->Content().Load<Texture2D>(L"Textures\\Checkerboard.png"s);

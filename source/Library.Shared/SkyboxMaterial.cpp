@@ -70,7 +70,8 @@ namespace Library
 		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mConstantBuffer.GetAddressOf());
 		direct3DDeviceContext->PSSetShaderResources(0, 1, mTexture->ShaderResourceView().GetAddressOf());
 		direct3DDeviceContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
-		direct3DDeviceContext->RSSetState(RasterizerStates::DisabledCulling.Get());
+
+		direct3DDeviceContext->RSSetState(RasterizerStates::DisabledCulling.Get());		
 	}
 
 	void SkyboxMaterial::EndDraw()

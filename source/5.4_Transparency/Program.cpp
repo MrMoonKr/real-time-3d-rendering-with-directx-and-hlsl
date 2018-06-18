@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
 
 	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"5.3 - Fog";
+	const wstring windowTitle = L"5.4 - Transparency";
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;

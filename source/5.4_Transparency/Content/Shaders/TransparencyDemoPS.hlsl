@@ -15,6 +15,7 @@ cbuffer CBufferPerObject
 
 Texture2D ColorMap;
 Texture2D SpecularMap;
+Texture2D TransparencyMap;
 SamplerState TextureSampler;
 
 struct VS_OUTPUT
@@ -33,6 +34,12 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 		return float4(FogColor, 1.0f);
 	}
 
+	float sampledAlpha = TransparencyMap.Sample(TextureSampler, IN.TextureCoordinates).a;
+	if (sampledAlpha == 0.0f)
+	{
+		return float4(1.0f, 1.0f, 1.0f, 0.0f);
+	}
+
 	float3 viewDirection = normalize(CameraPosition - IN.WorldPosition);
 
 	float3 normal = normalize(IN.Normal);	
@@ -48,5 +55,5 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 	float3 diffuse = color.rgb * lightCoefficients.x * LightColor;
 	float3 specular = min(lightCoefficients.y, specularClamp) * SpecularColor;
 
-	return float4(lerp(saturate(ambient + diffuse + specular), FogColor, IN.FogAmount), 1.0f);
+	return float4(lerp(saturate(ambient + diffuse + specular), FogColor, IN.FogAmount), sampledAlpha);
 }
