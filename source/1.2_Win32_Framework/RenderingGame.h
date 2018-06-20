@@ -23,7 +23,7 @@ namespace Rendering
 		void Exit();
 
     private:
-		static const DirectX::XMVECTORF32 BackgroundColor;
+		inline static const DirectX::XMVECTORF32 BackgroundColor = DirectX::Colors::CornflowerBlue;
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
     };

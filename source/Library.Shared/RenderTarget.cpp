@@ -6,7 +6,9 @@ using namespace gsl;
 
 namespace Library
 {
-    RTTI_DEFINITIONS(RenderTarget)
+	RTTI_DEFINITIONS(RenderTarget)
+
+	stack<RenderTarget::RenderTargetData> RenderTarget::sRenderTargetStack;
 
 	void RenderTarget::Begin(not_null<ID3D11DeviceContext*> deviceContext, const span<ID3D11RenderTargetView*>& renderTargetViews, not_null<ID3D11DepthStencilView*> depthStencilView, const D3D11_VIEWPORT& viewport)
 	{

@@ -40,6 +40,6 @@ namespace Library
 		void RebindCurrentRenderTargets(gsl::not_null<ID3D11DeviceContext*> deviceContext);
 
 	private:
-		inline static std::stack<RenderTargetData> sRenderTargetStack;
+		static std::stack<RenderTargetData> sRenderTargetStack;
 	};
 }

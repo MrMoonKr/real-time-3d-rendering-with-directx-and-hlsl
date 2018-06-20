@@ -10,8 +10,6 @@ using namespace Library;
 
 namespace Rendering
 {
-    const XMVECTORF32 RenderingGame::BackgroundColor = Colors::CornflowerBlue;
-
 	RenderingGame::RenderingGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
 		Game(getWindowCallback, getRenderTargetSizeCallback)
 	{
@@ -29,7 +27,7 @@ namespace Rendering
 		Game::Initialize();
 	}
 
-	void RenderingGame::Update(const GameTime &gameTime)
+	void RenderingGame::Update(const GameTime& gameTime)
 	{
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape))
 		{
@@ -39,12 +37,12 @@ namespace Rendering
 		Game::Update(gameTime);
 	}
 
-    void RenderingGame::Draw(const GameTime &gameTime)
-    {
+	void RenderingGame::Draw(const GameTime& gameTime)
+	{
 		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.get(), BackgroundColor.f);
 		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-        Game::Draw(gameTime);
+		Game::Draw(gameTime);
 
 		HRESULT hr = mSwapChain->Present(1, 0);
 
@@ -57,7 +55,7 @@ namespace Rendering
 		{
 			ThrowIfFailed(hr, "IDXGISwapChain::Present() failed.");
 		}
-    }
+	}
 
 	void RenderingGame::Exit()
 	{

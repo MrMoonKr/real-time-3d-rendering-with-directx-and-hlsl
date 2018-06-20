@@ -34,6 +34,6 @@ namespace Library
 		~UtilityWin32() = default;
 
 	private:
-		inline static std::vector<std::shared_ptr<WndProcHandler>> sWndProcHandlers;
+		static std::vector<std::shared_ptr<WndProcHandler>> sWndProcHandlers;
 	};
 }

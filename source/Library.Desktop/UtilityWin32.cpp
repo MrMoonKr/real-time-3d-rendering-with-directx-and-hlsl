@@ -9,6 +9,8 @@ using namespace std;
 
 namespace Library
 {
+	vector<shared_ptr<UtilityWin32::WndProcHandler>> UtilityWin32::sWndProcHandlers;
+
 	void UtilityWin32::InitializeWindow(WNDCLASSEX& window, HWND& windowHandle, HINSTANCE instance, const wstring& className, const wstring& windowTitle, const SIZE& renderTargetSize, int showCommand)
 	{
 		ZeroMemory(&window, sizeof(window));
