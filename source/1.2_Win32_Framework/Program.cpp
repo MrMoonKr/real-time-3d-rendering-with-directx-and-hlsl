@@ -6,18 +6,20 @@
 using namespace Library;
 using namespace Rendering;
 using namespace std;
+using namespace std::string_literals;
 
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 {
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
+
 	ThrowIfFailed(CoInitializeEx(nullptr, COINITBASE_MULTITHREADED), "Error initializing COM.");
 
 	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
 
-	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"1.2 - Win32 Startup Framework";
+	const wstring windowClassName = L"RenderingClass"s;
+	const wstring windowTitle = L"1.2 - Win32 Startup Framework"s;
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;

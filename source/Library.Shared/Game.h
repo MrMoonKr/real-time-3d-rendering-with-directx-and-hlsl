@@ -4,7 +4,7 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <cstdint>
 #include <string>
 #include <sstream>
@@ -96,14 +96,14 @@ namespace Library
 		inline static const std::uint32_t DefaultMultiSamplingCount{ 4 };
 		inline static const std::uint32_t DefaultBufferCount{ 2 };
 
-		Microsoft::WRL::ComPtr<ID3D11Device5> mDirect3DDevice;
-		Microsoft::WRL::ComPtr<ID3D11DeviceContext4> mDirect3DDeviceContext;
-		Microsoft::WRL::ComPtr<IDXGISwapChain1> mSwapChain;
+		winrt::com_ptr<ID3D11Device5> mDirect3DDevice;
+		winrt::com_ptr<ID3D11DeviceContext4> mDirect3DDeviceContext;
+		winrt::com_ptr<IDXGISwapChain1> mSwapChain;
 		D3D_FEATURE_LEVEL mFeatureLevel = DefaultFeatureLevel;
 
 		D3D11_TEXTURE2D_DESC mBackBufferDesc;
-		Microsoft::WRL::ComPtr<ID3D11RenderTargetView> mRenderTargetView;
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilView> mDepthStencilView;
+		winrt::com_ptr<ID3D11RenderTargetView> mRenderTargetView;
+		winrt::com_ptr<ID3D11DepthStencilView> mDepthStencilView;
 		D3D11_VIEWPORT mViewport;
 
 		std::uint32_t mFrameRate{ DefaultFrameRate };

@@ -20,7 +20,7 @@ WNDCLASSEX mWindow;
 
 D3D_FEATURE_LEVEL mFeatureLevel;
 com_ptr<ID3D11Device5> mDirect3DDevice;
-com_ptr<ID3D11DeviceContext1> mDirect3DDeviceContext;
+com_ptr<ID3D11DeviceContext4> mDirect3DDeviceContext;
 com_ptr<IDXGISwapChain1> mSwapChain;
 com_ptr<ID3D11RenderTargetView> mRenderTargetView;
 com_ptr<ID3D11DepthStencilView> mDepthStencilView;
@@ -132,7 +132,10 @@ void InitializeDirectX()
 	com_ptr<ID3D11DeviceContext> direct3DDeviceContext;
 	ThrowIfFailed(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, featureLevels, narrow_cast<uint32_t>(size(featureLevels)), D3D11_SDK_VERSION, direct3DDevice.put(), &mFeatureLevel, direct3DDeviceContext.put()), "D3D11CreateDevice() failed");
 	mDirect3DDevice = direct3DDevice.as<ID3D11Device5>();
-	mDirect3DDeviceContext = direct3DDeviceContext.as<ID3D11DeviceContext1>();
+	assert(mDirect3DDevice != nullptr);
+
+	mDirect3DDeviceContext = direct3DDeviceContext.as<ID3D11DeviceContext4>();
+	assert(mDirect3DDeviceContext != nullptr);
 
 	uint32_t multiSamplingCount = 4;
 	uint32_t multiSamplingQualityLevels;
@@ -175,7 +178,8 @@ void InitializeDirectX()
 	swapChainDesc.BufferCount = 2;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-	com_ptr<IDXGIDevice3> dxgiDevice = mDirect3DDevice.as<IDXGIDevice3>();
+	com_ptr<IDXGIDevice4> dxgiDevice = mDirect3DDevice.as<IDXGIDevice4>();
+	assert(dxgiDevice != nullptr);
 
 	com_ptr<IDXGIAdapter> dxgiAdapter;
 	ThrowIfFailed(dxgiDevice->GetAdapter(dxgiAdapter.put()));

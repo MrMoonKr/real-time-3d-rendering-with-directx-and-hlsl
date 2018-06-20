@@ -31,7 +31,7 @@
 #define NOMINMAX
 #endif
 #include <windows.h>
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 
 // DirectX
 #include <d3d11_4.h>

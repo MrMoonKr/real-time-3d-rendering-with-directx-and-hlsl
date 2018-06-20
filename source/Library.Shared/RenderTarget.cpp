@@ -8,12 +8,10 @@ namespace Library
 {
     RTTI_DEFINITIONS(RenderTarget)
 
-    stack<RenderTarget::RenderTargetData> RenderTarget::sRenderTargetStack;
-
-	void RenderTarget::Begin(not_null<ID3D11DeviceContext*> deviceContext, uint32_t viewCount, not_null<ID3D11RenderTargetView**> renderTargetViews, not_null<ID3D11DepthStencilView*> depthStencilView, const D3D11_VIEWPORT& viewport)
+	void RenderTarget::Begin(not_null<ID3D11DeviceContext*> deviceContext, const span<ID3D11RenderTargetView*>& renderTargetViews, not_null<ID3D11DepthStencilView*> depthStencilView, const D3D11_VIEWPORT& viewport)
 	{
-		sRenderTargetStack.push(RenderTargetData(viewCount, renderTargetViews, depthStencilView, viewport));
-		deviceContext->OMSetRenderTargets(viewCount, renderTargetViews, depthStencilView);
+		sRenderTargetStack.emplace(renderTargetViews, depthStencilView, viewport);
+		deviceContext->OMSetRenderTargets(narrow_cast<uint32_t>(renderTargetViews.size()), &renderTargetViews[0], depthStencilView);
 		deviceContext->RSSetViewports(1, &viewport);
 	}
 
@@ -22,14 +20,14 @@ namespace Library
 		sRenderTargetStack.pop();
 
 		RenderTargetData renderTargetData = sRenderTargetStack.top();
-		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount, renderTargetData.RenderTargetViews, renderTargetData.DepthStencilView);
+		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount(), &renderTargetData.RenderTargetViews[0], renderTargetData.DepthStencilView);
 		deviceContext->RSSetViewports(1, &renderTargetData.Viewport);
 	}
 
 	void RenderTarget::RebindCurrentRenderTargets(not_null<ID3D11DeviceContext*> deviceContext)
 	{
 		RenderTargetData renderTargetData = sRenderTargetStack.top();
-		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount, renderTargetData.RenderTargetViews, renderTargetData.DepthStencilView);
+		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount(), &renderTargetData.RenderTargetViews[0], renderTargetData.DepthStencilView);
 		deviceContext->RSSetViewports(1, &renderTargetData.Viewport);
 	}
 }

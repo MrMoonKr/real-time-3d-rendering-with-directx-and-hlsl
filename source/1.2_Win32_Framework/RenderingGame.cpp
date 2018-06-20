@@ -41,8 +41,8 @@ namespace Rendering
 
     void RenderingGame::Draw(const GameTime &gameTime)
     {
-		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.Get(), BackgroundColor.f);
-		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.get(), BackgroundColor.f);
+		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
         Game::Draw(gameTime);
 
