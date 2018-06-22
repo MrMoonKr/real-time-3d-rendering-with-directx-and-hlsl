@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <string>
 #include <cstdint>
 #include <vector>

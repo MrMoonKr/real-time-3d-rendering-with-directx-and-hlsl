@@ -27,7 +27,7 @@ namespace Library
 		virtual void BeginDraw() override;
 		void SetSurfaceColor(const float* color);
 
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVSConstantBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mPSConstantBuffer;
+		winrt::com_ptr<ID3D11Buffer> mVSConstantBuffer;
+		winrt::com_ptr<ID3D11Buffer> mPSConstantBuffer;
 	};
 }

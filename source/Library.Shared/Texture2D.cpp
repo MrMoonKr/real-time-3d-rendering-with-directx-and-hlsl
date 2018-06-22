@@ -3,13 +3,13 @@
 
 using namespace std;
 using namespace DirectX;
-using namespace Microsoft::WRL;
+using namespace winrt;
 
 namespace Library
 {
 	RTTI_DEFINITIONS(Texture2D)
 
-	Texture2D::Texture2D(const ComPtr<ID3D11ShaderResourceView>& shaderResourceView, const int32_t width, const int32_t height) :
+	Texture2D::Texture2D(const com_ptr<ID3D11ShaderResourceView>& shaderResourceView, const int32_t width, const int32_t height) :
 		Texture(shaderResourceView), mWidth(width), mHeight(height)
 	{
 	}

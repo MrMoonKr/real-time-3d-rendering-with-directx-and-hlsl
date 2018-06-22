@@ -10,7 +10,7 @@
 using namespace std;
 using namespace std::string_literals;
 using namespace DirectX;
-using namespace Microsoft::WRL;
+using namespace winrt;
 using namespace Library;
 
 namespace Rendering
@@ -22,12 +22,12 @@ namespace Rendering
 	{
 	}
 
-	ComPtr<ID3D11SamplerState> DiffuseLightingMaterial::SamplerState() const
+	com_ptr<ID3D11SamplerState> DiffuseLightingMaterial::SamplerState() const
 	{
 		return mSamplerState;
 	}
 
-	void DiffuseLightingMaterial::SetSamplerState(ComPtr<ID3D11SamplerState> samplerState)
+	void DiffuseLightingMaterial::SetSamplerState(com_ptr<ID3D11SamplerState> samplerState)
 	{
 		mSamplerState = move(samplerState);
 	}
@@ -92,21 +92,21 @@ namespace Rendering
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
-		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
-		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 	}
 
 	void DiffuseLightingMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
 	{
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, worldViewProjectionMatrix);
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.World, worldMatrix);
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 	}
 
 	void DiffuseLightingMaterial::BeginDraw()
@@ -117,13 +117,20 @@ namespace Rendering
 
 		if (mPixelCBufferPerFrameDataDirty)
 		{
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 			mPixelCBufferPerFrameDataDirty = false;
 		}
 
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mVertexCBufferPerObject.GetAddressOf());
-		direct3DDeviceContext->PSSetConstantBuffers(0, 1, mPixelCBufferPerFrame.GetAddressOf());
-		direct3DDeviceContext->PSSetShaderResources(0, 1, mTexture->ShaderResourceView().GetAddressOf());
-		direct3DDeviceContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+		const auto vsConstantBuffers = mVertexCBufferPerObject.get();
+		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
+
+		const auto psConstantBuffers = mPixelCBufferPerFrame.get();
+		direct3DDeviceContext->PSSetConstantBuffers(0, 1, &psConstantBuffers);
+
+		const auto psShaderResources = mTexture->ShaderResourceView().get();
+		direct3DDeviceContext->PSSetShaderResources(0, 1, &psShaderResources);
+
+		const auto psSamplers = mSamplerState.get();
+		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
 	}
 }

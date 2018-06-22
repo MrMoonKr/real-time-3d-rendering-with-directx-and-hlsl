@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "TextureCube.h"
 
-using namespace Microsoft::WRL;
+using namespace winrt;
 
 namespace Library
 {
 	RTTI_DEFINITIONS(TextureCube)
 
-	TextureCube::TextureCube(const ComPtr<ID3D11ShaderResourceView>& shaderResourceView) :
+	TextureCube::TextureCube(const com_ptr<ID3D11ShaderResourceView>& shaderResourceView) :
 		Texture(shaderResourceView)
 	{
 	}

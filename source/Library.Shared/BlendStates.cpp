@@ -16,7 +16,7 @@ namespace Library
 		blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		ThrowIfFailed(direct3DDevice->CreateBlendState(&blendStateDesc, AlphaBlending.GetAddressOf()), "ID3D11Device::CreateBlendState() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBlendState(&blendStateDesc, AlphaBlending.put()), "ID3D11Device::CreateBlendState() failed.");
 
 		ZeroMemory(&blendStateDesc, sizeof(D3D11_BLEND_DESC));
 		blendStateDesc.RenderTarget[0].BlendEnable = true;
@@ -28,7 +28,7 @@ namespace Library
 		blendStateDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendStateDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-		ThrowIfFailed(direct3DDevice->CreateBlendState(&blendStateDesc, MultiplicativeBlending.GetAddressOf()), "ID3D11Device::CreateBlendState() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBlendState(&blendStateDesc, MultiplicativeBlending.put()), "ID3D11Device::CreateBlendState() failed.");
 	}
 
 	void BlendStates::Shutdown()

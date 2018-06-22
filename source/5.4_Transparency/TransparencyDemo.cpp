@@ -118,7 +118,7 @@ namespace Rendering
 
 		const span<const VertexPositionTextureNormal> vertices{ sourceVertices };
 		mVertexCount = narrow_cast<uint32_t>(vertices.size());
-		VertexPositionTextureNormal::CreateVertexBuffer(mGame->Direct3DDevice(), vertices, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
+		VertexPositionTextureNormal::CreateVertexBuffer(mGame->Direct3DDevice(), vertices, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
 
 		auto colorMap = mGame->Content().Load<Texture2D>(L"Textures\\Checkerboard.png"s);
 		auto specularMap = mGame->Content().Load<Texture2D>(L"Textures\\CheckerboardSpecularMap.png"s);
@@ -163,7 +163,7 @@ namespace Rendering
 			mUpdateMaterial = false;
 		}
 
-		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.Get()), mVertexCount);
+		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.get()), mVertexCount);
 		mProxyModel->Draw(gameTime);
 	}
 }

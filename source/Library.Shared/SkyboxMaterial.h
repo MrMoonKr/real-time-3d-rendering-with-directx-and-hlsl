@@ -12,15 +12,15 @@ namespace Library
 		RTTI_DECLARATIONS(SkyboxMaterial, Material)
 
 	public:
-		SkyboxMaterial(Game& game, const std::shared_ptr<TextureCube>& texture, const Microsoft::WRL::ComPtr<ID3D11SamplerState>& samplerState = SamplerStates::TrilinearClamp);
+		SkyboxMaterial(Game& game, const std::shared_ptr<TextureCube>& texture, const winrt::com_ptr<ID3D11SamplerState>& samplerState = SamplerStates::TrilinearClamp);
 		SkyboxMaterial(const SkyboxMaterial&) = default;
 		SkyboxMaterial& operator=(const SkyboxMaterial&) = default;
 		SkyboxMaterial(SkyboxMaterial&&) = default;
 		SkyboxMaterial& operator=(SkyboxMaterial&&) = default;
 		~SkyboxMaterial() = default;
 
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState() const;
-		void SetSamplerState(const Microsoft::WRL::ComPtr<ID3D11SamplerState>& samplerState);
+		winrt::com_ptr<ID3D11SamplerState> SamplerState() const;
+		void SetSamplerState(const winrt::com_ptr<ID3D11SamplerState>& samplerState);
 
 		std::shared_ptr<TextureCube> Texture() const;
 		void SetTexture(std::shared_ptr<TextureCube> texture);
@@ -34,8 +34,8 @@ namespace Library
 		virtual void BeginDraw() override;
 		virtual void EndDraw() override;
 
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer;
+		winrt::com_ptr<ID3D11Buffer> mConstantBuffer;
 		std::shared_ptr<TextureCube> mTexture;
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState;
+		winrt::com_ptr<ID3D11SamplerState> mSamplerState;
 	};
 }

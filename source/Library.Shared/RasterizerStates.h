@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include <gsl\gsl>
 
@@ -12,10 +12,10 @@ namespace Library
 	class RasterizerStates final
 	{
 	public:
-		inline static Microsoft::WRL::ComPtr<ID3D11RasterizerState> BackCulling;
-		inline static Microsoft::WRL::ComPtr<ID3D11RasterizerState> FrontCulling;
-		inline static Microsoft::WRL::ComPtr<ID3D11RasterizerState> DisabledCulling;
-		inline static Microsoft::WRL::ComPtr<ID3D11RasterizerState> Wireframe;
+		inline static winrt::com_ptr<ID3D11RasterizerState> BackCulling;
+		inline static winrt::com_ptr<ID3D11RasterizerState> FrontCulling;
+		inline static winrt::com_ptr<ID3D11RasterizerState> DisabledCulling;
+		inline static winrt::com_ptr<ID3D11RasterizerState> Wireframe;
 
 		static void Initialize(gsl::not_null<ID3D11Device*> direct3DDevice);
 		static void Shutdown();

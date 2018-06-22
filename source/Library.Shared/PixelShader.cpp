@@ -3,18 +3,18 @@
 
 using namespace std;
 using namespace DirectX;
-using namespace Microsoft::WRL;
+using namespace winrt;
 
 namespace Library
 {
 	RTTI_DEFINITIONS(PixelShader)
 
-	PixelShader::PixelShader(const ComPtr<ID3D11PixelShader>& vertexShader) :
+	PixelShader::PixelShader(const com_ptr<ID3D11PixelShader>& vertexShader) :
 		mShader(vertexShader)
 	{
 	}
 
-	ComPtr<ID3D11PixelShader> PixelShader::Shader() const
+	com_ptr<ID3D11PixelShader> PixelShader::Shader() const
 	{
 		return mShader;
 	}

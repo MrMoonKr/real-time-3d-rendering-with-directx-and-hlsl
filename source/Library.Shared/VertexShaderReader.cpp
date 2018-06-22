@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace DirectX;
-using namespace Microsoft::WRL;
+using namespace winrt;
 
 namespace Library
 {
@@ -19,10 +19,10 @@ namespace Library
 
 	shared_ptr<VertexShader> VertexShaderReader::_Read(const wstring& assetName)
 	{
-		ComPtr<ID3D11VertexShader> vertexShader;
+		com_ptr<ID3D11VertexShader> vertexShader;
 		vector<char> compiledVertexShader;
 		Utility::LoadBinaryFile(assetName, compiledVertexShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, vertexShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedVertexShader() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, vertexShader.put()), "ID3D11Device::CreatedVertexShader() failed.");
 		
 		return shared_ptr<VertexShader>(new VertexShader(move(compiledVertexShader), move(vertexShader)));
 	}

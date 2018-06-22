@@ -93,13 +93,11 @@ namespace Library
 			mUpdateMaterial = false;
 		}
 
-		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.Get()), (mSize + 1) * 4, 0);
+		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.get()), (mSize + 1) * 4, 0);
 	}
 
 	void Grid::InitializeGrid()
 	{
-		mVertexBuffer.Reset();
-
 		ID3D11Device* direct3DDevice = GetGame()->Direct3DDevice();
 		int length = 4 * (mSize + 1);
 		int size = sizeof(VertexPosition) * length;
@@ -130,6 +128,6 @@ namespace Library
 		D3D11_SUBRESOURCE_DATA vertexSubResourceData{ 0 };
 		vertexSubResourceData.pSysMem = vertices;		
 		
-		ThrowIfFailed(direct3DDevice->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, mVertexBuffer.GetAddressOf()), "ID3D11Device::CreateBuffer() failed");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, mVertexBuffer.put()), "ID3D11Device::CreateBuffer() failed");
 	}
 }

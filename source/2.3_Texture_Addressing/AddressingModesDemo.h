@@ -43,14 +43,14 @@ namespace Rendering
 
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		CBufferPerObject mCBufferPerObjectData;
-		std::map<AddressingModes, Microsoft::WRL::ComPtr<ID3D11SamplerState>> mTextureSamplersByAddressingMode;
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> mVertexShader;
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> mPixelShader;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mCBufferPerObject;				
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mColorTexture;
+		std::map<AddressingModes, winrt::com_ptr<ID3D11SamplerState>> mTextureSamplersByAddressingMode;
+		winrt::com_ptr<ID3D11VertexShader> mVertexShader;
+		winrt::com_ptr<ID3D11PixelShader> mPixelShader;
+		winrt::com_ptr<ID3D11InputLayout> mInputLayout;
+		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mCBufferPerObject;				
+		winrt::com_ptr<ID3D11ShaderResourceView> mColorTexture;
 		std::uint32_t mIndexCount{ 0 };
 		AddressingModes mActiveAddressingMode{ AddressingModes::Wrap };
 		Library::KeyboardComponent* mKeyboard;

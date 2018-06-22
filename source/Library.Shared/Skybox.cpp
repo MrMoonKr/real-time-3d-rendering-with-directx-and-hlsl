@@ -28,8 +28,8 @@ namespace Library
 	{
 		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin");
 		Mesh* mesh = model->Meshes().at(0).get();
-		VertexPosition::CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.ReleaseAndGetAddressOf()));
-		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), not_null<ID3D11Buffer**>(mIndexBuffer.ReleaseAndGetAddressOf()));
+		VertexPosition::CreateVertexBuffer(mGame->Direct3DDevice(), *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
+		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), not_null<ID3D11Buffer**>(mIndexBuffer.put()));
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
 		auto textureCube = mGame->Content().Load<TextureCube>(mCubeMapFileName);
@@ -60,6 +60,6 @@ namespace Library
 			mUpdateMaterial = false;
 		}
 
-		mMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.Get()), not_null<ID3D11Buffer*>(mIndexBuffer.Get()), mIndexCount);		
+		mMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.get()), not_null<ID3D11Buffer*>(mIndexBuffer.get()), mIndexCount);		
 	}
 }

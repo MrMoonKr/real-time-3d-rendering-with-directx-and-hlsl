@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <vector>
 #include <cstdint>
 #include <gsl\gsl>
@@ -23,8 +23,8 @@ namespace Library
 		~VertexShader() = default;
 
 		const std::vector<char>& CompiledShader() const;
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> Shader() const;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> InputLayout() const;
+		winrt::com_ptr<ID3D11VertexShader> Shader() const;
+		winrt::com_ptr<ID3D11InputLayout> InputLayout() const;
 
 		template <typename T>
 		void CreateInputLayout(gsl::not_null<ID3D11Device*> device, bool releaseCompiledShader = false)
@@ -36,11 +36,11 @@ namespace Library
 
 	private:
 		friend class VertexShaderReader;
-		VertexShader(const std::vector<char>& compiledShader, const Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader);
-		VertexShader(std::vector<char>&& compiledShader, const Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader);
+		VertexShader(const std::vector<char>& compiledShader, const winrt::com_ptr<ID3D11VertexShader>& vertexShader);
+		VertexShader(std::vector<char>&& compiledShader, const winrt::com_ptr<ID3D11VertexShader>& vertexShader);
 
 		std::vector<char> mCompiledShader;
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> mShader;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
+		winrt::com_ptr<ID3D11VertexShader> mShader;
+		winrt::com_ptr<ID3D11InputLayout> mInputLayout;
 	};
 }

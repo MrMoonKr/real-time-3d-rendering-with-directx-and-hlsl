@@ -10,7 +10,7 @@ namespace Library
 		RTTI_DECLARATIONS(Texture2D, Texture)
 
 	public:
-		Texture2D(const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& shaderResourceView, const std::int32_t width, const std::int32_t height);
+		Texture2D(const winrt::com_ptr<ID3D11ShaderResourceView>& shaderResourceView, const std::int32_t width, const std::int32_t height);
 		Texture2D(const Texture2D&) = default;
 		Texture2D& operator=(const Texture2D&) = default;
 		Texture2D(Texture2D&&) = default;

@@ -18,6 +18,6 @@ namespace Library
 	private:
 		friend class TextureCubeReader;
 
-		TextureCube(const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& shaderResourceView);
+		TextureCube(const winrt::com_ptr<ID3D11ShaderResourceView>& shaderResourceView);
 	};
 }

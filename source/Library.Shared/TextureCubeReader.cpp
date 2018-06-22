@@ -5,7 +5,7 @@
 
 using namespace std;
 using namespace DirectX;
-using namespace Microsoft::WRL;
+using namespace winrt;
 
 namespace Library
 {
@@ -18,8 +18,8 @@ namespace Library
 
 	shared_ptr<TextureCube> TextureCubeReader::_Read(const wstring& assetName)
 	{
-		ComPtr<ID3D11ShaderResourceView> shaderResourceView;	
-		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), assetName.c_str(), nullptr, shaderResourceView.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
+		com_ptr<ID3D11ShaderResourceView> shaderResourceView;	
+		ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), assetName.c_str(), nullptr, shaderResourceView.put()), "CreateDDSTextureFromFile() failed.");
 
 		return shared_ptr<TextureCube>(new TextureCube(move(shaderResourceView)));
 	}

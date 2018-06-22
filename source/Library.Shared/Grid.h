@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include "DrawableGameComponent.h"
@@ -48,7 +48,7 @@ namespace Library
 		inline static const std::uint32_t DefaultScale{ 16 };
 		inline static const DirectX::XMFLOAT4 DefaultColor{ 0.961f, 0.871f, 0.702f, 1.0f };
 
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
 		std::shared_ptr<BasicMaterial> mMaterial;	
 		DirectX::XMFLOAT3 mPosition{ Vector3Helper::Zero };
 		std::uint32_t mSize{ DefaultSize };

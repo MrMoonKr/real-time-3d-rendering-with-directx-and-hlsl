@@ -26,8 +26,8 @@ namespace Rendering
 		TransparencyMaterial& operator=(TransparencyMaterial&&) = default;
 		virtual ~TransparencyMaterial() = default;
 
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState() const;
-		void SetSamplerState(Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState);
+		winrt::com_ptr<ID3D11SamplerState> SamplerState() const;
+		void SetSamplerState(winrt::com_ptr<ID3D11SamplerState> samplerState);
 
 		std::shared_ptr<Library::Texture2D> ColorMap() const;
 		void SetColorMap(std::shared_ptr<Library::Texture2D> texture);
@@ -97,10 +97,10 @@ namespace Rendering
 		virtual void BeginDraw() override;
 		virtual void EndDraw() override;
 
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexCBufferPerFrame;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexCBufferPerObject;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mPixelCBufferPerFrame;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mPixelCBufferPerObject;
+		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerFrame;
+		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;
+		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerFrame;
+		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerObject;
 		VertexCBufferPerFrame mVertexCBufferPerFrameData;
 		VertexCBufferPerObject mVertexCBufferPerObjectData;
 		PixelCBufferPerFrame mPixelCBufferPerFrameData;
@@ -108,7 +108,7 @@ namespace Rendering
 		std::shared_ptr<Library::Texture2D> mColorMap;
 		std::shared_ptr<Library::Texture2D> mSpecularMap;
 		std::shared_ptr<Library::Texture2D> mTransparencyMap;
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };
+		winrt::com_ptr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };
 		Library::RenderStateHelper mRenderStateHelper;
 		bool mVertexCBufferPerFrameDataDirty{ true };
 		bool mPixelCBufferPerFrameDataDirty{ true };

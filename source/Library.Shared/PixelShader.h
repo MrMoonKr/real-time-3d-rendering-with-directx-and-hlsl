@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <vector>
 #include <cstdint>
 #include <gsl\gsl>
@@ -22,12 +22,12 @@ namespace Library
 		PixelShader& operator=(PixelShader&&) = default;
 		~PixelShader() = default;
 
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> Shader() const;
+		winrt::com_ptr<ID3D11PixelShader> Shader() const;
 
 	private:
 		friend class PixelShaderReader;
-		PixelShader(const Microsoft::WRL::ComPtr<ID3D11PixelShader>& pixelShader);
+		PixelShader(const winrt::com_ptr<ID3D11PixelShader>& pixelShader);
 
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> mShader;
+		winrt::com_ptr<ID3D11PixelShader> mShader;
 	};
 }

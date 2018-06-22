@@ -24,8 +24,8 @@ namespace Rendering
 		AmbientLightingMaterial& operator=(AmbientLightingMaterial&&) = default;
 		virtual ~AmbientLightingMaterial() = default;
 
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> SamplerState() const;
-		void SetSamplerState(Microsoft::WRL::ComPtr<ID3D11SamplerState> samplerState);
+		winrt::com_ptr<ID3D11SamplerState> SamplerState() const;
+		void SetSamplerState(winrt::com_ptr<ID3D11SamplerState> samplerState);
 
 		std::shared_ptr<Library::Texture2D> Texture() const;
 		void SetTexture(std::shared_ptr<Library::Texture2D> texture);
@@ -51,12 +51,12 @@ namespace Rendering
 
 		virtual void BeginDraw() override;
 
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexCBufferPerObject;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mPixelCBufferPerFrame;
+		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;
+		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerFrame;
 		VertexCBufferPerObject mVertexCBufferPerObjectData;
 		PixelCBufferPerFrame mPixelCBufferPerFrameData;
 		bool mPixelCBufferPerFrameDataDirty{ true };
 		std::shared_ptr<Library::Texture2D> mTexture;
-		Microsoft::WRL::ComPtr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };
+		winrt::com_ptr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };
 	};
 }

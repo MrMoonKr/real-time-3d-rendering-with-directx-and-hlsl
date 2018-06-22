@@ -4,7 +4,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <cstdint>
@@ -69,7 +69,7 @@ namespace Rendering
 	private:
 		std::shared_ptr<SpotLightMaterial> mMaterial;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
 		std::uint32_t mVertexCount{ 0 };
 		Library::SpotLight mSpotLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;

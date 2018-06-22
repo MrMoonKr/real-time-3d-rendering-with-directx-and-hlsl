@@ -4,7 +4,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <cstdint>
@@ -44,12 +44,12 @@ namespace Rendering
 
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		CBufferPerObject mCBufferPerObject;
-		Microsoft::WRL::ComPtr<ID3D11VertexShader> mVertexShader;
-		Microsoft::WRL::ComPtr<ID3D11PixelShader> mPixelShader;
-		Microsoft::WRL::ComPtr<ID3D11InputLayout> mInputLayout;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mConstantBuffer;		
+		winrt::com_ptr<ID3D11VertexShader> mVertexShader;
+		winrt::com_ptr<ID3D11PixelShader> mPixelShader;
+		winrt::com_ptr<ID3D11InputLayout> mInputLayout;
+		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mConstantBuffer;		
 		std::uint32_t mIndexCount{ 0 };
 		float mRotationAngle{ 0.0f };
 		bool mAnimationEnabled{ true };

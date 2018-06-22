@@ -19,7 +19,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 
 // DirectX
 #include <DirectXMath.h>

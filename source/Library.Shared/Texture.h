@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include "RTTI.h"
 
@@ -20,12 +20,12 @@ namespace Library
 		Texture& operator=(Texture&&) = default;
 		virtual ~Texture() = default;
 
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> ShaderResourceView() const;
+		winrt::com_ptr<ID3D11ShaderResourceView> ShaderResourceView() const;
 
 	protected:
-		Texture(const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& shaderResourceView);
+		Texture(const winrt::com_ptr<ID3D11ShaderResourceView>& shaderResourceView);
 
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> mShaderResourceView;
+		winrt::com_ptr<ID3D11ShaderResourceView> mShaderResourceView;
 	};
 }
 

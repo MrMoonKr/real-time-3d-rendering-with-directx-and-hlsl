@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <gsl\gsl>
@@ -63,8 +63,8 @@ namespace Library
 		DirectX::XMFLOAT3 mRight{ Vector3Helper::Right };
 		std::string mModelFileName;
 		float mScale;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mVertexBuffer;
-		Microsoft::WRL::ComPtr<ID3D11Buffer> mIndexBuffer;		
+		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;		
 		std::shared_ptr<BasicMaterial> mMaterial;
 		std::uint32_t mIndexCount{ 0 };
 		bool mDisplayWireframe{ true };

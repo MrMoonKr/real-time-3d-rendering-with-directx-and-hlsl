@@ -41,7 +41,7 @@ namespace Library
 
 		const uint32_t stride = VertexSize();
 		ID3D11Buffer* const vertexBuffers[] { vertexBuffer };
-		direct3DDeviceContext->IASetVertexBuffers(0, ARRAYSIZE(vertexBuffers), vertexBuffers, &stride, &offset);
+		direct3DDeviceContext->IASetVertexBuffers(0, narrow_cast<uint32_t>(size(vertexBuffers)), vertexBuffers, &stride, &offset);
 
 		direct3DDeviceContext->Draw(vertexCount, startVertexLocation);
 
@@ -57,7 +57,7 @@ namespace Library
 		const uint32_t stride = VertexSize();
 		const uint32_t offset = 0;
 		ID3D11Buffer* const vertexBuffers[] { vertexBuffer };
-		direct3DDeviceContext->IASetVertexBuffers(0, ARRAYSIZE(vertexBuffers), vertexBuffers, &stride, &vertexOffset);
+		direct3DDeviceContext->IASetVertexBuffers(0, narrow_cast<uint32_t>(size(vertexBuffers)), vertexBuffers, &stride, &vertexOffset);
 		direct3DDeviceContext->IASetIndexBuffer(indexBuffer, format, indexOffset);
 
 		direct3DDeviceContext->DrawIndexed(indexCount, startIndexLocation, baseVertexLocation);
@@ -119,9 +119,9 @@ namespace Library
 	{
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->IASetPrimitiveTopology(mTopology);
-		direct3DDeviceContext->IASetInputLayout(mVertexShader->InputLayout().Get());
-		direct3DDeviceContext->VSSetShader(mVertexShader->Shader().Get(), nullptr, 0);
-		direct3DDeviceContext->PSSetShader(mPixelShader->Shader().Get(), nullptr, 0);
+		direct3DDeviceContext->IASetInputLayout(mVertexShader->InputLayout().get());
+		direct3DDeviceContext->VSSetShader(mVertexShader->Shader().get(), nullptr, 0);
+		direct3DDeviceContext->PSSetShader(mPixelShader->Shader().get(), nullptr, 0);
 
 		if (mUpdateMaterialCallback != nullptr)
 		{

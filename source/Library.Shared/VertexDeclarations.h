@@ -12,7 +12,8 @@ namespace Library
 	class VertexDeclaration
 	{
 	public:		
-		static constexpr size_t VertexSize() { return sizeof(T); }
+		static constexpr uint32_t VertexSize() { return narrow_cast<uint32_t>(sizeof(T)); }
+		static constexpr uint32_t VertexBufferByteWidth(size_t vertexCount) { return narrow_cast<uint32_t>(sizeof(T) * vertexCount); }
 		static void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const gsl::span<const T>& vertices, gsl::not_null<ID3D11Buffer**> vertexBuffer);
 	};
 

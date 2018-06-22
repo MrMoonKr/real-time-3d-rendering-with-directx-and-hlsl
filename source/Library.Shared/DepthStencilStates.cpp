@@ -19,15 +19,15 @@ namespace Library
 		depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 		depthStencilDesc.BackFace = depthStencilDesc.FrontFace;
 
-		ThrowIfFailed(direct3DDevice->CreateDepthStencilState(&depthStencilDesc, DefaultDepthCulling.ReleaseAndGetAddressOf()), "ID3D11Device::CreateDepthStencilState() failed.");
+		ThrowIfFailed(direct3DDevice->CreateDepthStencilState(&depthStencilDesc, DefaultDepthCulling.put()), "ID3D11Device::CreateDepthStencilState() failed.");
 		
 		depthStencilDesc.DepthEnable = false;
-		ThrowIfFailed(direct3DDevice->CreateDepthStencilState(&depthStencilDesc, NoDepthCulling.ReleaseAndGetAddressOf()), "ID3D11Device::CreateDepthStencilState() failed.");
+		ThrowIfFailed(direct3DDevice->CreateDepthStencilState(&depthStencilDesc, NoDepthCulling.put()), "ID3D11Device::CreateDepthStencilState() failed.");
 	}
 
 	void DepthStencilStates::Shutdown()
 	{
-		DefaultDepthCulling.Reset();
-		NoDepthCulling.Reset();
+		DefaultDepthCulling = nullptr;
+		NoDepthCulling = nullptr;
 	}
 }

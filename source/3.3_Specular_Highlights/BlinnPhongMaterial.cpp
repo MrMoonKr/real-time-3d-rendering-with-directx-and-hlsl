@@ -9,8 +9,9 @@
 
 using namespace std;
 using namespace std::string_literals;
+using namespace gsl;
+using namespace winrt;
 using namespace DirectX;
-using namespace Microsoft::WRL;
 using namespace Library;
 
 namespace Rendering
@@ -22,12 +23,12 @@ namespace Rendering
 	{
 	}
 
-	ComPtr<ID3D11SamplerState> BlinnPhongMaterial::SamplerState() const
+	com_ptr<ID3D11SamplerState> BlinnPhongMaterial::SamplerState() const
 	{
 		return mSamplerState;
 	}
 
-	void BlinnPhongMaterial::SetSamplerState(ComPtr<ID3D11SamplerState> samplerState)
+	void BlinnPhongMaterial::SetSamplerState(com_ptr<ID3D11SamplerState> samplerState)
 	{
 		mSamplerState = move(samplerState);
 	}
@@ -114,18 +115,18 @@ namespace Rendering
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
-		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);
-		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.ReleaseAndGetAddressOf()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
-		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
-		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.Get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 	}
 
 	void BlinnPhongMaterial::UpdateCameraPosition(const DirectX::XMFLOAT3& position)
@@ -138,7 +139,7 @@ namespace Rendering
 	{
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, worldViewProjectionMatrix);
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.World, worldMatrix);
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.Get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 	}
 
 	void BlinnPhongMaterial::BeginDraw()
@@ -149,20 +150,26 @@ namespace Rendering
 
 		if (mPixelCBufferPerFrameDataDirty)
 		{
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.Get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 			mPixelCBufferPerFrameDataDirty = false;
 		}
 
 		if (mPixelCBufferPerObjectDataDirty)
 		{
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.Get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
+			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 			mPixelCBufferPerObjectDataDirty = false;
 		}
 
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, mVertexCBufferPerObject.GetAddressOf());
-		ID3D11Buffer* const PSConstantBuffers[] { mPixelCBufferPerFrame.Get(), mPixelCBufferPerObject.Get() };
-		direct3DDeviceContext->PSSetConstantBuffers(0, ARRAYSIZE(PSConstantBuffers), PSConstantBuffers);
-		direct3DDeviceContext->PSSetShaderResources(0, 1, mTexture->ShaderResourceView().GetAddressOf());
-		direct3DDeviceContext->PSSetSamplers(0, 1, mSamplerState.GetAddressOf());
+		const auto vsConstantBuffers = mVertexCBufferPerObject.get();
+		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
+
+		ID3D11Buffer* const PSConstantBuffers[] { mPixelCBufferPerFrame.get(), mPixelCBufferPerObject.get() };
+		direct3DDeviceContext->PSSetConstantBuffers(0, narrow_cast<uint32_t>(size(PSConstantBuffers)), PSConstantBuffers);
+
+		const auto psShaderResources = mTexture->ShaderResourceView().get();
+		direct3DDeviceContext->PSSetShaderResources(0, 1, &psShaderResources);
+
+		const auto psSamplers = mSamplerState.get();
+		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);		
 	}
 }

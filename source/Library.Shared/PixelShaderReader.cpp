@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace DirectX;
-using namespace Microsoft::WRL;
+using namespace winrt;
 
 namespace Library
 {
@@ -19,10 +19,10 @@ namespace Library
 
 	shared_ptr<PixelShader> PixelShaderReader::_Read(const wstring& assetName)
 	{
-		ComPtr<ID3D11PixelShader> pixelShader;
+		com_ptr<ID3D11PixelShader> pixelShader;
 		vector<char> compiledPixelShader;
 		Utility::LoadBinaryFile(assetName, compiledPixelShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, pixelShader.ReleaseAndGetAddressOf()), "ID3D11Device::CreatedPixelShader() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, pixelShader.put()), "ID3D11Device::CreatedPixelShader() failed.");
 		
 		return shared_ptr<PixelShader>(new PixelShader(move(pixelShader)));
 	}

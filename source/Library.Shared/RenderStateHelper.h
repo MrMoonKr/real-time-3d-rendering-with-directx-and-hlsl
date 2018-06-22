@@ -3,7 +3,7 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
-#include <wrl.h>
+#include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include <cstdint>
 #include <array>
@@ -48,11 +48,11 @@ namespace Library
 	private:
 		Game& mGame;
 
-		Microsoft::WRL::ComPtr<ID3D11RasterizerState> mRasterizerState;
-		Microsoft::WRL::ComPtr<ID3D11BlendState> mBlendState;
+		winrt::com_ptr<ID3D11RasterizerState> mRasterizerState;
+		winrt::com_ptr<ID3D11BlendState> mBlendState;
 		std::array<float, 4> mBlendFactor;
 		std::uint32_t mSampleMask{ std::numeric_limits<std::uint32_t>::max() };
-		Microsoft::WRL::ComPtr<ID3D11DepthStencilState> mDepthStencilState;
+		winrt::com_ptr<ID3D11DepthStencilState> mDepthStencilState;
 		std::uint32_t mStencilRef{ std::numeric_limits<std::uint32_t>::max() };
 	};
 }

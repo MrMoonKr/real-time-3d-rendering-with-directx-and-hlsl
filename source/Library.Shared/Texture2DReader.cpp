@@ -8,7 +8,7 @@
 using namespace std;
 using namespace gsl;
 using namespace DirectX;
-using namespace Microsoft::WRL;
+using namespace winrt;
 
 namespace Library
 {
@@ -21,20 +21,19 @@ namespace Library
 
 	shared_ptr<Texture2D> Texture2DReader::_Read(const wstring& assetName)
 	{
-		ComPtr<ID3D11Resource> resource;
-		ComPtr<ID3D11ShaderResourceView> shaderResourceView;
+		com_ptr<ID3D11Resource> resource;
+		com_ptr<ID3D11ShaderResourceView> shaderResourceView;
 		if (StringHelper::EndsWith(assetName, L".dds"))
 		{
-			ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), assetName.c_str(), resource.ReleaseAndGetAddressOf(), shaderResourceView.ReleaseAndGetAddressOf()), "CreateDDSTextureFromFile() failed.");
+			ThrowIfFailed(CreateDDSTextureFromFile(mGame->Direct3DDevice(), assetName.c_str(), resource.put(), shaderResourceView.put()), "CreateDDSTextureFromFile() failed.");
 		}
 		else
 		{
-			ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), assetName.c_str(), resource.ReleaseAndGetAddressOf(), shaderResourceView.ReleaseAndGetAddressOf()), "CreateWICTextureFromFile() failed.");
+			ThrowIfFailed(CreateWICTextureFromFile(mGame->Direct3DDevice(), assetName.c_str(), resource.put(), shaderResourceView.put()), "CreateWICTextureFromFile() failed.");
 		}
 
-		ComPtr<ID3D11Texture2D> texture;
-		ThrowIfFailed(resource.As(&texture), "Invalid ID3D11Resource returned from CreateTextureFromFile. Should be a ID3D11Texture2D.");
-		Point textureSize = TextureHelper::GetTextureSize(not_null<ID3D11Texture2D*>(texture.Get()));
+		com_ptr<ID3D11Texture2D> texture = resource.as<ID3D11Texture2D>();
+		Point textureSize = TextureHelper::GetTextureSize(not_null<ID3D11Texture2D*>(texture.get()));
 
 		return make_shared<Texture2D>(move(shaderResourceView), textureSize.X, textureSize.Y);
 	}
