@@ -154,7 +154,7 @@ namespace Rendering
 		direct3DDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		direct3DDeviceContext->IASetInputLayout(mInputLayout.get());
 
-		const uint32_t stride = narrow<uint32_t>(sizeof(VertexPositionTexture));
+		const uint32_t stride = VertexPositionTexture::VertexSize();
 		const uint32_t offset = 0;
 		const auto vertexBuffers = mVertexBuffer.get();
 		direct3DDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffers, &stride, &offset);

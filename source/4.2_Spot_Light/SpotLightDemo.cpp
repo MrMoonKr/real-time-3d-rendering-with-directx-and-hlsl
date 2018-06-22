@@ -139,7 +139,6 @@ namespace Rendering
 
 	void SpotLightDemo::Initialize()
 	{
-		// Create a vertex buffer
 		const VertexPositionTextureNormal sourceVertices[]
 		{
 			VertexPositionTextureNormal(XMFLOAT4(-0.5f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 1.0f), Vector3Helper::Backward),

@@ -49,6 +49,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_3_Fog", "..\source\5.3_Fo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_4_Transparency", "..\source\5.4_Transparency\5_4_Transparency.vcxproj", "{A0321949-2A27-4BB4-BB9F-83F5AECC6B98}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6_1_Normal_Mapping", "..\source\6.1_Normal_Mapping\6_1_Normal_Mapping.vcxproj", "{390A6AF9-A96C-43E5-80AE-E110B629F94E}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -229,6 +231,14 @@ Global
 		{A0321949-2A27-4BB4-BB9F-83F5AECC6B98}.Release|Win32.Build.0 = Release|Win32
 		{A0321949-2A27-4BB4-BB9F-83F5AECC6B98}.Release|x64.ActiveCfg = Release|x64
 		{A0321949-2A27-4BB4-BB9F-83F5AECC6B98}.Release|x64.Build.0 = Release|x64
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Debug|Win32.Build.0 = Debug|Win32
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Debug|x64.ActiveCfg = Debug|x64
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Debug|x64.Build.0 = Debug|x64
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Release|Win32.ActiveCfg = Release|Win32
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Release|Win32.Build.0 = Release|Win32
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Release|x64.ActiveCfg = Release|x64
+		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
