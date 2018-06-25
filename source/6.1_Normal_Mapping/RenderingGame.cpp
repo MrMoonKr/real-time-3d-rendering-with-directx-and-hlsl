@@ -88,12 +88,12 @@ namespace Rendering
 			}
 			{
 				stringstream ambientLightIntensityLabel;
-				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mNormalMappingDemo->AmbientLightIntensity();
+				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mNormalMappingDemo->AmbientLightIntensity();
 				ImGui::Text(ambientLightIntensityLabel.str().c_str());
 			}
 			{
 				stringstream directionalLightIntensityLabel;
-				directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (Home/End): " << mNormalMappingDemo->DirectionalLightIntensity();
+				directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (+Home/-End): " << mNormalMappingDemo->DirectionalLightIntensity();
 				ImGui::Text(directionalLightIntensityLabel.str().c_str());
 			}
 

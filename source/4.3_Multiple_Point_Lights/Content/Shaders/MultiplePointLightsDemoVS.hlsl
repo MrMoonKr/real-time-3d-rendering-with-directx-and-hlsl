@@ -41,6 +41,7 @@ VS_OUTPUT main(VS_INPUT IN)
 	OUT.TextureCoordinates = IN.TextureCoordinates;
 	OUT.Normal = normalize(mul(float4(IN.Normal, 0), World).xyz);
 
+	[unroll]
 	for (int i = 0; i < LightCount; ++i)
 	{
 		float3 lightDirection = Lights[i].Position - OUT.WorldPosition;

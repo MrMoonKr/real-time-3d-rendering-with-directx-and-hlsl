@@ -51,6 +51,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "5_4_Transparency", "..\sour
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6_1_Normal_Mapping", "..\source\6.1_Normal_Mapping\6_1_Normal_Mapping.vcxproj", "{390A6AF9-A96C-43E5-80AE-E110B629F94E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6_2_Displacement_Mapping", "..\source\6.2_Displacement_Mapping\6_2_Displacement_Mapping.vcxproj", "{7423DFE1-78DD-4FAB-9B66-488B737044B4}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -239,6 +241,14 @@ Global
 		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Release|Win32.Build.0 = Release|Win32
 		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Release|x64.ActiveCfg = Release|x64
 		{390A6AF9-A96C-43E5-80AE-E110B629F94E}.Release|x64.Build.0 = Release|x64
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Debug|Win32.Build.0 = Debug|Win32
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Debug|x64.ActiveCfg = Debug|x64
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Debug|x64.Build.0 = Debug|x64
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Release|Win32.ActiveCfg = Release|Win32
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Release|Win32.Build.0 = Release|Win32
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Release|x64.ActiveCfg = Release|x64
+		{7423DFE1-78DD-4FAB-9B66-488B737044B4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

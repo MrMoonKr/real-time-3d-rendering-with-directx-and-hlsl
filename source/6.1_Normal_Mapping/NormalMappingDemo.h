@@ -55,7 +55,6 @@ namespace Rendering
 		std::shared_ptr<NormalMappingMaterial> mMaterial;
 		DirectX::XMFLOAT4X4 mWorldMatrix{ Library::MatrixHelper::Identity };
 		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
-		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;
 		std::uint32_t mVertexCount{ 0 };
 		Library::DirectionalLight mDirectionalLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
