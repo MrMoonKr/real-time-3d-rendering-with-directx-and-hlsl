@@ -2,9 +2,6 @@
 
 #include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
-#include <DirectXMath.h>
-#include <cstdint>
-#include <memory>
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
 

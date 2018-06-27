@@ -3,7 +3,6 @@
 #include "DrawableGameComponent.h"
 #include <DirectXMath.h>
 #include <chrono>
-#include <memory>
 
 namespace DirectX
 {

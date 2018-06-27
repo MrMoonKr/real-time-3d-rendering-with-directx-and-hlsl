@@ -71,7 +71,10 @@ namespace Library
 
         virtual void Initialize();
 		virtual void Run();
-		virtual void Shutdown();        
+		virtual void Shutdown();  
+
+		virtual void Update(const GameTime& gameTime);
+		virtual void Draw(const GameTime& gameTime);
 
 		void UpdateRenderTargetSize();
 		void RegisterDeviceNotify(IDeviceNotify* deviceNotify);
@@ -80,9 +83,7 @@ namespace Library
 
 		ContentManager& Content();
 
-    protected:
-		virtual void Update(const GameTime& gameTime);
-		virtual void Draw(const GameTime& gameTime);
+    protected:		
 		virtual void HandleDeviceLost();
 
 		virtual void Begin() override;

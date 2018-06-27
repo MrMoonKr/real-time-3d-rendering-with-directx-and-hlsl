@@ -3,7 +3,6 @@
 #include <imgui.h>
 #include <functional>
 #include <vector>
-#include <memory>
 #include "DrawableGameComponent.h"
 
 namespace Library

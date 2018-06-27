@@ -22,14 +22,14 @@ namespace Library
 		sRenderTargetStack.pop();
 
 		RenderTargetData renderTargetData = sRenderTargetStack.top();
-		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount(), &renderTargetData.RenderTargetViews[0], renderTargetData.DepthStencilView);
+		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount(), renderTargetData.RenderTargetViews.data(), renderTargetData.DepthStencilView);
 		deviceContext->RSSetViewports(1, &renderTargetData.Viewport);
 	}
 
 	void RenderTarget::RebindCurrentRenderTargets(not_null<ID3D11DeviceContext*> deviceContext)
 	{
 		RenderTargetData renderTargetData = sRenderTargetStack.top();
-		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount(), &renderTargetData.RenderTargetViews[0], renderTargetData.DepthStencilView);
+		deviceContext->OMSetRenderTargets(renderTargetData.ViewCount(), renderTargetData.RenderTargetViews.data(), renderTargetData.DepthStencilView);
 		deviceContext->RSSetViewports(1, &renderTargetData.Viewport);
 	}
 }

@@ -27,6 +27,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DrawableGameComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FpsComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Frustum.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FullScreenQuad.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FullScreenQuadMaterial.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FullScreenRenderTarget.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameClock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameComponent.cpp" />
@@ -104,6 +108,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DrawableGameComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FpsComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Frustum.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FullScreenQuad.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FullScreenQuadMaterial.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FullScreenRenderTarget.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameClock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameComponent.h" />

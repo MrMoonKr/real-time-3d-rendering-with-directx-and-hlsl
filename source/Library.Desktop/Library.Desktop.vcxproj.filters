@@ -30,6 +30,9 @@
     <FxCompile Include="Content\Shaders\SkyboxVS.hlsl">
       <Filter>Content\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Content\Shaders\TexturedQuadPassThroughVS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\Arial_14_Regular.spritefont">

@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include <stack>
 #include <gsl\gsl>
-
+#include <vector>
 namespace Library
 {
 	class RenderTarget : public RTTI
@@ -27,12 +27,12 @@ namespace Library
 		{
 			uint32_t ViewCount() const { return gsl::narrow_cast<uint32_t>(RenderTargetViews.size()); }
 
-			gsl::span<ID3D11RenderTargetView*> RenderTargetViews;
+			std::vector<ID3D11RenderTargetView*> RenderTargetViews;
 			gsl::not_null<ID3D11DepthStencilView*> DepthStencilView;
 			D3D11_VIEWPORT Viewport;
 
 			RenderTargetData(const gsl::span<ID3D11RenderTargetView*>& renderTargetViews, gsl::not_null<ID3D11DepthStencilView*> depthStencilView, const D3D11_VIEWPORT& viewport) :
-				RenderTargetViews(renderTargetViews), DepthStencilView(depthStencilView), Viewport(viewport) { }
+				RenderTargetViews(renderTargetViews.begin(), renderTargetViews.end()), DepthStencilView(depthStencilView), Viewport(viewport) { }
 		};
 
 		void Begin(gsl::not_null<ID3D11DeviceContext*> deviceContext, const gsl::span<ID3D11RenderTargetView*>& renderTargetViews, gsl::not_null<ID3D11DepthStencilView*> depthStencilView, const D3D11_VIEWPORT& viewport);
