@@ -36,6 +36,11 @@ namespace Rendering
 		return mActiveAddressingMode;
 	}
 
+	void AddressingModesDemo::SetActiveAddressingMode(AddressingModes mode)
+	{
+		mActiveAddressingMode = mode;
+	}
+
 	void AddressingModesDemo::Initialize()
 	{
 		auto direct3DDevice = mGame->Direct3DDevice();
@@ -135,28 +140,9 @@ namespace Rendering
 			ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerDesc, mTextureSamplersByAddressingMode[mode].put()), "ID3D11Device::CreateSamplerState() failed.");
 		}
 
-		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
-
 		auto updateConstantBufferFunc = [this]() { mUpdateConstantBuffer = true; };
 		mCamera->AddViewMatrixUpdatedCallback(updateConstantBufferFunc);
 		mCamera->AddProjectionMatrixUpdatedCallback(updateConstantBufferFunc);
-	}
-
-	void AddressingModesDemo::Update(const GameTime&)
-	{
-		if (mKeyboard != nullptr)
-		{
-			if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-			{
-				AddressingModes activeMode = AddressingModes(static_cast<int>(mActiveAddressingMode) + 1);
-				if (activeMode >= AddressingModes::End)
-				{
-					activeMode = AddressingModes(0);
-				}
-
-				mActiveAddressingMode = activeMode;
-			}
-		}
 	}
 
 	void AddressingModesDemo::Draw(const GameTime&)

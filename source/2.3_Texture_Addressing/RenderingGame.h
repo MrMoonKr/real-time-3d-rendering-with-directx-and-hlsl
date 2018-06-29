@@ -32,6 +32,8 @@ namespace Rendering
 	private:
 		inline static const DirectX::XMVECTORF32 BackgroundColor{ DirectX::Colors::CornflowerBlue };
 
+		void UpdateActiveAddressingMode();
+
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::MouseComponent> mMouse;
 		std::shared_ptr<Library::GamePadComponent> mGamePad;

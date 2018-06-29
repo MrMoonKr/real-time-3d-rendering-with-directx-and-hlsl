@@ -9,6 +9,7 @@ namespace Library
 	class KeyboardComponent;
 	class MouseComponent;
 	class GamePadComponent;
+	class ImGuiComponent;
 	class FpsComponent;
 	class Grid;
 	class Skybox;
@@ -37,10 +38,13 @@ namespace Rendering
 
 		void UpdateAmbientLightIntensity(const Library::GameTime& gameTime);
 		void UpdateDirectionalLight(const Library::GameTime& gameTime);
+		void UpdateGenericFilterBrightness(const Library::GameTime& gameTime);
+		void UpdateActiveColorFilter();
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::MouseComponent> mMouse;
 		std::shared_ptr<Library::GamePadComponent> mGamePad;
+		std::shared_ptr<Library::ImGuiComponent> mImGuiComponent;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<Library::Grid> mGrid;
 		std::shared_ptr<Library::Skybox> mSkybox;
@@ -48,5 +52,6 @@ namespace Rendering
 		std::shared_ptr<DiffuseLightingDemo> mDiffuseLightingDemo;
 		float mAmbientLightIntensity{ 0.0f };
 		float mDirectionalLightIntensity{ 0.0f };
+		float mGenericFilterBrightness{ 1.0f };
 	};
 }

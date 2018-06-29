@@ -30,6 +30,7 @@ namespace Library
 
 		void AddAsset(const std::wstring& assetName, const std::shared_ptr<RTTI>& asset);
 		void RemoveAsset(const std::wstring& assetName);
+		void Clear();
 
 	private:
 		static const std::wstring DefaultRootDirectory;

@@ -10,6 +10,7 @@
 #include <sstream>
 #include <memory>
 #include <functional>
+#include <array>
 
 #include <d3d11_4.h>
 #include <dxgi1_6.h>
@@ -78,7 +79,9 @@ namespace Library
 
 		void UpdateRenderTargetSize();
 		void RegisterDeviceNotify(IDeviceNotify* deviceNotify);
-		virtual void UnbindPixelShaderResources(std::uint32_t startSlot, std::uint32_t count);
+		
+		template <size_t _Count>
+		void UnbindPixelShaderResources(std::uint32_t startSlot = 0);
 		std::function<void*()> GetWindowCallback() const;
 
 		ContentManager& Content();
@@ -125,3 +128,5 @@ namespace Library
 		ContentManager mContentManager;
     };
 }
+
+#include "Game.inl"

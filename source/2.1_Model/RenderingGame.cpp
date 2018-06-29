@@ -136,6 +136,14 @@ namespace Rendering
 		}
 	}
 
+	void RenderingGame::Shutdown()
+	{
+		mGrid = nullptr;
+		mFpsComponent = nullptr;		
+		mModelDemo = nullptr;
+		Game::Shutdown();
+	}
+
 	void RenderingGame::Exit()
 	{
 		PostQuitMessage(0);

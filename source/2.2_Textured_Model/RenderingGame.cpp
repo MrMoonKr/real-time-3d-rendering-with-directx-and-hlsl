@@ -142,8 +142,11 @@ namespace Rendering
 
 	void RenderingGame::Shutdown()
 	{
-		Game::Shutdown();
-		SamplerStates::Shutdown();
+		mGrid = nullptr;
+		mFpsComponent = nullptr;
+		mTexturedModelDemo = nullptr;
+		SamplerStates::Shutdown();		
+		Game::Shutdown();		
 	}
 
 	void RenderingGame::Exit()

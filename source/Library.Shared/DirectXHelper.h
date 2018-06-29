@@ -1,9 +1,15 @@
 #pragma once
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <winrt\Windows.Foundation.h>
 #include <cstdint>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <dxgidebug.h>
 #include <gsl\gsl>
+#include "GameException.h"
 
 namespace Library
 {
@@ -16,7 +22,7 @@ namespace Library
 		return floorf(dips * dpi / dipsPerInch + 0.5f); // Round to nearest integer.
 	}
 
-#if defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 	// Check for SDK Layer support.
 	inline bool SdkLayersAvailable()
 	{
@@ -34,6 +40,15 @@ namespace Library
 			);
 
 		return SUCCEEDED(hr);
+	}
+#endif
+
+#if defined(DEBUG) || defined(_DEBUG)
+	inline void DumpD3DDebug()
+	{
+		winrt::com_ptr<IDXGIDebug1> debugInterface = nullptr;
+		ThrowIfFailed(DXGIGetDebugInterface1(0, IID_PPV_ARGS(debugInterface.put())));
+		ThrowIfFailed(debugInterface->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL));
 	}
 #endif
 }

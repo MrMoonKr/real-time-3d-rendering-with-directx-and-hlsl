@@ -58,9 +58,8 @@ namespace Rendering
 		mSkybox = make_shared<Skybox>(*this, camera, L"Textures\\Maskonaive2_1024.dds", 500.0f);
 		mComponents.push_back(mSkybox);
 		
-		auto imGui = make_shared<ImGuiComponent>(*this);
-		mComponents.push_back(imGui);
-		mServices.AddService(ImGuiComponent::TypeIdClass(), imGui.get());
+		mImGuiComponent = make_shared<ImGuiComponent>(*this);
+		mServices.AddService(ImGuiComponent::TypeIdClass(), mImGuiComponent.get());
 		auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
 		UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
 
@@ -89,24 +88,31 @@ namespace Rendering
 				ImGui::Text(gridVisibleLabel.str().c_str());
 			}
 			{
-				stringstream animationEnabledLabel;
-				animationEnabledLabel << "Toggle Animation (Space): " << (mDiffuseLightingDemo->AnimationEnabled() ? "Enabled" : "Disabled");
-				ImGui::Text(animationEnabledLabel.str().c_str());
-			}
-			{
 				stringstream ambientLightIntensityLabel;
-				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (PgUp/PgDown): " << mDiffuseLightingDemo->AmbientLightIntensity();
+				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mDiffuseLightingDemo->AmbientLightIntensity();
 				ImGui::Text(ambientLightIntensityLabel.str().c_str());
 			}
 			{
 				stringstream directionalLightIntensityLabel;
-				directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (Home/End): " << mDiffuseLightingDemo->DirectionalLightIntensity();
+				directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (+Home/-End): " << mDiffuseLightingDemo->DirectionalLightIntensity();
 				ImGui::Text(directionalLightIntensityLabel.str().c_str());
+			}
+			{				
+				stringstream colorFilterLabel;
+				colorFilterLabel << "Color Filter (Space): " << ColorFilteringDemo::ColorFilterNames.at(mColorFilteringDemo->ActiveColorFilter());
+				ImGui::Text(colorFilterLabel.str().c_str());
+			}
+			if (mColorFilteringDemo->ActiveColorFilter() == ColorFilters::Generic)
+			{
+				stringstream brightnessLabel;
+				brightnessLabel << setprecision(2) << "Brightness (+Insert/-Delete): " << mColorFilteringDemo->GenericFilterBrightness();
+				ImGui::Text(brightnessLabel.str().c_str());
 			}
 
 			ImGui::End();
 		});
-		imGui->AddRenderBlock(helpTextImGuiRenderBlock);
+		mImGuiComponent->AddRenderBlock(helpTextImGuiRenderBlock);
+		mImGuiComponent->Initialize();
 
 		mFpsComponent = make_shared<FpsComponent>(*this);
 		mFpsComponent->SetVisible(false);
@@ -121,6 +127,7 @@ namespace Rendering
 		mDiffuseLightingDemo = mColorFilteringDemo->DiffuseLighting();
 		mAmbientLightIntensity = mDiffuseLightingDemo->AmbientLightIntensity();
 		mDirectionalLightIntensity = mDiffuseLightingDemo->DirectionalLightIntensity();
+		mGenericFilterBrightness = mColorFilteringDemo->GenericFilterBrightness();
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -140,11 +147,6 @@ namespace Rendering
 			mMouse->SetMode(MouseModes::Absolute);
 		}
 
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-		{
-			mDiffuseLightingDemo->ToggleAnimation();
-		}
-
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::G))
 		{
 			mGrid->SetVisible(!mGrid->Visible());
@@ -157,18 +159,22 @@ namespace Rendering
 
 		UpdateAmbientLightIntensity(gameTime);
 		UpdateDirectionalLight(gameTime);
-		
+		UpdateActiveColorFilter();
+		if (mColorFilteringDemo->ActiveColorFilter() == ColorFilters::Generic)
+		{
+			UpdateGenericFilterBrightness(gameTime);
+		}
+
 		mColorFilteringDemo->Update(gameTime);
+		mImGuiComponent->Update(gameTime);
 
 		Game::Update(gameTime);
 	}
 
 	void RenderingGame::Draw(const GameTime &gameTime)
-	{
-		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.get(), BackgroundColor.f);
-		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
+	{		
 		mColorFilteringDemo->Draw(gameTime);
+		mImGuiComponent->Draw(gameTime);
 
 		HRESULT hr = mSwapChain->Present(1, 0);
 
@@ -185,9 +191,16 @@ namespace Rendering
 
 	void RenderingGame::Shutdown()
 	{
-		Game::Shutdown();
+		mGrid = nullptr;
+		mFpsComponent = nullptr;
+		mSkybox = nullptr;
+		mImGuiComponent->Shutdown();
+		mImGuiComponent = nullptr;
+		mDiffuseLightingDemo = nullptr;
+		mColorFilteringDemo = nullptr;
 		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
+		Game::Shutdown();		
 	}
 
 	void RenderingGame::Exit()
@@ -251,6 +264,37 @@ namespace Rendering
 		if (rotationAmount.x != 0.0f || rotationAmount.y != 0.0f)
 		{
 			mDiffuseLightingDemo->RotateDirectionalLight(rotationAmount);
+		}
+	}
+
+	void RenderingGame::UpdateGenericFilterBrightness(const GameTime& gameTime)
+	{
+		// Update light intensity
+		if (mKeyboard->IsKeyDown(Keys::Insert) && mGenericFilterBrightness < 1.0f)
+		{
+			mGenericFilterBrightness += gameTime.ElapsedGameTimeSeconds().count();
+			mGenericFilterBrightness = min(mGenericFilterBrightness, 1.0f);
+			mColorFilteringDemo->SetGenericFilterBrightness(mGenericFilterBrightness);
+		}
+		else if (mKeyboard->IsKeyDown(Keys::Delete) && mGenericFilterBrightness > 0.0f)
+		{
+			mGenericFilterBrightness -= gameTime.ElapsedGameTimeSeconds().count();
+			mGenericFilterBrightness = max(mGenericFilterBrightness, 0.0f);
+			mColorFilteringDemo->SetGenericFilterBrightness(mGenericFilterBrightness);
+		}
+	}
+
+	void RenderingGame::UpdateActiveColorFilter()
+	{
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
+		{
+			ColorFilters activeColorFilter = ColorFilters(static_cast<int>(mColorFilteringDemo->ActiveColorFilter()) + 1);
+			if (activeColorFilter >= ColorFilters::End)
+			{
+				activeColorFilter = ColorFilters(0);
+			}
+
+			mColorFilteringDemo->SetActiveColorFilter(activeColorFilter);
 		}
 	}
 }

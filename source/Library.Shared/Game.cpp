@@ -26,76 +26,6 @@ namespace Library
 		CreateDeviceResources();
 	}
 
-	not_null<ID3D11Device5*> Game::Direct3DDevice() const
-	{
-		return not_null<ID3D11Device5*>(mDirect3DDevice.get());
-	}
-
-	not_null<ID3D11DeviceContext4*> Game::Direct3DDeviceContext() const
-	{
-		return not_null<ID3D11DeviceContext4*>(mDirect3DDeviceContext.get());
-	}
-
-	not_null<IDXGISwapChain1*> Game::SwapChain() const
-	{
-		return not_null<IDXGISwapChain1*>(mSwapChain.get());
-	}
-
-	not_null<ID3D11RenderTargetView*> Game::RenderTargetView() const
-	{
-		return not_null<ID3D11RenderTargetView*>(mRenderTargetView.get());
-	}
-
-	not_null<ID3D11DepthStencilView*> Game::DepthStencilView() const
-	{
-		return not_null<ID3D11DepthStencilView*>(mDepthStencilView.get());
-	}
-
-	SIZE Game::RenderTargetSize() const
-	{
-		return mRenderTargetSize;
-	}
-
-	float Game::AspectRatio() const
-	{
-		return static_cast<float>(mRenderTargetSize.cx) / mRenderTargetSize.cy;
-	}
-
-	bool Game::IsFullScreen() const
-	{
-		return mIsFullScreen;
-	}
-
-	const D3D11_TEXTURE2D_DESC& Game::BackBufferDesc() const
-	{
-		return mBackBufferDesc;
-	}
-
-	const D3D11_VIEWPORT& Game::Viewport() const
-	{
-		return mViewport;
-	}
-
-	uint32_t Game::MultiSamplingCount() const
-	{
-		return mMultiSamplingCount;
-	}
-
-	uint32_t Game::MultiSamplingQualityLevels() const
-	{
-		return mMultiSamplingQualityLevels;
-	}
-
-	const vector<shared_ptr<GameComponent>>& Game::Components() const
-	{
-		return mComponents;
-	}
-
-	const ServiceContainer& Game::Services() const
-	{
-		return mServices;
-	}
-
 	void Game::Initialize()
 	{
 		ContentTypeReaderManager::Initialize(*this);
@@ -134,7 +64,12 @@ namespace Library
 		mDirect3DDeviceContext = nullptr;
 		mDirect3DDevice = nullptr;
 
+		mContentManager.Clear();
 		ContentTypeReaderManager::Shutdown();
+
+#if defined(DEBUG) || defined(_DEBUG)
+		DumpD3DDebug();
+#endif
 	}
 
 	void Game::Update(const GameTime& gameTime)
@@ -163,29 +98,6 @@ namespace Library
 	void Game::UpdateRenderTargetSize()
 	{
 		CreateWindowSizeDependentResources();
-	}
-
-	void Game::RegisterDeviceNotify(IDeviceNotify* deviceNotify)
-	{
-		mDeviceNotify = deviceNotify;
-	}
-
-	void Game::UnbindPixelShaderResources(uint32_t startSlot, uint32_t count)
-	{
-		static ID3D11ShaderResourceView* emptySRV[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
-		assert(count < narrow_cast<uint32_t>(size(emptySRV)));
-
-		mDirect3DDeviceContext->PSSetShaderResources(startSlot, count, emptySRV);
-	}
-
-	function<void*()> Game::GetWindowCallback() const
-	{
-		return mGetWindow;
-	}
-
-	ContentManager& Game::Content()
-	{
-		return mContentManager;
 	}
 
 	void Game::Begin()

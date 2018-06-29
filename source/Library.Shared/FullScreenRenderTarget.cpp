@@ -65,7 +65,7 @@ namespace Library
     {
 		ID3D11RenderTargetView* views[] = { mRenderTargetView.get() };
 		const span<ID3D11RenderTargetView*> renderTargetViews{ views };
-		RenderTarget::Begin(mGame->Direct3DDeviceContext(), views, mDepthStencilView.get(), mGame->Viewport());
+		RenderTarget::Begin(mGame->Direct3DDeviceContext(), views, not_null<ID3D11DepthStencilView*>(mDepthStencilView.get()), mGame->Viewport());
     }
 
     void FullScreenRenderTarget::End()

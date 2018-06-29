@@ -36,7 +36,7 @@ namespace Rendering
 
 		auto camera = make_shared<FirstPersonCamera>(*this);
 		mComponents.push_back(camera);
-		mServices.AddService(Camera::TypeIdClass(), camera.get());		
+		mServices.AddService(Camera::TypeIdClass(), camera.get());
 
 		auto grid = make_shared<Grid>(*this, camera);
 		mComponents.push_back(grid);
@@ -102,6 +102,13 @@ namespace Rendering
 			ThrowIfFailed(hr, "IDXGISwapChain::Present() failed.");
 		}
     }
+
+	void RenderingGame::Shutdown()
+	{
+		mFpsComponent = nullptr;
+		mColoredCubeDemo = nullptr;
+		Game::Shutdown();
+	}
 
 	void RenderingGame::Exit()
 	{

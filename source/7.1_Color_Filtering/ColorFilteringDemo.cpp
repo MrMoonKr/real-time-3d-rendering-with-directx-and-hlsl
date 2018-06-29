@@ -10,11 +10,20 @@
 using namespace std;
 using namespace std::string_literals;
 using namespace gsl;
+using namespace winrt;
 using namespace Library;
 using namespace DirectX;
 
 namespace Rendering
 {
+	const map<ColorFilters, string> ColorFilteringDemo::ColorFilterNames =
+	{
+		{ ColorFilters::GrayScale, "GrayScale"s },
+		{ ColorFilters::Inverse, "Inverse"s },
+		{ ColorFilters::Sepia, "Sepia"s },
+		{ ColorFilters::Generic, "Generic (Brightness)"s }
+	};
+
 	ColorFilteringDemo::ColorFilteringDemo(Game& game, const shared_ptr<Camera>& camera) :
 		DrawableGameComponent(game, camera),
 		mRenderTarget(game),
@@ -41,21 +50,41 @@ namespace Rendering
 		mActiveColorFilter = colorFilter;
 		mFullScreenQuad.Material()->SetPixelShader(mPixelShadersByColorFilter.at(mActiveColorFilter));
 	}
+
+	float ColorFilteringDemo::GenericFilterBrightness() const
+	{
+		return mGenericColorFilterPSConstantBufferData.ColorFilter._11;
+	}
+
+	void ColorFilteringDemo::SetGenericFilterBrightness(float brightness)
+	{
+		XMStoreFloat4x4(&mGenericColorFilterPSConstantBufferData.ColorFilter, XMMatrixScaling(brightness, brightness, brightness));		
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mGenericColorFilterPSConstantBuffer.get(), 0, nullptr, &mGenericColorFilterPSConstantBufferData, 0, 0);
+	}
 	
 	void ColorFilteringDemo::Initialize()
 	{
 		mDiffuseLightingDemo = make_shared<DiffuseLightingDemo>(*mGame, mCamera);
 		mDiffuseLightingDemo->Initialize();
 
+		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
+		constantBufferDesc.ByteWidth = sizeof(GenericColorFilterPSConstantBuffer);
+		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mGenericColorFilterPSConstantBuffer.put()), "ID3D11Device::CreateBuffer() failed.");
+
+		// Initialize the generic color filter
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mGenericColorFilterPSConstantBuffer.get(), 0, nullptr, &mGenericColorFilterPSConstantBufferData, 0, 0);
+
 		mFullScreenQuad.Initialize();
 		mFullScreenQuad.Material()->SetTexture(mRenderTarget.OutputTexture());
-		//mFullScreenQuad.Material()->SetUpdateMaterialCallback([&]
-		//{
-		//	auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-		//	ID3D11ShaderResourceView* const psShaderResources[] = { mRenderTarget.OutputTexture() };
-		//	direct3DDeviceContext->PSSetShaderResources(0, narrow_cast<uint32_t>(size(psShaderResources)), psShaderResources);
-		//});
+		mFullScreenQuad.Material()->SetUpdateMaterialCallback([&]
+		{
+			if (mActiveColorFilter == ColorFilters::Generic)
+			{
+				auto psConstantBuffers = mGenericColorFilterPSConstantBuffer.get();
+				mGame->Direct3DDeviceContext()->PSSetConstantBuffers(0, 1, &psConstantBuffers);
+			}
+		});
 
 		auto& content = mGame->Content();
 		mPixelShadersByColorFilter[ColorFilters::GrayScale] = content.Load<PixelShader>(L"Shaders\\GrayScaleColorFilterPS.cso");
@@ -89,6 +118,6 @@ namespace Rendering
 		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mGame->DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		mFullScreenQuad.Draw(gameTime);
-		mGame->UnbindPixelShaderResources(0, 1);
+		mGame->UnbindPixelShaderResources<1>();
 	}
 }

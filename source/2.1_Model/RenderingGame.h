@@ -25,6 +25,7 @@ namespace Rendering
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
+		virtual void Shutdown() override;
 
 		void Exit();
 

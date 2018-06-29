@@ -109,6 +109,8 @@ namespace Rendering
 			mGrid->SetVisible(!mGrid->Visible());
 		}
 
+		UpdateActiveAddressingMode();
+
 		Game::Update(gameTime);
 	}
 
@@ -134,12 +136,29 @@ namespace Rendering
 
 	void RenderingGame::Shutdown()
 	{
-		Game::Shutdown();
+		mGrid = nullptr;
+		mFpsComponent = nullptr;
+		mAddressingModesDemo = nullptr;
 		SamplerStates::Shutdown();
+		Game::Shutdown();		
 	}
 
 	void RenderingGame::Exit()
 	{
 		PostQuitMessage(0);
+	}
+
+	void RenderingGame::UpdateActiveAddressingMode()
+	{
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
+		{
+			AddressingModes activeMode = AddressingModes(static_cast<int>(mAddressingModesDemo->ActiveAddressingMode()) + 1);
+			if (activeMode >= AddressingModes::End)
+			{
+				activeMode = AddressingModes(0);
+			}
+
+			mAddressingModesDemo->SetActiveAddressingMode(activeMode);
+		}
 	}
 }

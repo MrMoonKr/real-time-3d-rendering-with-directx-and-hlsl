@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
 
 	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"6.1 - Normal Mapping";
+	const wstring windowTitle = L"6.2 - Displacement Mapping";
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;

@@ -511,5 +511,8 @@
     <None Include="$(MSBuildThisFileDirectory)Light.inl">
       <Filter>Lights</Filter>
     </None>
+    <None Include="$(MSBuildThisFileDirectory)Game.inl">
+      <Filter>Game</Filter>
+    </None>
   </ItemGroup>
 </Project>

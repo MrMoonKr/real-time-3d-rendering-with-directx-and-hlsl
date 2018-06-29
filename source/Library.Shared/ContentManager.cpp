@@ -23,6 +23,11 @@ namespace Library
 		mLoadedAssets.erase(assetName);
 	}
 
+	void ContentManager::Clear()
+	{
+		mLoadedAssets.clear();
+	}
+
 	shared_ptr<RTTI> ContentManager::ReadAsset(const int64_t targetTypeId, const wstring& assetName)
 	{
 		const auto& contentTypeReaders = ContentTypeReaderManager::ContentTypeReaders();
