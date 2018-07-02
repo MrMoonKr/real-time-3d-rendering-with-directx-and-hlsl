@@ -76,7 +76,7 @@ namespace Rendering
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mGenericColorFilterPSConstantBuffer.get(), 0, nullptr, &mGenericColorFilterPSConstantBufferData, 0, 0);
 
 		mFullScreenQuad.Initialize();
-		mFullScreenQuad.Material()->SetTexture(mRenderTarget.OutputTexture());
+		mFullScreenQuad.Material()->SetTexture(mRenderTarget.OutputTexture().get());
 		mFullScreenQuad.Material()->SetUpdateMaterialCallback([&]
 		{
 			if (mActiveColorFilter == ColorFilters::Generic)
