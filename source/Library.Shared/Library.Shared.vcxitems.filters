@@ -262,6 +262,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FullScreenQuadMaterial.cpp">
       <Filter>Materials</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GaussianBlur.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
@@ -483,6 +486,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)FullScreenQuadMaterial.h">
       <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GaussianBlur.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

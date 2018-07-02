@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "6_2_Displacement_Mapping", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7_1_Color_Filtering", "..\source\7.1_Color_Filtering\7_1_Color_Filtering.vcxproj", "{5F128DDD-E874-4DBF-A512-1147CCAD3921}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7_2_Gaussian_Blurring", "..\source\7.2_Gaussian_Blurring\7_2_Gaussian_Blurring.vcxproj", "{FCBF3CFB-ED36-4190-B949-F0246C28C508}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -259,6 +261,14 @@ Global
 		{5F128DDD-E874-4DBF-A512-1147CCAD3921}.Release|Win32.Build.0 = Release|Win32
 		{5F128DDD-E874-4DBF-A512-1147CCAD3921}.Release|x64.ActiveCfg = Release|x64
 		{5F128DDD-E874-4DBF-A512-1147CCAD3921}.Release|x64.Build.0 = Release|x64
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Debug|Win32.Build.0 = Debug|Win32
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Debug|x64.ActiveCfg = Debug|x64
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Debug|x64.Build.0 = Debug|x64
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Release|Win32.ActiveCfg = Release|Win32
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Release|Win32.Build.0 = Release|Win32
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Release|x64.ActiveCfg = Release|x64
+		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

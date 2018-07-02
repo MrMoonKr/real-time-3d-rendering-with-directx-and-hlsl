@@ -88,7 +88,7 @@ namespace Library
 	template <size_t _Count>
 	void Game::UnbindPixelShaderResources(std::uint32_t startSlot)
 	{
-		std::array<ID3D11ShaderResourceView*, _Count> emptySRVs{ nullptr };
+		static std::array<ID3D11ShaderResourceView*, _Count> emptySRVs{ nullptr };
 		mDirect3DDeviceContext->PSSetShaderResources(startSlot, _Count, emptySRVs.data());
 	}
 }

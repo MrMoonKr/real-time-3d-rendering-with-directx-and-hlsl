@@ -46,19 +46,19 @@ namespace Library
 		ThrowIfFailed(game.Direct3DDevice()->CreateDepthStencilView(depthStencilBuffer.get(), nullptr, mDepthStencilView.put()), "ID3D11Device::CreateDepthStencilView() failed.");
     }
 
-    ID3D11ShaderResourceView* FullScreenRenderTarget::OutputTexture() const
+	com_ptr<ID3D11ShaderResourceView> FullScreenRenderTarget::OutputTexture() const
     {
-        return mOutputTexture.get();
+        return mOutputTexture;
     }
 
-    ID3D11RenderTargetView* FullScreenRenderTarget::RenderTargetView() const
+	com_ptr<ID3D11RenderTargetView> FullScreenRenderTarget::RenderTargetView() const
     {
-		return mRenderTargetView.get();
+		return mRenderTargetView;
     }
 
-    ID3D11DepthStencilView* FullScreenRenderTarget::DepthStencilView() const
+    com_ptr<ID3D11DepthStencilView> FullScreenRenderTarget::DepthStencilView() const
     {
-		return mDepthStencilView.get();
+		return mDepthStencilView;
     }
 
     void FullScreenRenderTarget::Begin()

@@ -37,6 +37,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameException.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GamePadComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameTime.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GaussianBlur.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Grid.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ImGuiComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)imgui_impl_dx11.cpp">
@@ -118,6 +119,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameException.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GamePadComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameTime.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GaussianBlur.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Grid.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ImGuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)imgui_impl_dx11.h" />

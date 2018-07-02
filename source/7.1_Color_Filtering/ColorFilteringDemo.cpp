@@ -105,8 +105,8 @@ namespace Rendering
 		// Render scene to off-screen render target
 		mRenderTarget.Begin();
 
-		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mRenderTarget.RenderTargetView(), Colors::CornflowerBlue.f);
-		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mRenderTarget.DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mRenderTarget.RenderTargetView().get(), Colors::CornflowerBlue.f);
+		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mRenderTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		mGame->Game::Draw(gameTime);
 		mDiffuseLightingDemo->Draw(gameTime);
@@ -114,8 +114,8 @@ namespace Rendering
 		mRenderTarget.End();
 		
 		// Render off-screen texture to a full-screen quad with a color filter shader
-		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mGame->RenderTargetView(), Colors::CornflowerBlue.f);
-		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mGame->DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mGame->RenderTargetView().get(), Colors::CornflowerBlue.f);
+		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mGame->DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		mFullScreenQuad.Draw(gameTime);
 		mGame->UnbindPixelShaderResources<1>();

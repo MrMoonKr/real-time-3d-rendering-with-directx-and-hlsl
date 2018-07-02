@@ -17,9 +17,9 @@ namespace Library
 		FullScreenRenderTarget& operator=(FullScreenRenderTarget&&) = default;
 		~FullScreenRenderTarget() = default;
 
-        ID3D11ShaderResourceView* OutputTexture() const;
-        ID3D11RenderTargetView* RenderTargetView() const;
-        ID3D11DepthStencilView* DepthStencilView() const;
+		winrt::com_ptr<ID3D11ShaderResourceView> OutputTexture() const;
+		winrt::com_ptr<ID3D11RenderTargetView> RenderTargetView() const;
+        winrt::com_ptr<ID3D11DepthStencilView> DepthStencilView() const;
 
         void Begin() override;
         void End() override;

@@ -4,8 +4,6 @@
 #include "GameException.h"
 #include "VertexDeclarations.h"
 #include "VertexShader.h"
-#include "PixelShader.h"
-#include "Texture2D.h"
 
 using namespace std;
 using namespace gsl;

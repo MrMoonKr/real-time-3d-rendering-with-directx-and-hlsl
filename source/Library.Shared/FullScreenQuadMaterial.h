@@ -5,8 +5,6 @@
 
 namespace Library
 {
-	class Texture2D;
-
 	class FullScreenQuadMaterial : public Material
 	{
 		RTTI_DECLARATIONS(FullScreenQuadMaterial, Material)
@@ -27,8 +25,10 @@ namespace Library
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
-	private:
+	protected:
 		virtual void BeginDraw() override;
+
+	private:
 
 		ID3D11ShaderResourceView* mTexture;
 		winrt::com_ptr<ID3D11SamplerState> mSamplerState;
