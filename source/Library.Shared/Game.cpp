@@ -103,7 +103,7 @@ namespace Library
 	void Game::Begin()
 	{
 		ID3D11RenderTargetView* views[] = { mRenderTargetView.get() };
-		const span<ID3D11RenderTargetView*> renderTargetViews { views };
+		const span<ID3D11RenderTargetView*> renderTargetViews{ views };
 		RenderTarget::Begin(Direct3DDeviceContext(), renderTargetViews, not_null<ID3D11DepthStencilView*>(mDepthStencilView.get()), mViewport);
 	}
 

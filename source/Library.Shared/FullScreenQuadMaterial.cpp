@@ -32,7 +32,13 @@ namespace Library
 
 	void FullScreenQuadMaterial::SetTexture(not_null<ID3D11ShaderResourceView*> texture)
 	{
-		mTexture = texture;
+		mTextures.clear();
+		mTextures.push_back(texture);
+	}
+
+	void FullScreenQuadMaterial::SetTextures(gsl::span<ID3D11ShaderResourceView*> textures)
+	{
+		mTextures = move(vector<ID3D11ShaderResourceView*>(textures.begin(), textures.end()));
 	}
 
 	uint32_t FullScreenQuadMaterial::VertexSize() const
@@ -55,7 +61,7 @@ namespace Library
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 
-		direct3DDeviceContext->PSSetShaderResources(0, 1, &mTexture);
+		direct3DDeviceContext->PSSetShaderResources(0, mTextures.size(), mTextures.data());
 
 		const auto psSamplers = mSamplerState.get();
 		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);

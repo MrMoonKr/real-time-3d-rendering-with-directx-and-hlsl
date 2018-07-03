@@ -1,7 +1,6 @@
 #pragma once
 
 #include "DrawableGameComponent.h"
-#include "GaussianBlur.h"
 #include "FullScreenRenderTarget.h"
 #include "FullScreenQuad.h"
 #include <winrt\Windows.Foundation.h>
@@ -35,7 +34,7 @@ namespace Library
 
 		virtual void Initialize() override;
 		virtual void Draw(const GameTime& gameTime) override;
-		//void DrawToTexture(const GameTime& gameTime);
+		void DrawToTexture(const GameTime& gameTime);
 
 		inline static const float DefaultBlurAmount = 1.0f;
 

@@ -6,6 +6,7 @@
 
 using namespace std;
 using namespace gsl;
+using namespace winrt;
 using namespace DirectX;
 
 namespace Library
@@ -85,6 +86,16 @@ namespace Library
 		mVertexShader = vertexShader;
 	}
 
+	com_ptr<ID3D11ClassInstance> Material::VertexShaderClassInstance() const
+	{
+		return mVertexShaderClassInstance;
+	}
+
+	void Material::SetVertexShaderClassInstance(com_ptr<ID3D11ClassInstance> classInstance)
+	{
+		mVertexShaderClassInstance = classInstance;
+	}
+
 	shared_ptr<PixelShader> Material::GetPixelShader() const
 	{
 		return mPixelShader;
@@ -93,6 +104,16 @@ namespace Library
 	void Material::SetPixelShader(const shared_ptr<PixelShader>& pixelShader)
 	{
 		mPixelShader = pixelShader;
+	}
+
+	com_ptr<ID3D11ClassInstance> Material::PixelShaderClassInstance() const
+	{
+		return mPixelShaderClassInstance;
+	}
+
+	void Material::SetPixelShaderClassInstance(com_ptr<ID3D11ClassInstance> classInstance)
+	{
+		mPixelShaderClassInstance = classInstance;
 	}
 
 	function<void()> Material::DrawCallback() const
@@ -120,8 +141,12 @@ namespace Library
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->IASetPrimitiveTopology(mTopology);
 		direct3DDeviceContext->IASetInputLayout(mVertexShader->InputLayout().get());
-		direct3DDeviceContext->VSSetShader(mVertexShader->Shader().get(), nullptr, 0);
-		direct3DDeviceContext->PSSetShader(mPixelShader->Shader().get(), nullptr, 0);
+
+		auto vsClassInstances = mVertexShaderClassInstance.get();
+		direct3DDeviceContext->VSSetShader(mVertexShader->Shader().get(), &vsClassInstances, mVertexShaderClassInstance != nullptr ? 1 : 0);
+
+		auto psClassInstances = mPixelShaderClassInstance.get();
+		direct3DDeviceContext->PSSetShader(mPixelShader->Shader().get(), &psClassInstances, mPixelShaderClassInstance != nullptr ? 1 : 0);
 
 		if (mUpdateMaterialCallback != nullptr)
 		{

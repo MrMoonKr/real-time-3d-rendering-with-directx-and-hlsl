@@ -16,6 +16,7 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)BasicMaterial.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BlendStates.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bloom.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Camera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColorHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ContentManager.cpp" />
@@ -98,6 +99,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)BasicMaterial.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BlendStates.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bloom.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ColorHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ContentManager.h" />

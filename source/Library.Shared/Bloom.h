@@ -1,0 +1,120 @@
+#pragma once
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#include "DrawableGameComponent.h"
+#include "GaussianBlur.h"
+#include "FullScreenRenderTarget.h"
+#include "FullScreenQuad.h"
+#include <winrt\Windows.Foundation.h>
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include <map>
+#include <gsl\gsl>
+
+namespace Library
+{
+	class PixelShader;
+	class FullScreenQuadMaterial;
+
+	struct BloomSettings
+	{
+		float BloomThreshold;
+		float BlurAmount;
+		float BloomIntensity;
+		float BloomSaturation;
+		float SceneIntensity;
+		float SceneSaturation;
+	};
+
+	enum class BloomDrawModes
+	{
+		Normal = 0,
+		ExtractedTexture,
+		BlurredTexture,
+		End
+	};
+
+	class Bloom final : public DrawableGameComponent
+	{
+		RTTI_DECLARATIONS(Bloom, DrawableGameComponent)
+
+	public:
+		Bloom(Game& game, const BloomSettings& bloomSettings = DefaultBloomSettings);
+		Bloom(const Bloom&) = delete;
+		Bloom(Bloom&&) = default;
+		Bloom& operator=(const Bloom&) = delete;
+		Bloom& operator=(Bloom&&) = default;
+		~Bloom() = default;
+
+		ID3D11ShaderResourceView* SceneTexture() const;
+		void SetSceneTexture(winrt::com_ptr<ID3D11ShaderResourceView> sceneTexture);
+
+		BloomSettings GetBloomSettings() const;
+		void SetBloomSettings(const BloomSettings& bloomSettings);
+
+		BloomDrawModes DrawMode() const;
+		const std::string& DrawModeString() const;
+		void SetDrawMode(BloomDrawModes drawMode);
+		
+		virtual void Initialize() override;
+		virtual void Draw(const GameTime& gameTime) override;
+
+		inline static const BloomSettings DefaultBloomSettings{ 0.45f, 2.0f, 1.25f, 1.0f, 1.0f, 1.0f };
+	private:
+		static const std::map<BloomDrawModes, std::string> DrawModeDisplayNames;
+
+		struct PixelCBufferPerObject
+		{
+			float BloomThreshold;
+			float BloomIntensity;
+			float BloomSaturation;
+			float SceneIntensity;
+			float SceneSaturation;
+			DirectX::XMFLOAT3 Padding;
+
+			PixelCBufferPerObject(const BloomSettings& bloomSettings) :
+				BloomThreshold(bloomSettings.BloomThreshold), BloomIntensity(bloomSettings.BloomIntensity),
+				BloomSaturation(bloomSettings.BloomSaturation), SceneIntensity(bloomSettings.SceneIntensity),
+				SceneSaturation(bloomSettings.SceneSaturation), Padding()
+			{
+			}
+
+			PixelCBufferPerObject& operator=(const BloomSettings& bloomSettings)
+			{
+				BloomThreshold = bloomSettings.BloomThreshold;
+				BloomIntensity = bloomSettings.BloomIntensity;
+				BloomSaturation = bloomSettings.BloomSaturation;
+				SceneIntensity = bloomSettings.SceneIntensity;
+				SceneSaturation = bloomSettings.SceneSaturation;
+
+				return *this;
+			}
+		};
+
+		enum class BloomShaderClass
+		{
+			Extract = 0,
+			Composite,
+			NoBloom
+		};
+
+		void DrawNormal(const GameTime& gameTime);
+		void DrawExtractedTexture(const GameTime& gameTime);
+		void DrawBlurredTexture(const GameTime& gameTime);
+
+		FullScreenQuad mFullScreenQuad;
+		FullScreenRenderTarget mRenderTarget;
+		GaussianBlur mGaussianBlur;
+		winrt::com_ptr<ID3D11ShaderResourceView> mSceneTexture;
+		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerObject;
+		PixelCBufferPerObject mPixelCBufferPerObjectData;
+		BloomDrawModes mDrawMode{ BloomDrawModes::Normal };
+		std::map<BloomDrawModes, std::function<void(const GameTime& gameTime)>> mDrawFunctions;
+		std::map<BloomShaderClass, winrt::com_ptr<ID3D11ClassInstance>> mShaderClassInstances;
+		winrt::com_ptr<ID3D11ClassLinkage> mClassLinkage;
+		std::shared_ptr<PixelShader> mPixelShader;
+	};
+}

@@ -19,7 +19,7 @@ namespace Library
 	}
 
 	template<typename T>
-	inline std::shared_ptr<T> ContentManager::Load(const std::wstring& assetName, bool reload)
+	inline std::shared_ptr<T> ContentManager::Load(const std::wstring& assetName, bool reload, std::function<std::shared_ptr<T>(std::wstring&)> customReader)
 	{
 		if (reload == false)
 		{
@@ -31,7 +31,8 @@ namespace Library
 		}
 
 		uint64_t targetTypeId = T::TypeIdClass();
-		auto asset = ReadAsset(targetTypeId, mRootDirectory + assetName);		
+		auto pathName = mRootDirectory + assetName;
+		auto asset = (customReader != nullptr ? customReader(pathName) : ReadAsset(targetTypeId, pathName));
 		mLoadedAssets[assetName] = asset;
 
 		return static_pointer_cast<T>(asset);

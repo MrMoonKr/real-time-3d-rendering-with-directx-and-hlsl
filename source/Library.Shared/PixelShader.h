@@ -16,6 +16,7 @@ namespace Library
 		RTTI_DECLARATIONS(PixelShader, Shader)
 
 	public:
+		PixelShader(const winrt::com_ptr<ID3D11PixelShader>& pixelShader);
 		PixelShader(const PixelShader&) = default;
 		PixelShader& operator=(const PixelShader&) = default;
 		PixelShader(PixelShader&&) = default;
@@ -25,9 +26,6 @@ namespace Library
 		winrt::com_ptr<ID3D11PixelShader> Shader() const;
 
 	private:
-		friend class PixelShaderReader;
-		PixelShader(const winrt::com_ptr<ID3D11PixelShader>& pixelShader);
-
 		winrt::com_ptr<ID3D11PixelShader> mShader;
 	};
 }

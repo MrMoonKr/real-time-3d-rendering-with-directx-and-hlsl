@@ -1,11 +1,7 @@
 #include "pch.h"
 #include "GaussianBlurDemo.h"
-#include "Camera.h"
 #include "Game.h"
-#include "GameException.h"
 #include "DiffuseLightingDemo.h"
-#include "FullScreenQuadMaterial.h"
-#include "PixelShader.h"
 
 using namespace std;
 using namespace std::string_literals;
@@ -57,11 +53,12 @@ namespace Rendering
 
 	void GaussianBlurDemo::Draw(const GameTime& gameTime)
 	{
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		// Render scene to off-screen render target
 		mRenderTarget.Begin();
 
-		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mRenderTarget.RenderTargetView().get(), Colors::CornflowerBlue.f);
-		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mRenderTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		direct3DDeviceContext->ClearRenderTargetView(mRenderTarget.RenderTargetView().get(), Colors::CornflowerBlue.f);
+		direct3DDeviceContext->ClearDepthStencilView(mRenderTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		mGame->Game::Draw(gameTime);
 		mDiffuseLightingDemo->Draw(gameTime);
@@ -69,8 +66,8 @@ namespace Rendering
 		mRenderTarget.End();
 		
 		// Render off-screen texture to a full-screen quad with gaussian blurring
-		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mGame->RenderTargetView(), Colors::CornflowerBlue.f);
-		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mGame->DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		direct3DDeviceContext->ClearRenderTargetView(mGame->RenderTargetView(), Colors::CornflowerBlue.f);
+		direct3DDeviceContext->ClearDepthStencilView(mGame->DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		mGaussianBlur.Draw(gameTime);
 	}

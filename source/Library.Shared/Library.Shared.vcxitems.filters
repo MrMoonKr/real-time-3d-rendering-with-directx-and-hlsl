@@ -265,6 +265,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GaussianBlur.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bloom.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
@@ -488,6 +491,9 @@
       <Filter>Materials</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GaussianBlur.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bloom.h">
       <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>

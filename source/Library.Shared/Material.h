@@ -32,8 +32,14 @@ namespace Library
 		std::shared_ptr<VertexShader> GetVertexShader() const;
 		void SetVertexShader(const std::shared_ptr<VertexShader>& vertexShader);
 
+		winrt::com_ptr<ID3D11ClassInstance> VertexShaderClassInstance() const;
+		void SetVertexShaderClassInstance(winrt::com_ptr<ID3D11ClassInstance> classInstance);
+
 		std::shared_ptr<PixelShader> GetPixelShader() const;		
 		void SetPixelShader(const std::shared_ptr<PixelShader>& pixelShader);
+
+		winrt::com_ptr<ID3D11ClassInstance> PixelShaderClassInstance() const;
+		void SetPixelShaderClassInstance(winrt::com_ptr<ID3D11ClassInstance> classInstance);
 
 		std::function<void()> DrawCallback() const;
 		void SetDrawCallback(std::function<void()> callback);
@@ -54,7 +60,9 @@ namespace Library
 		gsl::not_null<Game*> mGame;
 		D3D_PRIMITIVE_TOPOLOGY mTopology;
 		std::shared_ptr<VertexShader> mVertexShader;
+		winrt::com_ptr<ID3D11ClassInstance> mVertexShaderClassInstance;
 		std::shared_ptr<PixelShader> mPixelShader;
+		winrt::com_ptr<ID3D11ClassInstance> mPixelShaderClassInstance;
 		std::function<void()> mDrawCallback;
 		std::function<void()> mUpdateMaterialCallback;
 	};

@@ -39,6 +39,9 @@
     <FxCompile Include="Content\Shaders\GaussianBlurPS.hlsl">
       <Filter>Content\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Content\Shaders\BloomPS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\Arial_14_Regular.spritefont">

@@ -1,7 +1,13 @@
 #pragma once
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #include "RTTI.h"
 #include <d3d11.h>
+#include <winrt\Windows.Foundation.h>
+#include <gsl/gsl>
 
 namespace Library
 {
@@ -15,6 +21,8 @@ namespace Library
 		Shader(Shader&&) = default;
 		Shader& operator=(Shader&&) = default;
 		virtual ~Shader() = default;
+
+		static winrt::com_ptr<ID3D11ClassLinkage> CreateClassLinkage(gsl::not_null<ID3D11Device*> device);
 
 	protected:
 		Shader() = default;

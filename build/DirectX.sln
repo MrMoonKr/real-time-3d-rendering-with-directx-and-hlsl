@@ -57,6 +57,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7_1_Color_Filtering", "..\s
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7_2_Gaussian_Blurring", "..\source\7.2_Gaussian_Blurring\7_2_Gaussian_Blurring.vcxproj", "{FCBF3CFB-ED36-4190-B949-F0246C28C508}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7_3_Bloom", "..\source\7.3_Bloom\7_3_Bloom.vcxproj", "{2372C713-D878-4156-AF65-36EC696159CA}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -269,6 +271,14 @@ Global
 		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Release|Win32.Build.0 = Release|Win32
 		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Release|x64.ActiveCfg = Release|x64
 		{FCBF3CFB-ED36-4190-B949-F0246C28C508}.Release|x64.Build.0 = Release|x64
+		{2372C713-D878-4156-AF65-36EC696159CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2372C713-D878-4156-AF65-36EC696159CA}.Debug|Win32.Build.0 = Debug|Win32
+		{2372C713-D878-4156-AF65-36EC696159CA}.Debug|x64.ActiveCfg = Debug|x64
+		{2372C713-D878-4156-AF65-36EC696159CA}.Debug|x64.Build.0 = Debug|x64
+		{2372C713-D878-4156-AF65-36EC696159CA}.Release|Win32.ActiveCfg = Release|Win32
+		{2372C713-D878-4156-AF65-36EC696159CA}.Release|Win32.Build.0 = Release|Win32
+		{2372C713-D878-4156-AF65-36EC696159CA}.Release|x64.ActiveCfg = Release|x64
+		{2372C713-D878-4156-AF65-36EC696159CA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,6 +2,7 @@
 
 #include "Material.h"
 #include "SamplerStates.h"
+#include <vector>
 
 namespace Library
 {
@@ -21,6 +22,7 @@ namespace Library
 		void SetSamplerState(const winrt::com_ptr<ID3D11SamplerState>& samplerState);
 
 		void SetTexture(gsl::not_null<ID3D11ShaderResourceView*> texture);
+		void SetTextures(gsl::span<ID3D11ShaderResourceView*> textures);
 
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
@@ -30,7 +32,7 @@ namespace Library
 
 	private:
 
-		ID3D11ShaderResourceView* mTexture;
+		std::vector<ID3D11ShaderResourceView*> mTextures;
 		winrt::com_ptr<ID3D11SamplerState> mSamplerState;
 	};
 }

@@ -83,9 +83,9 @@ namespace Rendering
 				ImGui::Text(gridVisibleLabel.str().c_str());
 			}
 			{
-				stringstream gridVisibleLabel;
-				gridVisibleLabel << "Toggle Skybox (K): " << (mSkybox->Visible() ? "Visible" : "Not Visible");
-				ImGui::Text(gridVisibleLabel.str().c_str());
+				stringstream skyboxVisibleLabel;
+				skyboxVisibleLabel << "Toggle Skybox (K): " << (mSkybox->Visible() ? "Visible" : "Not Visible");
+				ImGui::Text(skyboxVisibleLabel.str().c_str());
 			}
 			{
 				stringstream ambientLightIntensityLabel;

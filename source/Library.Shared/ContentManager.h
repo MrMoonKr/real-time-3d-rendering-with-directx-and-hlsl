@@ -26,7 +26,7 @@ namespace Library
 		void SetRootDirectory(const std::wstring& rootDirectory);
 
 		template <typename T>
-		std::shared_ptr<T> Load(const std::wstring& assetName, bool reload = false);
+		std::shared_ptr<T> Load(const std::wstring& assetName, bool reload = false, std::function<std::shared_ptr<T>(std::wstring&)> customReader = nullptr);
 
 		void AddAsset(const std::wstring& assetName, const std::shared_ptr<RTTI>& asset);
 		void RemoveAsset(const std::wstring& assetName);
