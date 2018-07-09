@@ -57,6 +57,16 @@ namespace Rendering
 		mBloom.SetDrawMode(drawMode);
 	}
 
+	const BloomSettings& BloomDemo::GetBloomSettings() const
+	{
+		return mBloom.GetBloomSettings();
+	}
+
+	void BloomDemo::SetBloomSettings(BloomSettings& settings)
+	{
+		mBloom.SetBloomSettings(settings);
+	}
+
 	void BloomDemo::Initialize()
 	{
 		mDiffuseLightingDemo = make_shared<DiffuseLightingDemo>(*mGame, mCamera);

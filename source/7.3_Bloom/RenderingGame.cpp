@@ -15,6 +15,7 @@
 #include "VectorHelper.h"
 #include "ImGuiComponent.h"
 #include "imgui_impl_dx11.h"
+#include "Utility.h"
 #include "UtilityWin32.h"
 
 using namespace std;
@@ -76,37 +77,20 @@ namespace Rendering
 			
 			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");			
 			ImGui::Text("Rotate Directional Light (Arrow Keys)");
+			AddImGuiTextField("Toggle Grid (G): "s, (mGrid->Visible() ? "Visible"s : "Not Visible"s));
+			AddImGuiTextField("Toggle Skybox (K): "s, (mSkybox->Visible() ? "Visible"s : "Not Visible"s));
+			AddImGuiTextField("Ambient Light Intensity (+PgUp/-PgDown): "s, mDiffuseLightingDemo->AmbientLightIntensity(), 2);
+			AddImGuiTextField("Directional Light Intensity (+Home/-End): "s, mDiffuseLightingDemo->DirectionalLightIntensity(), 2);
+			AddImGuiTextField("Toggle Bloom (B): "s, (mBloomDemo->BloomEnabled() ? "Enabled"s : "Disabled"s));
+			AddImGuiTextField("Bloom Draw Mode (Space): "s, mBloomDemo->DrawModeString());
 
-			{
-				stringstream gridVisibleLabel;
-				gridVisibleLabel << "Toggle Grid (G): " << (mGrid->Visible() ? "Visible" : "Not Visible");
-				ImGui::Text(gridVisibleLabel.str().c_str());
-			}
-			{
-				stringstream skyboxVisibleLabel;
-				skyboxVisibleLabel << "Toggle Skybox (K): " << (mSkybox->Visible() ? "Visible" : "Not Visible");
-				ImGui::Text(skyboxVisibleLabel.str().c_str());
-			}
-			{
-				stringstream ambientLightIntensityLabel;
-				ambientLightIntensityLabel << setprecision(2) << "Ambient Light Intensity (+PgUp/-PgDown): " << mDiffuseLightingDemo->AmbientLightIntensity();
-				ImGui::Text(ambientLightIntensityLabel.str().c_str());
-			}
-			{
-				stringstream directionalLightIntensityLabel;
-				directionalLightIntensityLabel << setprecision(2) << "Directional Light Intensity (+Home/-End): " << mDiffuseLightingDemo->DirectionalLightIntensity();
-				ImGui::Text(directionalLightIntensityLabel.str().c_str());
-			}
-			{
-				stringstream bloomEnabledLabel;
-				bloomEnabledLabel << "Toggle Bloom (B): " << (mBloomDemo->BloomEnabled() ? "Enabled" : "Disabled");
-				ImGui::Text(bloomEnabledLabel.str().c_str());
-			}
-			{
-				stringstream bloomDrawModeLabel;
-				bloomDrawModeLabel << "Bloom Draw Mode (Space): " << mBloomDemo->DrawModeString();
-				ImGui::Text(bloomDrawModeLabel.str().c_str());
-			}
+			const BloomSettings& bloomSettings = mBloomDemo->GetBloomSettings();
+			AddImGuiTextField("Blur Amount (+Insert/-Delete): "s, bloomSettings.BlurAmount , 2);
+			AddImGuiTextField("Bloom Threshold (+O/-P): "s, bloomSettings.BloomThreshold, 2);
+			AddImGuiTextField("Bloom Intensity (+U/-I): "s, bloomSettings.BloomIntensity, 2);
+			AddImGuiTextField("Bloom Saturation (+T/-Y): "s, bloomSettings.BloomSaturation, 2);
+			AddImGuiTextField("Scene Intensity (+Z/-X): "s, bloomSettings.SceneIntensity, 2);
+			AddImGuiTextField("Scene Saturation (+C/-V): "s, bloomSettings.SceneSaturation, 2);
 
 			ImGui::End();
 		});
@@ -123,9 +107,10 @@ namespace Rendering
 		mBloomDemo->Initialize();
 	
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
+		mBloomSettings = mBloomDemo->GetBloomSettings();
 		mDiffuseLightingDemo = mBloomDemo->DiffuseLighting();
 		mAmbientLightIntensity = mDiffuseLightingDemo->AmbientLightIntensity();
-		mDirectionalLightIntensity = mDiffuseLightingDemo->DirectionalLightIntensity();
+		mDirectionalLightIntensity = mDiffuseLightingDemo->DirectionalLightIntensity();		
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -225,7 +210,7 @@ namespace Rendering
 
 	void RenderingGame::UpdateDirectionalLight(const GameTime& gameTime)
 	{
-		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 		// Update light intensity
 		if (mKeyboard->IsKeyDown(Keys::Home) && mDirectionalLightIntensity < 1.0f)
@@ -278,18 +263,22 @@ namespace Rendering
 
 			mBloomDemo->SetDrawMode(activeMode);
 		}
+		
+		bool updateBloomSettings = false;		
+		auto updateFunc = [&updateBloomSettings](const float&) { updateBloomSettings = true; };
+		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
-		gameTime;
-		/*if (mKeyboard->IsKeyDown(Keys::Insert))
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Insert, Keys::Delete, mBloomSettings.BlurAmount, elapsedTime, updateFunc, 0.0f);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::O, Keys::P, mBloomSettings.BloomThreshold, elapsedTime, updateFunc, 0.0f, 1.0f);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::U, Keys::I, mBloomSettings.BloomIntensity, elapsedTime, updateFunc, 0.0f);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::T, Keys::Y, mBloomSettings.BloomSaturation, elapsedTime, updateFunc, 0.0f);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Z, Keys::X, mBloomSettings.SceneIntensity, elapsedTime, updateFunc, 0.0f);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::C, Keys::V, mBloomSettings.SceneSaturation, elapsedTime, updateFunc, 0.0f);
+
+		if (updateBloomSettings)
 		{
-			mBlurAmount += gameTime.ElapsedGameTimeSeconds().count();
-			mBloomDemo->SetBlurAmount(mBlurAmount);
+			mBloomDemo->SetBloomSettings(mBloomSettings);
+			updateBloomSettings = false;
 		}
-		else if (mKeyboard->IsKeyDown(Keys::Delete) && mBlurAmount > 0.0f)
-		{
-			mBlurAmount -= gameTime.ElapsedGameTimeSeconds().count();
-			mBlurAmount = max(mBlurAmount, 0.0f);
-			mBloomDemo->SetBlurAmount(mBlurAmount);
-		}*/
 	}
 }

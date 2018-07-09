@@ -41,6 +41,9 @@ namespace Rendering
 		const std::string& DrawModeString() const;
 		void SetDrawMode(Library::BloomDrawModes drawMode);
 		
+		const Library::BloomSettings& GetBloomSettings() const;
+		void SetBloomSettings(Library::BloomSettings& settings);
+
 		virtual void Initialize() override;
 		virtual void Update(const Library::GameTime& gameTime) override;
 		virtual void Draw(const Library::GameTime& gameTime) override;

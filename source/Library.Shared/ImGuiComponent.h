@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <functional>
 #include <vector>
+#include <sstream>
 #include "DrawableGameComponent.h"
 
 namespace Library
@@ -45,4 +46,16 @@ namespace Library
 		Styles mStyle;
 		bool mUseCustomDraw;
 	};
+
+	template <typename T>
+	void AddImGuiTextField(const std::string& description, const T& value, std::streamsize precision = 0)
+	{
+		std::stringstream label;
+		if (precision > 0)
+		{
+			label << std::setprecision(precision);
+		}
+		label << description << value;
+		ImGui::Text(label.str().c_str());
+	}
 }

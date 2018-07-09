@@ -104,12 +104,12 @@ namespace Library
 
 	void GaussianBlur::DrawToTexture(const GameTime& gameTime)
 	{
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
 		if (mBlurAmount > 0.0f)
 		{
 			// Horizontal blur
 			mHorizontalBlurTarget.Begin();
-			auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 			direct3DDeviceContext->ClearRenderTargetView(mHorizontalBlurTarget.RenderTargetView().get(), Colors::Purple.f);
 			direct3DDeviceContext->ClearDepthStencilView(mHorizontalBlurTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -139,6 +139,9 @@ namespace Library
 		{
 			// Repurposing the horizontal blur target for output to texture
 			mHorizontalBlurTarget.Begin();
+			direct3DDeviceContext->ClearRenderTargetView(mHorizontalBlurTarget.RenderTargetView().get(), Colors::Purple.f);
+			direct3DDeviceContext->ClearDepthStencilView(mHorizontalBlurTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 			fullScreenQuadMaterial->SetPixelShader(mNoBlurPixelShader);
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 			mFullScreenQuad.Draw(gameTime);

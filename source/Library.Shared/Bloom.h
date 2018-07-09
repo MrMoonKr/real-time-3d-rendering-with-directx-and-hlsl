@@ -32,8 +32,8 @@ namespace Library
 	enum class BloomDrawModes
 	{
 		Normal = 0,
-		ExtractedTexture,
-		BlurredTexture,
+		GlowMap,
+		BlurredGlowMap,
 		End
 	};
 
@@ -52,7 +52,7 @@ namespace Library
 		ID3D11ShaderResourceView* SceneTexture() const;
 		void SetSceneTexture(winrt::com_ptr<ID3D11ShaderResourceView> sceneTexture);
 
-		BloomSettings GetBloomSettings() const;
+		const BloomSettings& GetBloomSettings() const;
 		void SetBloomSettings(const BloomSettings& bloomSettings);
 
 		BloomDrawModes DrawMode() const;
@@ -102,8 +102,8 @@ namespace Library
 		};
 
 		void DrawNormal(const GameTime& gameTime);
-		void DrawExtractedTexture(const GameTime& gameTime);
-		void DrawBlurredTexture(const GameTime& gameTime);
+		void DrawGlowMap(const GameTime& gameTime);
+		void DrawBlurredGlowMap(const GameTime& gameTime);
 
 		FullScreenQuad mFullScreenQuad;
 		FullScreenRenderTarget mRenderTarget;
@@ -116,5 +116,6 @@ namespace Library
 		std::map<BloomShaderClass, winrt::com_ptr<ID3D11ClassInstance>> mShaderClassInstances;
 		winrt::com_ptr<ID3D11ClassLinkage> mClassLinkage;
 		std::shared_ptr<PixelShader> mPixelShader;
+		BloomSettings mBloomSettings;
 	};
 }

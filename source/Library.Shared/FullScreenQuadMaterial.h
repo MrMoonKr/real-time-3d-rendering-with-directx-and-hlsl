@@ -21,7 +21,7 @@ namespace Library
 		winrt::com_ptr<ID3D11SamplerState> SamplerState() const;
 		void SetSamplerState(const winrt::com_ptr<ID3D11SamplerState>& samplerState);
 
-		void SetTexture(gsl::not_null<ID3D11ShaderResourceView*> texture);
+		void SetTexture(ID3D11ShaderResourceView* texture);
 		void SetTextures(gsl::span<ID3D11ShaderResourceView*> textures);
 
 		virtual std::uint32_t VertexSize() const override;

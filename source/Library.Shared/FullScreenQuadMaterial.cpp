@@ -30,10 +30,14 @@ namespace Library
 		mSamplerState = samplerState;
 	}
 
-	void FullScreenQuadMaterial::SetTexture(not_null<ID3D11ShaderResourceView*> texture)
+	void FullScreenQuadMaterial::SetTexture(ID3D11ShaderResourceView* texture)
 	{
 		mTextures.clear();
-		mTextures.push_back(texture);
+
+		if (texture != nullptr)
+		{
+			mTextures.push_back(texture);
+		}
 	}
 
 	void FullScreenQuadMaterial::SetTextures(gsl::span<ID3D11ShaderResourceView*> textures)
@@ -61,7 +65,7 @@ namespace Library
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 
-		direct3DDeviceContext->PSSetShaderResources(0, mTextures.size(), mTextures.data());
+		direct3DDeviceContext->PSSetShaderResources(0, narrow_cast<uint32_t>(mTextures.size()), mTextures.data());
 
 		const auto psSamplers = mSamplerState.get();
 		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);

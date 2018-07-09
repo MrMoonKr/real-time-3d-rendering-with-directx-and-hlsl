@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameComponent.h"
+#include "Utility.h"
 #include <DirectXTK\Keyboard.h>
 #include <memory>
 
@@ -220,4 +221,20 @@ namespace Library
 		DirectX::Keyboard::State mCurrentState;
 		DirectX::Keyboard::State mLastState;
 	};
+
+	template <typename T>
+	void UpdateValueWithKeyboard(const KeyboardComponent& keyboard, const Keys increaseKey, const Keys decreaseKey, T& value, const T& delta, std::function<void(const T&)> updateFunc = nullptr, const T& minValue = std::numeric_limits<T>::min(), const T& maxValue = std::numeric_limits<T>::max())
+	{
+		auto increasePredicate = [&]() -> bool
+		{
+			return (keyboard.IsKeyDown(increaseKey));
+		};
+
+		auto decreasePredicate = [&]() -> bool
+		{
+			return (keyboard.IsKeyDown(decreaseKey));
+		};
+
+		UpdateValue(increasePredicate, decreasePredicate, value, delta, updateFunc, minValue, maxValue);
+	}
 }

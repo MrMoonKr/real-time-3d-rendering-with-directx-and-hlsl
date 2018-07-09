@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <functional>
 #include "Game.h"
+#include "Bloom.h"
 
 namespace Library
 {
@@ -51,5 +52,6 @@ namespace Rendering
 		std::shared_ptr<DiffuseLightingDemo> mDiffuseLightingDemo;
 		float mAmbientLightIntensity{ 0.0f };
 		float mDirectionalLightIntensity{ 0.0f };
+		Library::BloomSettings mBloomSettings;
 	};
 }

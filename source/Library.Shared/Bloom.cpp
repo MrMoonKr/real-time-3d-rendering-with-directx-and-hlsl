@@ -18,13 +18,14 @@ namespace Library
 	const map<BloomDrawModes, string> Bloom::DrawModeDisplayNames
 	{
 		{ BloomDrawModes::Normal, "Normal"s },
-		{ BloomDrawModes::ExtractedTexture, "Extracted Texture"s },
-		{ BloomDrawModes::BlurredTexture, "Blurred Texture"s }
+		{ BloomDrawModes::GlowMap, "Glow Map"s },
+		{ BloomDrawModes::BlurredGlowMap, "Blurred Glow Map"s }
 	};
 
     Bloom::Bloom(Game& game, const BloomSettings& bloomSettings) :
 		DrawableGameComponent(game),
-		mFullScreenQuad(game), mPixelCBufferPerObjectData(bloomSettings),
+		mFullScreenQuad(game), mBloomSettings(bloomSettings),
+		mPixelCBufferPerObjectData(bloomSettings),
 		mRenderTarget(game), mGaussianBlur(game, bloomSettings.BlurAmount)
     {
     }
@@ -39,22 +40,14 @@ namespace Library
 		mSceneTexture = sceneTexture;
     }
 
-	BloomSettings Bloom::GetBloomSettings() const
+	const BloomSettings& Bloom::GetBloomSettings() const
 	{
-		BloomSettings bloomSettings{
-			mPixelCBufferPerObjectData.BloomThreshold,
-			mGaussianBlur.BlurAmount(),
-			mPixelCBufferPerObjectData.BloomIntensity,
-			mPixelCBufferPerObjectData.BloomSaturation,
-			mPixelCBufferPerObjectData.SceneIntensity,
-			mPixelCBufferPerObjectData.SceneSaturation
-		};
-
-		return bloomSettings;
+		return mBloomSettings;
 	}
 
 	void Bloom::SetBloomSettings(const BloomSettings& bloomSettings)
 	{
+		mBloomSettings = bloomSettings;
 		mPixelCBufferPerObjectData = bloomSettings;
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 		mGaussianBlur.SetBlurAmount(bloomSettings.BlurAmount);
@@ -118,8 +111,8 @@ namespace Library
 
 		using namespace std::placeholders;
 		mDrawFunctions[BloomDrawModes::Normal] = bind(&Bloom::DrawNormal, this, _1);
-		mDrawFunctions[BloomDrawModes::ExtractedTexture] = bind(&Bloom::DrawExtractedTexture, this, _1);
-		mDrawFunctions[BloomDrawModes::BlurredTexture] = bind(&Bloom::DrawBlurredTexture, this, _1);
+		mDrawFunctions[BloomDrawModes::GlowMap] = bind(&Bloom::DrawGlowMap, this, _1);
+		mDrawFunctions[BloomDrawModes::BlurredGlowMap] = bind(&Bloom::DrawBlurredGlowMap, this, _1);
     }
 
     void Bloom::Draw(const GameTime& gameTime)
@@ -166,43 +159,31 @@ namespace Library
 		}
 	}
 
-	void Bloom::DrawExtractedTexture(const GameTime& gameTime)
+	void Bloom::DrawGlowMap(const GameTime& gameTime)
 	{
-		gameTime;
-		/*mFullScreenQuad.SetCustomUpdateMaterial([&]() {
-			ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-			direct3DDeviceContext->PSSetShader(mPixelShader.Get(), mShaderClassInstances[BloomShaderClass::Extract].GetAddressOf(), 1);
-			direct3DDeviceContext->PSSetShaderResources(0, 1, mSceneTexture.GetAddressOf());
-			direct3DDeviceContext->PSSetSamplers(0, 1, SamplerStates::TrilinearWrap.GetAddressOf());
-			direct3DDeviceContext->PSSetConstantBuffers(0, 1, mPixelCBufferPerObject.GetAddressOf());
-		});
-
-		mFullScreenQuad.Draw(gameTime);*/
+		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
+		fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(BloomShaderClass::Extract));
+		fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
+		mFullScreenQuad.Draw(gameTime);
+		mGame->UnbindPixelShaderResources<1>();
 	}
 
-	void Bloom::DrawBlurredTexture(const GameTime& gameTime)
+	void Bloom::DrawBlurredGlowMap(const GameTime& gameTime)
 	{
-		gameTime;
 		// Extract the bright spots in the scene
-		/*mRenderTarget.Begin();
-		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mRenderTarget.RenderTargetView(), reinterpret_cast<const float*>(&Colors::Purple));
-		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mRenderTarget.DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		mRenderTarget.Begin();
+		mGame->Direct3DDeviceContext()->ClearRenderTargetView(mRenderTarget.RenderTargetView().get(), Colors::Purple.f);
+		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mRenderTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-		mFullScreenQuad.SetCustomUpdateMaterial([&]() {
-			ID3D11DeviceContext* direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-			direct3DDeviceContext->PSSetShader(mPixelShader.Get(), mShaderClassInstances[BloomShaderClass::Extract].GetAddressOf(), 1);
-			direct3DDeviceContext->PSSetShaderResources(0, 1, mSceneTexture.GetAddressOf());
-			direct3DDeviceContext->PSSetSamplers(0, 1, SamplerStates::TrilinearWrap.GetAddressOf());
-			direct3DDeviceContext->PSSetConstantBuffers(0, 1, mPixelCBufferPerObject.GetAddressOf());
-		});
+		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
+		fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(BloomShaderClass::Extract));
+		fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 
 		mFullScreenQuad.Draw(gameTime);
-
 		mRenderTarget.End();
-		mGame->UnbindPixelShaderResources(0, 1);
+		mGame->UnbindPixelShaderResources<1>();
 
-		mGaussianBlur->Draw(gameTime);*/
+		// Blur the bright spots in the scene
+		mGaussianBlur.Draw(gameTime);
 	}
 }
