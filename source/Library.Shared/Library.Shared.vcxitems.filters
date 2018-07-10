@@ -54,7 +54,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalLight.cpp">
       <Filter>Lights</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonCamera.cpp">
       <Filter>Cameras</Filter>
     </ClCompile>
@@ -268,6 +267,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Bloom.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
@@ -276,7 +276,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalLight.h">
       <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonCamera.h">
       <Filter>Cameras</Filter>
     </ClInclude>
@@ -496,9 +495,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Bloom.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)packages.config" />
     <None Include="$(MSBuildThisFileDirectory)ContentManager.inl">
       <Filter>Content</Filter>
     </None>

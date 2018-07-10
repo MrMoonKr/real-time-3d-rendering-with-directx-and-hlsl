@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
-#include <VectorHelper.h>
+#include "VectorHelper.h"
 #include <json\json.h>
 
 namespace Json

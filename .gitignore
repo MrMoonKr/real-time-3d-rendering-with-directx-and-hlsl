@@ -15,3 +15,5 @@ content/Shaders/BasicPS.hlsl
 content/Shaders/BasicPS.cso
 content/Models/Sphere.obj.bin
 content/Fonts/Arial_14_Regular.spritefont
+build/obj/
+build/bin/

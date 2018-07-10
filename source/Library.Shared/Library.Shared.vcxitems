@@ -179,7 +179,6 @@
     <None Include="$(MSBuildThisFileDirectory)ContentTypeReader.inl" />
     <None Include="$(MSBuildThisFileDirectory)Game.inl" />
     <None Include="$(MSBuildThisFileDirectory)Light.inl" />
-    <None Include="$(MSBuildThisFileDirectory)packages.config" />
     <None Include="$(MSBuildThisFileDirectory)Point.inl" />
     <None Include="$(MSBuildThisFileDirectory)Rectangle.inl" />
     <None Include="$(MSBuildThisFileDirectory)StopWatch.inl" />
