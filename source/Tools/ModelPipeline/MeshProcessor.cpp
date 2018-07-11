@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "MeshProcessor.h"
+#include "Model.h"
+#include "Mesh.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 using namespace std;
 using namespace DirectX;

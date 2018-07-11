@@ -2,6 +2,9 @@
 #include "ModelProcessor.h"
 #include "ModelMaterialProcessor.h"
 #include "MeshProcessor.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 using namespace std;
 using namespace Library;

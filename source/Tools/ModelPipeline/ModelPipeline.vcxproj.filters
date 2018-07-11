@@ -4,13 +4,11 @@
     <ClCompile Include="MeshProcessor.cpp" />
     <ClCompile Include="ModelMaterialProcessor.cpp" />
     <ClCompile Include="ModelProcessor.cpp" />
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="Program.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshProcessor.h" />
     <ClInclude Include="ModelMaterialProcessor.h" />
     <ClInclude Include="ModelProcessor.h" />
-    <ClInclude Include="pch.h" />
   </ItemGroup>
 </Project>

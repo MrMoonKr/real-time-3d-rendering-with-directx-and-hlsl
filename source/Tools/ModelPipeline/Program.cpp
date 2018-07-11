@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "ModelProcessor.h"
+#include "Utility.h"
+#include "UtilityWin32.h"
 
 using namespace std;
 using namespace std::string_literals;

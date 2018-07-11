@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "ModelMaterialProcessor.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 using namespace std;
 using namespace Library;
