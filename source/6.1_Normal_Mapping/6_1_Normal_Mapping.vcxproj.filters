@@ -17,13 +17,11 @@
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="NormalMappingDemo.cpp" />
     <ClCompile Include="NormalMappingMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingGame.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="NormalMappingDemo.h" />
     <ClInclude Include="NormalMappingMaterial.h" />
   </ItemGroup>

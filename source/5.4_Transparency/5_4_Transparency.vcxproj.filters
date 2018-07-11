@@ -17,13 +17,11 @@
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="TransparencyDemo.cpp" />
     <ClCompile Include="TransparencyMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingGame.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="TransparencyDemo.h" />
     <ClInclude Include="TransparencyMaterial.h" />
   </ItemGroup>

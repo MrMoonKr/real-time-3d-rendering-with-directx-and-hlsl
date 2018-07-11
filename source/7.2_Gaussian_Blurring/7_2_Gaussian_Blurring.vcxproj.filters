@@ -20,7 +20,6 @@
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
-    <ClCompile Include="pch.cpp" />
     <ClCompile Include="DiffuseLightingDemo.cpp" />
     <ClCompile Include="DiffuseLightingMaterial.cpp">
       <Filter>Materials</Filter>
@@ -29,7 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingGame.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="DiffuseLightingDemo.h" />
     <ClInclude Include="DiffuseLightingMaterial.h">
       <Filter>Materials</Filter>
