@@ -26,7 +26,7 @@ IMGUI_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wPa
 
 namespace Rendering
 {
-	RenderingGame::RenderingGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback) :
+	RenderingGame::RenderingGame(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :
 		Game(getWindowCallback, getRenderTargetSizeCallback)
 	{
 	}
@@ -251,7 +251,7 @@ namespace Rendering
 		}
 	}
 
-	void RenderingGame::UpdateBloomSettings(const Library::GameTime& gameTime)
+	void RenderingGame::UpdateBloomSettings(const GameTime& gameTime)
 	{
 		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
 		{

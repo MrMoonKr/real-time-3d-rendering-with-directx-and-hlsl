@@ -6,6 +6,7 @@
 #include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
 #include <DirectXMath.h>
+#include <functional>
 
 namespace Library
 {
@@ -78,9 +79,13 @@ namespace Library
 		winrt::com_ptr<ID3D11ShaderResourceView> mOutputTexture;
 		std::shared_ptr<PixelShader> mBlurPixelShader;
 		std::shared_ptr<PixelShader> mNoBlurPixelShader;
-		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerFrame;
+		winrt::com_ptr<ID3D11Buffer> mHorizontalCBufferPerFrame;
+		winrt::com_ptr<ID3D11Buffer> mVerticalCBufferPerFrame;
 		PixelCBufferPerFrame mHorizontalCBufferData;
 		PixelCBufferPerFrame mVerticalCBufferData;
+		std::function<void()> mHorizontalCBufferPerFrameMaterialCallback;
+		std::function<void()> mVerticalCBufferPerFrameMaterialCallback;
+
 		float mBlurAmount;
 	};
 }

@@ -49,12 +49,19 @@ namespace Library
 
     void GaussianBlur::Initialize()
     {
-		mFullScreenQuad.Initialize();
-		mFullScreenQuad.Material()->SetUpdateMaterialCallback([&]
+		mFullScreenQuad.Initialize();	
+		
+		mHorizontalCBufferPerFrameMaterialCallback = [&]
 		{
-			auto psConstantBuffers = mPixelCBufferPerFrame.get();
+			auto psConstantBuffers = mHorizontalCBufferPerFrame.get();
 			mGame->Direct3DDeviceContext()->PSSetConstantBuffers(0, 1, &psConstantBuffers);
-		});
+		};
+
+		mVerticalCBufferPerFrameMaterialCallback = [&]
+		{
+			auto psConstantBuffers = mHorizontalCBufferPerFrame.get();
+			mGame->Direct3DDeviceContext()->PSSetConstantBuffers(0, 1, &psConstantBuffers);
+		};
 
 		mBlurPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\GaussianBlurPS.cso");
 		mNoBlurPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\TexturedModelPS.cso");
@@ -62,7 +69,8 @@ namespace Library
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mHorizontalCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVerticalCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
 
 		InitializeSampleWeights();
 		InitializeSampleOffsets();
@@ -81,21 +89,20 @@ namespace Library
 			
 			fullScreenQuadMaterial->SetPixelShader(mBlurPixelShader);
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mHorizontalCBufferData, 0, 0);
-
+			fullScreenQuadMaterial->SetUpdateMaterialCallback(mHorizontalCBufferPerFrameMaterialCallback);
             mFullScreenQuad.Draw(gameTime);
             mHorizontalBlurTarget.End();
 			mGame->UnbindPixelShaderResources<1>();
 
 			// Vertical blur for the final image
 			fullScreenQuadMaterial->SetTexture(mHorizontalBlurTarget.OutputTexture().get());
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mVerticalCBufferData, 0, 0);
+			fullScreenQuadMaterial->SetUpdateMaterialCallback(mVerticalCBufferPerFrameMaterialCallback);
             mFullScreenQuad.Draw(gameTime);
         }
         else
         {			
 			fullScreenQuadMaterial->SetPixelShader(mNoBlurPixelShader);
-			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
+			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());	
             mFullScreenQuad.Draw(gameTime);
         }
 
@@ -115,8 +122,7 @@ namespace Library
 
 			fullScreenQuadMaterial->SetPixelShader(mBlurPixelShader);
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mHorizontalCBufferData, 0, 0);
-
+			fullScreenQuadMaterial->SetUpdateMaterialCallback(mHorizontalCBufferPerFrameMaterialCallback);
 			mFullScreenQuad.Draw(gameTime);
 			mHorizontalBlurTarget.End();
 			mGame->UnbindPixelShaderResources<1>();
@@ -127,7 +133,7 @@ namespace Library
 			direct3DDeviceContext->ClearDepthStencilView(mVerticalBlurTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 			fullScreenQuadMaterial->SetTexture(mHorizontalBlurTarget.OutputTexture().get());
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mVerticalCBufferData, 0, 0);
+			fullScreenQuadMaterial->SetUpdateMaterialCallback(mVerticalCBufferPerFrameMaterialCallback);
 			mFullScreenQuad.Draw(gameTime);
 
 			mVerticalBlurTarget.End();
@@ -173,6 +179,10 @@ namespace Library
 			mVerticalCBufferData.SampleOffsets[i * 2 + 1].Offset = XMFLOAT2(0.0f, verticalOffset);
 			mVerticalCBufferData.SampleOffsets[i * 2 + 2].Offset = XMFLOAT2(0.0f, -verticalOffset);
 		}
+
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->UpdateSubresource(mHorizontalCBufferPerFrame.get(), 0, nullptr, &mHorizontalCBufferData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mVerticalCBufferPerFrame.get(), 0, nullptr, &mVerticalCBufferData, 0, 0);
 	}
 
 	void GaussianBlur::InitializeSampleWeights()
@@ -195,6 +205,10 @@ namespace Library
 		}
 
 		memcpy(mVerticalCBufferData.SampleWeights, mHorizontalCBufferData.SampleWeights, sizeof(PixelCBufferPerFrame::_SampleWeight) * SampleCount);
+
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->UpdateSubresource(mHorizontalCBufferPerFrame.get(), 0, nullptr, &mHorizontalCBufferData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mVerticalCBufferPerFrame.get(), 0, nullptr, &mVerticalCBufferData, 0, 0);
 	}
 
 	float GaussianBlur::GetWeight(float x) const

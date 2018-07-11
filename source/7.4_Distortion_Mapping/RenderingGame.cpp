@@ -1,0 +1,260 @@
+#include "pch.h"
+#include "RenderingGame.h"
+#include "GameException.h"
+#include "KeyboardComponent.h"
+#include "MouseComponent.h"
+#include "GamePadComponent.h"
+#include "FpsComponent.h"
+#include "Skybox.h"
+#include "DistortionMappingDemo.h"
+#include "DiffuseLightingDemo.h"
+#include "Grid.h"
+#include "FirstPersonCamera.h"
+#include "SamplerStates.h"
+#include "RasterizerStates.h"
+#include "VectorHelper.h"
+#include "ImGuiComponent.h"
+#include "imgui_impl_dx11.h"
+#include "Utility.h"
+#include "UtilityWin32.h"
+
+using namespace std;
+using namespace DirectX;
+using namespace Library;
+
+IMGUI_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+namespace Rendering
+{
+	RenderingGame::RenderingGame(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :
+		Game(getWindowCallback, getRenderTargetSizeCallback)
+	{
+	}
+
+	void RenderingGame::Initialize()
+	{
+		auto direct3DDevice = Direct3DDevice();
+		SamplerStates::Initialize(direct3DDevice); 
+		RasterizerStates::Initialize(direct3DDevice);
+
+		mKeyboard = make_shared<KeyboardComponent>(*this);
+		mComponents.push_back(mKeyboard);
+		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
+
+		mMouse = make_shared<MouseComponent>(*this, MouseModes::Absolute);
+		mComponents.push_back(mMouse);
+		mServices.AddService(MouseComponent::TypeIdClass(), mMouse.get());
+
+		mGamePad = make_shared<GamePadComponent>(*this);
+		mComponents.push_back(mGamePad);
+		mServices.AddService(GamePadComponent::TypeIdClass(), mGamePad.get());
+
+		auto camera = make_shared<FirstPersonCamera>(*this);
+		mComponents.push_back(camera);
+		mServices.AddService(Camera::TypeIdClass(), camera.get());
+
+		mGrid = make_shared<Grid>(*this, camera);
+		mComponents.push_back(mGrid);
+
+		mSkybox = make_shared<Skybox>(*this, camera, L"Textures\\Maskonaive2_1024.dds", 500.0f);
+		mComponents.push_back(mSkybox);
+		
+		mImGuiComponent = make_shared<ImGuiComponent>(*this);
+		mServices.AddService(ImGuiComponent::TypeIdClass(), mImGuiComponent.get());
+		auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
+		UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
+
+		auto helpTextImGuiRenderBlock = make_shared<ImGuiComponent::RenderBlock>([this]()
+		{
+			ImGui::Begin("Controls");
+			ImGui::SetNextWindowPos(ImVec2(10, 10));
+			
+			{
+				stringstream fpsLabel;
+				fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
+				ImGui::Text(fpsLabel.str().c_str());
+			}
+			
+			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");			
+			ImGui::Text("Rotate Directional Light (Arrow Keys)");
+			AddImGuiTextField("Toggle Grid (G): "s, (mGrid->Visible() ? "Visible"s : "Not Visible"s));
+			AddImGuiTextField("Toggle Skybox (K): "s, (mSkybox->Visible() ? "Visible"s : "Not Visible"s));
+			AddImGuiTextField("Ambient Light Intensity (+PgUp/-PgDown): "s, mDiffuseLightingDemo->AmbientLightIntensity(), 2);
+			AddImGuiTextField("Directional Light Intensity (+Home/-End): "s, mDiffuseLightingDemo->DirectionalLightIntensity(), 2);
+			AddImGuiTextField("Active Distortion Map (Space): "s, mDistortionMappingDemo->DistortionMapString());
+			AddImGuiTextField("Displacement Scale (+Insert/-Delete): "s, mDistortionMappingDemo->DisplacementScale(), 2);
+
+			ImGui::End();
+		});
+		mImGuiComponent->AddRenderBlock(helpTextImGuiRenderBlock);
+		mImGuiComponent->Initialize();
+
+		mFpsComponent = make_shared<FpsComponent>(*this);
+		mFpsComponent->SetVisible(false);
+		mComponents.push_back(mFpsComponent);
+
+		Game::Initialize();
+
+		mDistortionMappingDemo = make_shared<DistortionMappingDemo>(*this, camera);
+		mDistortionMappingDemo->Initialize();
+	
+		camera->SetPosition(0.0f, 2.5f, 20.0f);
+		mDiffuseLightingDemo = mDistortionMappingDemo->DiffuseLighting();
+		mAmbientLightIntensity = mDiffuseLightingDemo->AmbientLightIntensity();
+		mDirectionalLightIntensity = mDiffuseLightingDemo->DirectionalLightIntensity();		
+	}
+
+	void RenderingGame::Update(const GameTime &gameTime)
+	{
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Escape) || mGamePad->WasButtonPressedThisFrame(GamePadButtons::Back))
+		{
+			Exit();
+		}
+
+		if (mMouse->WasButtonPressedThisFrame(MouseButtons::Left))
+		{
+			mMouse->SetMode(MouseModes::Relative);
+		}
+
+		if (mMouse->WasButtonReleasedThisFrame(MouseButtons::Left))
+		{
+			mMouse->SetMode(MouseModes::Absolute);
+		}
+
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::G))
+		{
+			mGrid->SetVisible(!mGrid->Visible());
+		}
+
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::K))
+		{
+			mSkybox->SetVisible(!mSkybox->Visible());
+		}
+	
+		UpdateAmbientLightIntensity(gameTime);
+		UpdateDirectionalLight(gameTime);
+		UpdateDistortionMapping(gameTime);
+
+		mDistortionMappingDemo->Update(gameTime);
+		mImGuiComponent->Update(gameTime);
+
+		Game::Update(gameTime);
+	}
+
+	void RenderingGame::Draw(const GameTime &gameTime)
+	{		
+		mDistortionMappingDemo->Draw(gameTime);
+		mImGuiComponent->Draw(gameTime);
+
+		HRESULT hr = mSwapChain->Present(1, 0);
+
+		// If the device was removed either by a disconnection or a driver upgrade, we must recreate all device resources.
+		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+		{
+			HandleDeviceLost();
+		}
+		else
+		{
+			ThrowIfFailed(hr, "IDXGISwapChain::Present() failed.");
+		}
+	}
+
+	void RenderingGame::Shutdown()
+	{
+		mGrid = nullptr;
+		mFpsComponent = nullptr;
+		mSkybox = nullptr;
+		mImGuiComponent->Shutdown();
+		mImGuiComponent = nullptr;
+		mDiffuseLightingDemo = nullptr;
+		mDistortionMappingDemo = nullptr;
+		RasterizerStates::Shutdown();
+		SamplerStates::Shutdown();
+		Game::Shutdown();		
+	}
+
+	void RenderingGame::Exit()
+	{
+		PostQuitMessage(0);
+	}
+
+	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
+	{
+		if (mKeyboard->IsKeyDown(Keys::PageUp) && mAmbientLightIntensity < 1.0f)
+		{
+			mAmbientLightIntensity += gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientLightIntensity = min(mAmbientLightIntensity, 1.0f);
+			mDiffuseLightingDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
+		}
+		else if (mKeyboard->IsKeyDown(Keys::PageDown) && mAmbientLightIntensity > 0.0f)
+		{
+			mAmbientLightIntensity -= gameTime.ElapsedGameTimeSeconds().count();
+			mAmbientLightIntensity = max(mAmbientLightIntensity, 0.0f);
+			mDiffuseLightingDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
+		}
+	}
+
+	void RenderingGame::UpdateDirectionalLight(const GameTime& gameTime)
+	{
+		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+
+		// Update light intensity
+		if (mKeyboard->IsKeyDown(Keys::Home) && mDirectionalLightIntensity < 1.0f)
+		{
+			mDirectionalLightIntensity += elapsedTime;
+			mDirectionalLightIntensity = min(mDirectionalLightIntensity, 1.0f);
+			mDiffuseLightingDemo->SetDirectionalLightIntensity(mDirectionalLightIntensity);
+		}
+		else if (mKeyboard->IsKeyDown(Keys::End) && mDirectionalLightIntensity > 0.0f)
+		{
+			mDirectionalLightIntensity -= elapsedTime;
+			mDirectionalLightIntensity = max(mDirectionalLightIntensity, 0.0f);
+			mDiffuseLightingDemo->SetDirectionalLightIntensity(mDirectionalLightIntensity);
+		}
+
+		// Rotate light
+		XMFLOAT2 rotationAmount = Vector2Helper::Zero;
+		if (mKeyboard->IsKeyDown(Keys::Left))
+		{
+			rotationAmount.x += LightRotationRate.x * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Right))
+		{
+			rotationAmount.x -= LightRotationRate.x * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Up))
+		{
+			rotationAmount.y += LightRotationRate.y * elapsedTime;
+		}
+		if (mKeyboard->IsKeyDown(Keys::Down))
+		{
+			rotationAmount.y -= LightRotationRate.y * elapsedTime;
+		}
+
+		if (rotationAmount.x != 0.0f || rotationAmount.y != 0.0f)
+		{
+			mDiffuseLightingDemo->RotateDirectionalLight(rotationAmount);
+		}
+	}
+
+	void RenderingGame::UpdateDistortionMapping(const GameTime& gameTime)
+	{
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
+		{
+			DistortionMaps activeDistortionMap = DistortionMaps(static_cast<int>(mDistortionMappingDemo->DistortionMap()) + 1);
+			if (activeDistortionMap >= DistortionMaps::End)
+			{
+				activeDistortionMap = DistortionMaps(0);
+			}
+
+			mDistortionMappingDemo->SetDistortionMap(activeDistortionMap);
+		}
+
+		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		float displacementScale = mDistortionMappingDemo->DisplacementScale();
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Insert, Keys::Delete, displacementScale, elapsedTime, [&](const float& displacementScale)
+		{
+			mDistortionMappingDemo->SetDisplacementScale(displacementScale);
+		}, 0.0f);
+	}
+}

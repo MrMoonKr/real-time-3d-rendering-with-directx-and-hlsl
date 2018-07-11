@@ -63,6 +63,7 @@ namespace Library
 		virtual void Draw(const GameTime& gameTime) override;
 
 		inline static const BloomSettings DefaultBloomSettings{ 0.45f, 2.0f, 1.25f, 1.0f, 1.0f, 1.0f };
+
 	private:
 		static const std::map<BloomDrawModes, std::string> DrawModeDisplayNames;
 
