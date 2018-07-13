@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <vector>
 #include <functional>
+#include <memory>
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <gsl\gsl>

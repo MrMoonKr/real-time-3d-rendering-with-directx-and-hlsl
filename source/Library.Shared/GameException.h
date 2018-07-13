@@ -25,13 +25,4 @@ namespace Library
 			throw GameException(message, hr);
 		}
 	}
-
-	inline void Assert(bool condition, const wchar_t* const message = L"")
-	{
-		if (!condition)
-		{
-			OutputDebugString(message);
-			std::terminate();
-		}
-	}
 }

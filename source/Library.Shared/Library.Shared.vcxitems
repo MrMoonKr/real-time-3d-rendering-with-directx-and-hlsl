@@ -86,6 +86,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Texture2DReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureCube.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureCubeReader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TexturedModelMaterial.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility.cpp">
       <PreprocessorDefinitions>HAS_DIRECTXTK;_SILEN%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -167,6 +168,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Texture2DReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextureCube.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextureCubeReader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TexturedModelMaterial.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TextureHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utility.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)VectorHelper.h" />

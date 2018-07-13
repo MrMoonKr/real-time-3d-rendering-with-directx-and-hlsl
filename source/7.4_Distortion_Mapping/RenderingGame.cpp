@@ -99,9 +99,7 @@ namespace Rendering
 		mDistortionMappingDemo->Initialize();
 	
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
-		mDiffuseLightingDemo = mDistortionMappingDemo->DiffuseLighting();
-		mAmbientLightIntensity = mDiffuseLightingDemo->AmbientLightIntensity();
-		mDirectionalLightIntensity = mDiffuseLightingDemo->DirectionalLightIntensity();		
+		mDiffuseLightingDemo = mDistortionMappingDemo->DiffuseLighting();	
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -180,37 +178,24 @@ namespace Rendering
 
 	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
 	{
-		if (mKeyboard->IsKeyDown(Keys::PageUp) && mAmbientLightIntensity < 1.0f)
+		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		float ambientIntensity = mDiffuseLightingDemo->AmbientLightIntensity();
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::PageUp, Keys::PageDown, ambientIntensity, elapsedTime, [&](const float& ambientIntensity)
 		{
-			mAmbientLightIntensity += gameTime.ElapsedGameTimeSeconds().count();
-			mAmbientLightIntensity = min(mAmbientLightIntensity, 1.0f);
-			mDiffuseLightingDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
-		}
-		else if (mKeyboard->IsKeyDown(Keys::PageDown) && mAmbientLightIntensity > 0.0f)
-		{
-			mAmbientLightIntensity -= gameTime.ElapsedGameTimeSeconds().count();
-			mAmbientLightIntensity = max(mAmbientLightIntensity, 0.0f);
-			mDiffuseLightingDemo->SetAmbientLightIntensity(mAmbientLightIntensity);
-		}
+			mDiffuseLightingDemo->SetAmbientLightIntensity(ambientIntensity);
+		}, 0.0f, 1.0f);
 	}
 
 	void RenderingGame::UpdateDirectionalLight(const GameTime& gameTime)
 	{
 		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
-
+		
 		// Update light intensity
-		if (mKeyboard->IsKeyDown(Keys::Home) && mDirectionalLightIntensity < 1.0f)
+		float directionalLightIntensity = mDiffuseLightingDemo->DirectionalLightIntensity();
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Home, Keys::End, directionalLightIntensity, elapsedTime, [&](const float& directionalLightIntensity)
 		{
-			mDirectionalLightIntensity += elapsedTime;
-			mDirectionalLightIntensity = min(mDirectionalLightIntensity, 1.0f);
-			mDiffuseLightingDemo->SetDirectionalLightIntensity(mDirectionalLightIntensity);
-		}
-		else if (mKeyboard->IsKeyDown(Keys::End) && mDirectionalLightIntensity > 0.0f)
-		{
-			mDirectionalLightIntensity -= elapsedTime;
-			mDirectionalLightIntensity = max(mDirectionalLightIntensity, 0.0f);
-			mDiffuseLightingDemo->SetDirectionalLightIntensity(mDirectionalLightIntensity);
-		}
+			mDiffuseLightingDemo->SetDirectionalLightIntensity(directionalLightIntensity);
+		}, 0.0f, 1.0f);
 
 		// Rotate light
 		XMFLOAT2 rotationAmount = Vector2Helper::Zero;

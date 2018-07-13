@@ -40,13 +40,13 @@ namespace Rendering
 
 	float DistortionMappingDemo::DisplacementScale() const
 	{
-		return mPixelCBufferPerFrameData.DisplacementScale;
+		return mPixelCBufferPerObjectData.DisplacementScale;
 	}
 
 	void DistortionMappingDemo::SetDisplacementScale(float displacementScale)
 	{
-		mPixelCBufferPerFrameData.DisplacementScale = displacementScale;
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+		mPixelCBufferPerObjectData.DisplacementScale = displacementScale;
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 	}
 
 	DistortionMaps DistortionMappingDemo::DistortionMap() const
@@ -87,15 +87,15 @@ namespace Rendering
 
 		fullScreenQuadMaterial->SetUpdateMaterialCallback([&]
 		{
-			auto psConstantBuffers = mPixelCBufferPerFrame.get();
+			auto psConstantBuffers = mPixelCBufferPerObject.get();
 			mGame->Direct3DDeviceContext()->PSSetConstantBuffers(0, 1, &psConstantBuffers);
 		});		
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
-		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
+		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
-		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 	}
 
 	void DistortionMappingDemo::Update(const GameTime& gameTime)

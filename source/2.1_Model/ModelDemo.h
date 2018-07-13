@@ -11,7 +11,6 @@
 
 namespace Library
 {
-	class Camera;
 	class Mesh;
 }
 

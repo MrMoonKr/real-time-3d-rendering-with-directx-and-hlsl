@@ -50,7 +50,5 @@ namespace Rendering
 		std::shared_ptr<Library::Skybox> mSkybox;
 		std::shared_ptr<DistortionMappingDemo> mDistortionMappingDemo;
 		std::shared_ptr<DiffuseLightingDemo> mDiffuseLightingDemo;
-		float mAmbientLightIntensity{ 0.0f };
-		float mDirectionalLightIntensity{ 0.0f };
 	};
 }

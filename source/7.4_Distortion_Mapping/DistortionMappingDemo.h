@@ -13,7 +13,6 @@
 
 namespace Library
 {
-	class Camera;
 	class Texture2D;
 }
 
@@ -55,7 +54,7 @@ namespace Rendering
 	private:
 		static const std::map<DistortionMaps, std::string> DistortionMapNames;
 
-		struct PixelCBufferPerFrame
+		struct PixelCBufferPerObject
 		{
 			float DisplacementScale{ 1.0f };
 			DirectX::XMFLOAT3 Padding;
@@ -64,8 +63,8 @@ namespace Rendering
 		std::shared_ptr<DiffuseLightingDemo> mDiffuseLightingDemo;		
 		Library::FullScreenRenderTarget mRenderTarget;
 		Library::FullScreenQuad mFullScreenQuad;		
-		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerFrame;
-		PixelCBufferPerFrame mPixelCBufferPerFrameData;
+		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerObject;
+		PixelCBufferPerObject mPixelCBufferPerObjectData;
 		std::map<DistortionMaps, std::shared_ptr<Library::Texture2D>> mDistortionMaps;
 		DistortionMaps mActiveDistortionMap{ DistortionMaps::Glass };
 	};

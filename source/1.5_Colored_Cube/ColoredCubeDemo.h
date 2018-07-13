@@ -5,11 +5,6 @@
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
 
-namespace Library
-{
-	class Camera;
-}
-
 namespace Rendering
 {
 	class ColoredCubeDemo final : public Library::DrawableGameComponent

@@ -14,7 +14,6 @@
 
 namespace Library
 {
-	class Camera;
 	class PixelShader;
 }
 

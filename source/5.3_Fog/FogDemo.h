@@ -12,7 +12,6 @@
 
 namespace Library
 {
-	class Camera;
 	class ProxyModel;
 }
 

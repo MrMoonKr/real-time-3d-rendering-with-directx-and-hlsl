@@ -17,7 +17,7 @@ namespace Rendering
 {
 	RTTI_DEFINITIONS(DiffuseLightingMaterial)
 
-	DiffuseLightingMaterial::DiffuseLightingMaterial(Game& game, std::shared_ptr<Texture2D> texture) :
+	DiffuseLightingMaterial::DiffuseLightingMaterial(Game& game, shared_ptr<Texture2D> texture) :
 		Material(game), mTexture(move(texture))
 	{
 	}

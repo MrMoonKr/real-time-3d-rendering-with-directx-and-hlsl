@@ -95,9 +95,8 @@ namespace Library
 			return shared_ptr<PixelShader>(new PixelShader(move(pixelShader)));
 		};
 
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\BloomPS.cso", false, pixelShaderContentReader);
-		
-		fullScreenQuadMaterial->SetPixelShader(mPixelShader);
+		auto pixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\BloomPS.cso", false, pixelShaderContentReader);
+		fullScreenQuadMaterial->SetPixelShader(pixelShader);
 
 		ThrowIfFailed(mClassLinkage->CreateClassInstance("ExtractBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Extract].put()));
 		ThrowIfFailed(mClassLinkage->CreateClassInstance("CompositeBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Composite].put()));

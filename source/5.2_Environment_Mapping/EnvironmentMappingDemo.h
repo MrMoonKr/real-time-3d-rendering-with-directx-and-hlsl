@@ -10,11 +10,6 @@
 #include "MatrixHelper.h"
 #include "PointLight.h"
 
-namespace Library
-{
-	class Camera;
-}
-
 namespace Rendering
 {
 	class EnvironmentMappingMaterial;

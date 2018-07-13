@@ -11,12 +11,6 @@
 #include "FullScreenRenderTarget.h"
 #include "GaussianBlur.h"
 
-namespace Library
-{
-	class Camera;
-	class PixelShader;
-}
-
 namespace Rendering
 {
 	class DiffuseLightingDemo;

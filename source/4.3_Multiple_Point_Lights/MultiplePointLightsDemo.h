@@ -13,7 +13,6 @@
 
 namespace Library
 {
-	class Camera;
 	class PointLight;
 	class ProxyModel;
 }

@@ -9,11 +9,6 @@
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
 
-namespace Library
-{
-	class Camera;
-}
-
 namespace Rendering
 {
 	class AmbientLightingMaterial;
