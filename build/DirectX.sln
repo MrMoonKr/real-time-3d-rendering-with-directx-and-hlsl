@@ -69,6 +69,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7_4_Distortion_Mapping", ".
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "7_5_Distortion_Masking", "..\source\7.5_Distortion_Masking\7_5_Distortion_Masking.vcxproj", "{574FAEE5-05F3-4A37-A45F-ABB60EADB5CA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "8_1_Projective_Texture_Mapping", "..\source\8.1_Projective_Texture_Mapping\8_1_Projective_Texture_Mapping.vcxproj", "{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -305,6 +307,14 @@ Global
 		{574FAEE5-05F3-4A37-A45F-ABB60EADB5CA}.Release|Win32.Build.0 = Release|Win32
 		{574FAEE5-05F3-4A37-A45F-ABB60EADB5CA}.Release|x64.ActiveCfg = Release|x64
 		{574FAEE5-05F3-4A37-A45F-ABB60EADB5CA}.Release|x64.Build.0 = Release|x64
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Debug|Win32.Build.0 = Debug|Win32
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Debug|x64.ActiveCfg = Debug|x64
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Debug|x64.Build.0 = Debug|x64
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Release|Win32.ActiveCfg = Release|Win32
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Release|Win32.Build.0 = Release|Win32
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Release|x64.ActiveCfg = Release|x64
+		{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{574FAEE5-05F3-4A37-A45F-ABB60EADB5CA}</ProjectGuid>
+    <ProjectGuid>{8DF8D687-BF04-40F1-B6AD-2FC4B9DE8103}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Game</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
@@ -209,16 +209,16 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DistortionMaskingDemo.cpp" />
+    <ClCompile Include="ProjectedTextureMappingDemo.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DistortionMaskingDemo.h" />
+    <ClInclude Include="ProjectedTextureMappingDemo.h" />
     <ClInclude Include="RenderingGame.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\Models\nickzucc_blogspot_male_fleshbust_L2_MID.OBJ.bin" />
+    <None Include="Content\Models\Sphere.obj.bin" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Library.Desktop\Library.Desktop.vcxproj">
@@ -226,15 +226,22 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Content\Textures\DistortionMapGlass.png" />
+    <Image Include="Content\Textures\Checkerboard.png" />
     <Image Include="Content\Textures\Maskonaive2_1024.dds" />
+    <Image Include="Content\Textures\ProjectedTexture.png" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Content\Shaders\DistortionMaskingPS.hlsl">
+    <FxCompile Include="Content\Shaders\ProjectiveTextureMappingPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Content\Shaders\ProjectiveTextureMappingVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

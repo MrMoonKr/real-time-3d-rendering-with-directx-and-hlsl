@@ -61,7 +61,7 @@ namespace Rendering
 	void DistortionMaskingDemo::Initialize()
 	{
 		auto direct3DDevice = mGame->Direct3DDevice();
-		const auto model = mGame->Content().Load<Model>(L"Models\\Sphere.obj.bin"s);
+		const auto model = mGame->Content().Load<Model>(L"Models\\nickzucc_blogspot_male_fleshbust_L2_MID.OBJ.bin"s);
 		Mesh* mesh = model->Meshes().at(0).get();
 		VertexPositionTexture::CreateVertexBuffer(direct3DDevice, *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
 		mesh->CreateIndexBuffer(*direct3DDevice, not_null<ID3D11Buffer**>(mIndexBuffer.put()));
@@ -111,6 +111,8 @@ namespace Rendering
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
+
+		XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(0.1f, 0.1f, 0.1f));
 	}
 
 	void DistortionMaskingDemo::Draw(const GameTime& gameTime)

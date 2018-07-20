@@ -20,8 +20,6 @@ namespace Library
 
 namespace Rendering
 {
-	class DiffuseLightingDemo;
-
 	class DistortionMaskingDemo final : public Library::DrawableGameComponent
 	{
 	public:

@@ -31,7 +31,6 @@ namespace Library
 		virtual void BeginDraw() override;
 
 	private:
-
 		std::vector<ID3D11ShaderResourceView*> mTextures;
 		winrt::com_ptr<ID3D11SamplerState> mSamplerState;
 	};

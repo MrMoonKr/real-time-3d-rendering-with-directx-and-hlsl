@@ -17,14 +17,14 @@
   <ItemGroup>
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
-    <ClCompile Include="DistortionMaskingDemo.cpp" />
+    <ClCompile Include="ProjectedTextureMappingDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderingGame.h" />
-    <ClInclude Include="DistortionMaskingDemo.h" />
+    <ClInclude Include="ProjectedTextureMappingDemo.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\Models\nickzucc_blogspot_male_fleshbust_L2_MID.OBJ.bin">
+    <None Include="Content\Models\Sphere.obj.bin">
       <Filter>Content\Models</Filter>
     </None>
   </ItemGroup>
@@ -32,12 +32,18 @@
     <Image Include="Content\Textures\Maskonaive2_1024.dds">
       <Filter>Content\Textures</Filter>
     </Image>
-    <Image Include="Content\Textures\DistortionMapGlass.png">
+    <Image Include="Content\Textures\Checkerboard.png">
+      <Filter>Content\Textures</Filter>
+    </Image>
+    <Image Include="Content\Textures\ProjectedTexture.png">
       <Filter>Content\Textures</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Content\Shaders\DistortionMaskingPS.hlsl">
+    <FxCompile Include="Content\Shaders\ProjectiveTextureMappingPS.hlsl">
+      <Filter>Content\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\Shaders\ProjectiveTextureMappingVS.hlsl">
       <Filter>Content\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

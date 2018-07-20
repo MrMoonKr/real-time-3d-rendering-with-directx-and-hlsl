@@ -6,7 +6,7 @@
 #include "GamePadComponent.h"
 #include "FpsComponent.h"
 #include "Skybox.h"
-#include "DistortionMaskingDemo.h"
+#include "ProjectedTextureMappingDemo.h"
 #include "Grid.h"
 #include "FirstPersonCamera.h"
 #include "SamplerStates.h"
@@ -58,8 +58,9 @@ namespace Rendering
 		mSkybox = make_shared<Skybox>(*this, camera, L"Textures\\Maskonaive2_1024.dds", 500.0f);
 		mComponents.push_back(mSkybox);
 		
-		mImGuiComponent = make_shared<ImGuiComponent>(*this);
-		mServices.AddService(ImGuiComponent::TypeIdClass(), mImGuiComponent.get());
+		auto imGui = make_shared<ImGuiComponent>(*this);
+		mComponents.push_back(imGui);
+		mServices.AddService(ImGuiComponent::TypeIdClass(), imGui.get());
 		auto imGuiWndProcHandler = make_shared<UtilityWin32::WndProcHandler>(ImGui_ImplWin32_WndProcHandler);
 		UtilityWin32::AddWndProcHandler(imGuiWndProcHandler);
 
@@ -78,22 +79,19 @@ namespace Rendering
 			ImGui::Text("Rotate Directional Light (Arrow Keys)");
 			AddImGuiTextField("Toggle Grid (G): "s, (mGrid->Visible() ? "Visible"s : "Not Visible"s));
 			AddImGuiTextField("Toggle Skybox (K): "s, (mSkybox->Visible() ? "Visible"s : "Not Visible"s));
-			AddImGuiTextField("Draw Cutout Mode (Space): "s, (mDistortionMaskingDemo->DrawCutoutModeEnabled() ? "Enabled"s : "Disabled"s));
-			AddImGuiTextField("Displacement Scale (+Insert/-Delete): "s, mDistortionMaskingDemo->DisplacementScale(), 2);
 
 			ImGui::End();
 		});
-		mImGuiComponent->AddRenderBlock(helpTextImGuiRenderBlock);
-		mImGuiComponent->Initialize();
+		imGui->AddRenderBlock(helpTextImGuiRenderBlock);
 
 		mFpsComponent = make_shared<FpsComponent>(*this);
 		mFpsComponent->SetVisible(false);
 		mComponents.push_back(mFpsComponent);
 
-		Game::Initialize();
+		mProjectedTextureMappingDemo = make_shared<ProjectedTextureMappingDemo>(*this, camera);
+		mComponents.push_back(mProjectedTextureMappingDemo);
 
-		mDistortionMaskingDemo = make_shared<DistortionMaskingDemo>(*this, camera);
-		mDistortionMaskingDemo->Initialize();
+		Game::Initialize();
 	
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
 	}
@@ -124,24 +122,16 @@ namespace Rendering
 		{
 			mSkybox->SetVisible(!mSkybox->Visible());
 		}
-
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-		{
-			mDistortionMaskingDemo->ToggledDrawCutoutModeEnabled();
-		}
 	
-		UpdateDistortionMapping(gameTime);
-
-		mDistortionMaskingDemo->Update(gameTime);
-		mImGuiComponent->Update(gameTime);
-
 		Game::Update(gameTime);
 	}
 
 	void RenderingGame::Draw(const GameTime &gameTime)
-	{		
-		mDistortionMaskingDemo->Draw(gameTime);
-		mImGuiComponent->Draw(gameTime);
+	{	
+		mDirect3DDeviceContext->ClearRenderTargetView(mRenderTargetView.get(), BackgroundColor.f);
+		mDirect3DDeviceContext->ClearDepthStencilView(mDepthStencilView.get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		Game::Draw(gameTime);
 
 		HRESULT hr = mSwapChain->Present(1, 0);
 
@@ -161,9 +151,7 @@ namespace Rendering
 		mGrid = nullptr;
 		mFpsComponent = nullptr;
 		mSkybox = nullptr;
-		mImGuiComponent->Shutdown();
-		mImGuiComponent = nullptr;
-		mDistortionMaskingDemo = nullptr;
+		mProjectedTextureMappingDemo = nullptr;
 		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
 		Game::Shutdown();		
@@ -172,15 +160,5 @@ namespace Rendering
 	void RenderingGame::Exit()
 	{
 		PostQuitMessage(0);
-	}
-
-	void RenderingGame::UpdateDistortionMapping(const GameTime& gameTime)
-	{
-		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
-		float displacementScale = mDistortionMaskingDemo->DisplacementScale();
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Insert, Keys::Delete, displacementScale, elapsedTime, [&](const float& displacementScale)
-		{
-			mDistortionMaskingDemo->SetDisplacementScale(displacementScale);
-		}, 0.0f);
 	}
 }

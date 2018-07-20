@@ -89,7 +89,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)TexturedModelMaterial.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TextureHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Utility.cpp">
-      <PreprocessorDefinitions>HAS_DIRECTXTK;_SILEN%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)VectorHelper.cpp" />
