@@ -61,16 +61,15 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PerspectiveCamera.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)PerspectiveProjector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PixelShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PixelShaderReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Point.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PointLight.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Projector.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProxyModel.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RasterizerStates.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Ray.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Rectangle.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderableFrustum.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RenderStateHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RenderTarget.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SamplerStates.cpp" />
@@ -140,16 +139,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)OrthographicCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PerspectiveCamera.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)PerspectiveProjector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PixelShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PixelShaderReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Point.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PointLight.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Projector.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProxyModel.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RasterizerStates.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Ray.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Rectangle.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderableFrustum.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderStateHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderTarget.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RTTI.h" />

@@ -157,12 +157,6 @@ namespace Rendering
 		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 	}
 
-	void PointLightMaterial::UpdateCameraPosition(const DirectX::XMFLOAT3& position)
-	{
-		mPixelCBufferPerFrameData.CameraPosition = position;
-		mPixelCBufferPerFrameDataDirty = true;
-	}
-
 	void PointLightMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
 	{
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, worldViewProjectionMatrix);

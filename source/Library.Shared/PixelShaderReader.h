@@ -20,4 +20,16 @@ namespace Library
 	protected:
 		virtual std::shared_ptr<PixelShader> _Read(const std::wstring& assetName) override;
 	};
+
+	class PixelShaderWithClassLinkageReader
+	{
+	public:
+		PixelShaderWithClassLinkageReader(Game& game, winrt::com_ptr<ID3D11ClassLinkage> classLinkage);
+
+		std::shared_ptr<PixelShader> operator()(const std::wstring& assetName) const;
+
+	private:
+		gsl::not_null<Game*> mGame;
+		winrt::com_ptr<ID3D11ClassLinkage> mClassLinkage;
+	};
 }

@@ -6,7 +6,7 @@
 #include "GamePadComponent.h"
 #include "FpsComponent.h"
 #include "Skybox.h"
-#include "ProjectedTextureMappingDemo.h"
+#include "ProjectiveTextureMappingDemo.h"
 #include "Grid.h"
 #include "FirstPersonCamera.h"
 #include "SamplerStates.h"
@@ -58,6 +58,9 @@ namespace Rendering
 		mSkybox = make_shared<Skybox>(*this, camera, L"Textures\\Maskonaive2_1024.dds", 500.0f);
 		mComponents.push_back(mSkybox);
 		
+		mProjectiveTextureMappingDemo = make_shared<ProjectiveTextureMappingDemo>(*this, camera);
+		mComponents.push_back(mProjectiveTextureMappingDemo);
+
 		auto imGui = make_shared<ImGuiComponent>(*this);
 		mComponents.push_back(imGui);
 		mServices.AddService(ImGuiComponent::TypeIdClass(), imGui.get());
@@ -75,10 +78,14 @@ namespace Rendering
 				ImGui::Text(fpsLabel.str().c_str());
 			}
 			
-			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");			
-			ImGui::Text("Rotate Directional Light (Arrow Keys)");
+			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
+			ImGui::Text("Move Projector (Num-Pad 8/2, 4/6, 3/9)");
+			ImGui::Text("Rotate Projector (Arrow Keys)");
 			AddImGuiTextField("Toggle Grid (G): "s, (mGrid->Visible() ? "Visible"s : "Not Visible"s));
 			AddImGuiTextField("Toggle Skybox (K): "s, (mSkybox->Visible() ? "Visible"s : "Not Visible"s));
+			AddImGuiTextField("Ambient Light Intensity (+PgUp/-PgDown): "s, mProjectiveTextureMappingDemo->AmbientLightIntensity(), 2);
+			AddImGuiTextField("Point Light Intensity (+Home/-End): "s, mProjectiveTextureMappingDemo->PointLightIntensity(), 2);
+			AddImGuiTextField("Point Light Radius (+B/-N): "s, mProjectiveTextureMappingDemo->PointLightRadius(), 2);
 
 			ImGui::End();
 		});
@@ -88,12 +95,10 @@ namespace Rendering
 		mFpsComponent->SetVisible(false);
 		mComponents.push_back(mFpsComponent);
 
-		mProjectedTextureMappingDemo = make_shared<ProjectedTextureMappingDemo>(*this, camera);
-		mComponents.push_back(mProjectedTextureMappingDemo);
-
 		Game::Initialize();
 	
 		camera->SetPosition(0.0f, 2.5f, 20.0f);
+		mSkybox->SetVisible(false);
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -123,7 +128,10 @@ namespace Rendering
 			mSkybox->SetVisible(!mSkybox->Visible());
 		}
 	
-		Game::Update(gameTime);
+		UpdateAmbientLightIntensity(gameTime);
+		UpdateProjector(gameTime);
+
+		Game::Update(gameTime);		
 	}
 
 	void RenderingGame::Draw(const GameTime &gameTime)
@@ -151,7 +159,7 @@ namespace Rendering
 		mGrid = nullptr;
 		mFpsComponent = nullptr;
 		mSkybox = nullptr;
-		mProjectedTextureMappingDemo = nullptr;
+		mProjectiveTextureMappingDemo = nullptr;
 		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
 		Game::Shutdown();		
@@ -160,5 +168,47 @@ namespace Rendering
 	void RenderingGame::Exit()
 	{
 		PostQuitMessage(0);
+	}
+
+	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
+	{
+		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		float ambientIntensity = mProjectiveTextureMappingDemo->AmbientLightIntensity();
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::PageUp, Keys::PageDown, ambientIntensity, elapsedTime, [&](const float& ambientIntensity)
+		{
+			mProjectiveTextureMappingDemo->SetAmbientLightIntensity(ambientIntensity);
+		}, 0.0f, 1.0f);
+	}
+
+	void RenderingGame::UpdateProjector(const Library::GameTime& gameTime)
+	{
+		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+
+		// Move projector
+		bool updatePosition = false;
+		auto updatePositionFunc = [&updatePosition](const float&) { updatePosition = true; };
+		const float ProjectorMovementRate = 10.0f * elapsedTime;
+		XMFLOAT3 movementAmount = Vector3Helper::Zero;
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad6, Keys::NumPad4, movementAmount.x, ProjectorMovementRate, updatePositionFunc);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad9, Keys::NumPad3, movementAmount.y, ProjectorMovementRate, updatePositionFunc);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad2, Keys::NumPad8, movementAmount.z, ProjectorMovementRate, updatePositionFunc);
+
+		if (updatePosition)
+		{
+			mProjectiveTextureMappingDemo->SetProjectorPosition(mProjectiveTextureMappingDemo->ProjectorPositionVector() + XMLoadFloat3(&movementAmount));
+		}
+
+		// Rotate projector
+		bool updateRotation = false;
+		auto updateRotationFunc = [&updateRotation](const float&) { updateRotation = true; };
+		const float RotationRate = XM_2PI * elapsedTime;		
+		XMFLOAT2 rotationAmount = Vector2Helper::Zero;
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Left, Keys::Right, rotationAmount.x, RotationRate, updateRotationFunc);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, rotationAmount.y, RotationRate, updateRotationFunc);
+
+		if (updateRotation)
+		{
+			mProjectiveTextureMappingDemo->RotateProjector(rotationAmount);
+		}
 	}
 }

@@ -8,8 +8,6 @@
 #include "RasterizerStates.h"
 #include "Model.h"
 #include "Mesh.h"
-#include "BasicMaterial.h"
-#include <gsl\gsl>
 
 using namespace std;
 using namespace gsl;
@@ -22,7 +20,7 @@ namespace Library
 	ProxyModel::ProxyModel(Game& game, const shared_ptr<Camera>& camera, const std::string& modelFileName, float scale) :
 		DrawableGameComponent(game, camera),
 		mModelFileName(modelFileName), mScale(scale),
-		mMaterial(make_shared<BasicMaterial>(*mGame))
+		mMaterial(*mGame)
 	{
 	}
 
@@ -80,11 +78,13 @@ namespace Library
 	void ProxyModel::SetPosition(FXMVECTOR position)
 	{
 		XMStoreFloat3(&mPosition, position);
+		mUpdateWorldMatrix = true;
 	}
 
 	void ProxyModel::SetPosition(const XMFLOAT3& position)
 	{
 		mPosition = position;
+		mUpdateWorldMatrix = true;
 	}
 
 	void ProxyModel::ApplyRotation(CXMMATRIX transform)
@@ -104,6 +104,8 @@ namespace Library
 		XMStoreFloat3(&mDirection, direction);
 		XMStoreFloat3(&mUp, up);
 		XMStoreFloat3(&mRight, right);
+		
+		mUpdateWorldMatrix = true;
 	}
 
 	void ProxyModel::ApplyRotation(const XMFLOAT4X4& transform)
@@ -114,7 +116,7 @@ namespace Library
 
 	void ProxyModel::SetColor(const DirectX::XMFLOAT4& color)
 	{
-		mMaterial->SetSurfaceColor(color);
+		mMaterial.SetSurfaceColor(color);
 	}
 
 	void ProxyModel::Initialize()
@@ -125,40 +127,48 @@ namespace Library
 		mesh->CreateIndexBuffer(*mGame->Direct3DDevice(), not_null<ID3D11Buffer**>(mIndexBuffer.put()));
 		mIndexCount = narrow<uint32_t>(mesh->Indices().size());
 
-		mMaterial->Initialize();
+		mMaterial.Initialize();
 
-		using namespace std::placeholders;
-		mMaterial->SetUpdateMaterialCallback(bind(&ProxyModel::UpdateMaterial, this));	}
+		auto updateMaterialFunc = [this]() { mUpdateWorldMatrix = true; };
+		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
+		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
+	}
 
 	void ProxyModel::Update(const GameTime&)
 	{
-		XMMATRIX worldMatrix = XMMatrixIdentity();
-		MatrixHelper::SetForward(worldMatrix, mDirection);
-		MatrixHelper::SetUp(worldMatrix, mUp);
-		MatrixHelper::SetRight(worldMatrix, mRight);
-		MatrixHelper::SetTranslation(worldMatrix, mPosition);
+		if (mUpdateWorldMatrix)
+		{
+			XMMATRIX worldMatrix = XMMatrixIdentity();
+			MatrixHelper::SetForward(worldMatrix, mDirection);
+			MatrixHelper::SetUp(worldMatrix, mUp);
+			MatrixHelper::SetRight(worldMatrix, mRight);
+			MatrixHelper::SetTranslation(worldMatrix, mPosition);
 
-		XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(mScale, mScale, mScale) * worldMatrix);
+			XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(mScale, mScale, mScale) * worldMatrix);
+			mUpdateWorldMatrix = false;
+			mUpdateMaterial = true;
+		}
 	}
 
 	void ProxyModel::Draw(const GameTime&)
 	{
+		if (mUpdateMaterial)
+		{
+			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
+			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
+			mMaterial.UpdateTransform(wvp);
+			mUpdateMaterial = false;
+		}
+
 		if (mDisplayWireframe)
 		{
 			mGame->Direct3DDeviceContext()->RSSetState(RasterizerStates::Wireframe.get());
-			mMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.get()), not_null<ID3D11Buffer*>(mIndexBuffer.get()), mIndexCount);
+			mMaterial.DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.get()), not_null<ID3D11Buffer*>(mIndexBuffer.get()), mIndexCount);
 			mGame->Direct3DDeviceContext()->RSSetState(nullptr);
 		}
 		else
 		{
-			mMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.get()), not_null<ID3D11Buffer*>(mIndexBuffer.get()), mIndexCount);
+			mMaterial.DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.get()), not_null<ID3D11Buffer*>(mIndexBuffer.get()), mIndexCount);
 		}
-	}
-
-	void ProxyModel::UpdateMaterial()
-	{
-		const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
-		const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-		mMaterial->UpdateTransform(wvp);
 	}
 }

@@ -65,7 +65,6 @@ namespace Rendering
 		PixelCBufferPerObject mPixelCBufferPerObjectData;
 		std::shared_ptr<Library::Texture2D> mDistortionMap;
 		std::map<DistortionShaderClass, winrt::com_ptr<ID3D11ClassInstance>> mShaderClassInstances;
-		winrt::com_ptr<ID3D11ClassLinkage> mClassLinkage;
 		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;
 		std::uint32_t mIndexCount{ 0 };

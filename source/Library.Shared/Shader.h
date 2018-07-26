@@ -22,6 +22,9 @@ namespace Library
 		Shader& operator=(Shader&&) = default;
 		virtual ~Shader() = default;
 
+		winrt::com_ptr<ID3D11ClassLinkage> ClassLinkage() const;
+		void SetClassLinkage(winrt::com_ptr<ID3D11ClassLinkage> classLinkage);
+
 		static winrt::com_ptr<ID3D11ClassLinkage> CreateClassLinkage(gsl::not_null<ID3D11Device*> device);
 
 	protected:

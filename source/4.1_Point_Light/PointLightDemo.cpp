@@ -138,14 +138,6 @@ namespace Rendering
 
 		SetLightPosition(XMFLOAT3(1.0f, 0.0, 8.0f));
 
-		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
-		if (firstPersonCamera != nullptr)
-		{
-			firstPersonCamera->AddPositionUpdatedCallback([this]() {
-				mMaterial->UpdateCameraPosition(mCamera->Position());
-			});
-		}
-
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
 		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
 		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);

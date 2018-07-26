@@ -32,7 +32,10 @@ namespace Library
 		DirectX::XMVECTOR RightVector() const;
 
 		float NearPlaneDistance() const;
+		void SetNearPlaneDistance(float distance);
+
 		float FarPlaneDistance() const;
+		void SetFarPlaneDistance(float distance);
 
 		DirectX::XMMATRIX ViewMatrix() const;
 		DirectX::XMMATRIX ProjectionMatrix() const;

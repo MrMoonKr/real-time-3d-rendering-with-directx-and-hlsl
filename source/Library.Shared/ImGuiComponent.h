@@ -20,7 +20,7 @@ namespace Library
 			Dark
 		};
 
-		typedef std::function<void(void)> RenderBlock;
+		using RenderBlock = std::function<void(void)>;
 
 		ImGuiComponent(Game& game, Styles style = Styles::Dark, bool useCustomDraw = false);
 

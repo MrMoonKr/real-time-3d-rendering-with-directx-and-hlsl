@@ -1,12 +1,6 @@
 #pragma once
 
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#include <winrt\Windows.Foundation.h>
 #include <vector>
-#include <cstdint>
-#include <gsl\gsl>
 #include "Shader.h"
 
 namespace Library

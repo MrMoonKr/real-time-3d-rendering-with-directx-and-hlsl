@@ -114,7 +114,6 @@ namespace Library
 		BloomDrawModes mDrawMode{ BloomDrawModes::Normal };
 		std::map<BloomDrawModes, std::function<void(const GameTime& gameTime)>> mDrawFunctions;
 		std::map<BloomShaderClass, winrt::com_ptr<ID3D11ClassInstance>> mShaderClassInstances;
-		winrt::com_ptr<ID3D11ClassLinkage> mClassLinkage;
 		BloomSettings mBloomSettings;
 	};
 }

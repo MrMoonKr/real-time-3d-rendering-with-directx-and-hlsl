@@ -60,9 +60,21 @@ namespace Library
 		return mNearPlaneDistance;
 	}
 
+	void Camera::SetNearPlaneDistance(float distance)
+	{
+		mNearPlaneDistance = distance;
+		mProjectionMatrixDataDirty = true;
+	}
+
 	float Camera::FarPlaneDistance() const
 	{
 		return mFarPlaneDistance;
+	}
+
+	void Camera::SetFarPlaneDistance(float distance)
+	{
+		mFarPlaneDistance = distance;
+		mProjectionMatrixDataDirty = true;
 	}
 
 	XMMATRIX Camera::ViewMatrix() const

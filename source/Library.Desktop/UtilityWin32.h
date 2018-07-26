@@ -11,7 +11,7 @@ namespace Library
 	class UtilityWin32 final
 	{
 	public:
-		typedef std::function<bool(HWND, UINT, WPARAM, LPARAM)> WndProcHandler;
+		using WndProcHandler = std::function<bool(HWND, UINT, WPARAM, LPARAM)>;
 
 		static void InitializeWindow(WNDCLASSEX& window, HWND& windowHandle, HINSTANCE instance, const std::wstring& className, const std::wstring& windowTitle, const SIZE& renderTargetSize, int showCommand);
 		static LRESULT WINAPI WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);

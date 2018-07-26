@@ -37,7 +37,6 @@ namespace Library
 			value = std::min(value, maxValue);
 			update = true;
 		}
-
 		else if (decreasePredicate() && value > minValue)
 		{
 			value -= delta;

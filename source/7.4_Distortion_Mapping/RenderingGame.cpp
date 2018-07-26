@@ -198,25 +198,13 @@ namespace Rendering
 		}, 0.0f, 1.0f);
 
 		// Rotate light
+		bool updateLightRotation = false;
+		auto updateFunc = [&updateLightRotation](const float&) { updateLightRotation = true; };
 		XMFLOAT2 rotationAmount = Vector2Helper::Zero;
-		if (mKeyboard->IsKeyDown(Keys::Left))
-		{
-			rotationAmount.x += LightRotationRate.x * elapsedTime;
-		}
-		if (mKeyboard->IsKeyDown(Keys::Right))
-		{
-			rotationAmount.x -= LightRotationRate.x * elapsedTime;
-		}
-		if (mKeyboard->IsKeyDown(Keys::Up))
-		{
-			rotationAmount.y += LightRotationRate.y * elapsedTime;
-		}
-		if (mKeyboard->IsKeyDown(Keys::Down))
-		{
-			rotationAmount.y -= LightRotationRate.y * elapsedTime;
-		}
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Left, Keys::Right, rotationAmount.x, LightRotationRate.x * elapsedTime, updateFunc);
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, rotationAmount.y, LightRotationRate.y * elapsedTime, updateFunc);
 
-		if (rotationAmount.x != 0.0f || rotationAmount.y != 0.0f)
+		if (updateLightRotation)
 		{
 			mDiffuseLightingDemo->RotateDirectionalLight(rotationAmount);
 		}

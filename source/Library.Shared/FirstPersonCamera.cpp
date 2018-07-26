@@ -183,6 +183,7 @@ namespace Library
 		XMStoreFloat3(&mPosition, position);
 
 		InvokePositionUpdatedCallbacks();
+		mViewMatrixDataDirty = true;
 	}
 
 	inline void FirstPersonCamera::InvokePositionUpdatedCallbacks()

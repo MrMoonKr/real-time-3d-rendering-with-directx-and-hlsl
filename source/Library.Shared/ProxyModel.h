@@ -10,11 +10,11 @@
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
 #include "VectorHelper.h"
+#include "BasicMaterial.h"
 
 namespace Library
 {
 	class Mesh;
-	class BasicMaterial;
 
 	class ProxyModel final : public DrawableGameComponent
 	{
@@ -54,19 +54,19 @@ namespace Library
 		virtual void Draw(const GameTime& gameTime) override;
 
 	private:
-		void UpdateMaterial();
-
 		DirectX::XMFLOAT4X4 mWorldMatrix{ MatrixHelper::Identity };
 		DirectX::XMFLOAT3 mPosition{ Vector3Helper::Zero };
 		DirectX::XMFLOAT3 mDirection{ Vector3Helper::Forward };
 		DirectX::XMFLOAT3 mUp{ Vector3Helper::Up };
 		DirectX::XMFLOAT3 mRight{ Vector3Helper::Right };
+		BasicMaterial mMaterial;
 		std::string mModelFileName;
 		float mScale;
 		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;		
-		std::shared_ptr<BasicMaterial> mMaterial;
 		std::uint32_t mIndexCount{ 0 };
 		bool mDisplayWireframe{ true };
+		bool mUpdateWorldMatrix{ true };
+		bool mUpdateMaterial{ true };
 	};
 }

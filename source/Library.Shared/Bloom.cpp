@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "VectorHelper.h"
 #include "PixelShader.h"
+#include "PixelShaderReader.h"
 #include "Utility.h"
 
 using namespace std;
@@ -83,24 +84,14 @@ namespace Library
 		
 		// Create the bloom shader with class linkage
 		auto direct3DDevice = mGame->Direct3DDevice();
-		mClassLinkage = Shader::CreateClassLinkage(direct3DDevice);
-
-		auto pixelShaderContentReader = [&](const wstring& assetName)
-		{
-			com_ptr<ID3D11PixelShader> pixelShader;
-			vector<char> compiledPixelShader;
-			Utility::LoadBinaryFile(assetName, compiledPixelShader);
-			ThrowIfFailed(direct3DDevice->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), mClassLinkage.get(), pixelShader.put()), "ID3D11Device::CreatedPixelShader() failed.");
-
-			return shared_ptr<PixelShader>(new PixelShader(move(pixelShader)));
-		};
-
+		auto classLinkage = Shader::CreateClassLinkage(direct3DDevice);
+		PixelShaderWithClassLinkageReader pixelShaderContentReader(*mGame, classLinkage);
 		auto pixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\BloomPS.cso", false, pixelShaderContentReader);
 		fullScreenQuadMaterial->SetPixelShader(pixelShader);
 
-		ThrowIfFailed(mClassLinkage->CreateClassInstance("ExtractBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Extract].put()));
-		ThrowIfFailed(mClassLinkage->CreateClassInstance("CompositeBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Composite].put()));
-		ThrowIfFailed(mClassLinkage->CreateClassInstance("NoBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::NoBloom].put()));
+		ThrowIfFailed(classLinkage->CreateClassInstance("ExtractBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Extract].put()));
+		ThrowIfFailed(classLinkage->CreateClassInstance("CompositeBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Composite].put()));
+		ThrowIfFailed(classLinkage->CreateClassInstance("NoBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::NoBloom].put()));
 				
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);

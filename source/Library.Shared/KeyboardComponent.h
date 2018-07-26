@@ -223,7 +223,7 @@ namespace Library
 	};
 
 	template <typename T>
-	void UpdateValueWithKeyboard(const KeyboardComponent& keyboard, const Keys increaseKey, const Keys decreaseKey, T& value, const T& delta, std::function<void(const T&)> updateFunc = nullptr, const T& minValue = std::numeric_limits<T>::min(), const T& maxValue = std::numeric_limits<T>::max())
+	void UpdateValueWithKeyboard(const KeyboardComponent& keyboard, const Keys increaseKey, const Keys decreaseKey, T& value, const T& delta, std::function<void(const T&)> updateFunc = nullptr, const T& minValue = std::numeric_limits<T>::lowest(), const T& maxValue = std::numeric_limits<T>::max())
 	{
 		auto increasePredicate = [&]() -> bool
 		{

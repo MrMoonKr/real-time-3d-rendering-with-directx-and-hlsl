@@ -209,16 +209,20 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ProjectedTextureMappingDemo.cpp" />
+    <ClCompile Include="ProjectiveTextureMappingDemo.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="ProjectiveTextureMappingMaterial.cpp" />
     <ClCompile Include="RenderingGame.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ProjectedTextureMappingDemo.h" />
+    <ClInclude Include="ProjectiveTextureMappingDemo.h" />
+    <ClInclude Include="ProjectiveTextureMappingMaterial.h" />
     <ClInclude Include="RenderingGame.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\Models\PointLightProxy.obj.bin" />
     <None Include="Content\Models\Sphere.obj.bin" />
+    <None Include="Content\Models\Teapot.obj.bin" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Library.Desktop\Library.Desktop.vcxproj">

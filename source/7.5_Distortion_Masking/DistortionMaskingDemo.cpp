@@ -4,6 +4,7 @@
 #include "FullScreenQuad.h"
 #include "FullScreenQuadMaterial.h"
 #include "PixelShader.h"
+#include "PixelShaderReader.h"
 #include "Texture2D.h"
 #include "Utility.h"
 #include "TexturedModelMaterial.h"
@@ -61,7 +62,8 @@ namespace Rendering
 	void DistortionMaskingDemo::Initialize()
 	{
 		auto direct3DDevice = mGame->Direct3DDevice();
-		const auto model = mGame->Content().Load<Model>(L"Models\\nickzucc_blogspot_male_fleshbust_L2_MID.OBJ.bin"s);
+		auto& content = mGame->Content();
+		const auto model = content.Load<Model>(L"Models\\nickzucc_blogspot_male_fleshbust_L2_MID.OBJ.bin"s);
 		Mesh* mesh = model->Meshes().at(0).get();
 		VertexPositionTexture::CreateVertexBuffer(direct3DDevice, *mesh, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
 		mesh->CreateIndexBuffer(*direct3DDevice, not_null<ID3D11Buffer**>(mIndexBuffer.put()));
@@ -70,32 +72,22 @@ namespace Rendering
 		mFullScreenQuad.Initialize();
 		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
 
-		// Create the distortion masking shader with class linkage
-		mClassLinkage = Shader::CreateClassLinkage(direct3DDevice);
-
-		auto pixelShaderContentReader = [&](const wstring& assetName)
-		{
-			com_ptr<ID3D11PixelShader> pixelShader;
-			vector<char> compiledPixelShader;
-			Utility::LoadBinaryFile(assetName, compiledPixelShader);
-			ThrowIfFailed(direct3DDevice->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), mClassLinkage.get(), pixelShader.put()), "ID3D11Device::CreatedPixelShader() failed.");
-
-			return shared_ptr<PixelShader>(new PixelShader(move(pixelShader)));
-		};
-
-		auto pixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\DistortionMaskingPS.cso", false, pixelShaderContentReader);
+		// Create the distortion masking shader with class
+		auto classLinkage = Shader::CreateClassLinkage(direct3DDevice);
+		PixelShaderWithClassLinkageReader pixelShaderContentReader(*mGame, classLinkage);
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\DistortionMaskingPS.cso", false, pixelShaderContentReader);
 		fullScreenQuadMaterial->SetPixelShader(pixelShader);
 		
-		ThrowIfFailed(mClassLinkage->CreateClassInstance("CutoutDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::Cutout].put()));
-		ThrowIfFailed(mClassLinkage->CreateClassInstance("CompositeDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::Composite].put()));
-		ThrowIfFailed(mClassLinkage->CreateClassInstance("NoDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::NoDistortion].put()));
+		ThrowIfFailed(classLinkage->CreateClassInstance("CutoutDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::Cutout].put()));
+		ThrowIfFailed(classLinkage->CreateClassInstance("CompositeDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::Composite].put()));
+		ThrowIfFailed(classLinkage->CreateClassInstance("NoDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::NoDistortion].put()));
 
 		mTexturedModelMaterial = make_shared<TexturedModelMaterial>(*mGame);
 		mTexturedModelMaterial->Initialize();
 		mTexturedModelMaterial->SetPixelShader(pixelShader);
 		mTexturedModelMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(DistortionShaderClass::Cutout));
 
-		mDistortionMap = mGame->Content().Load<Texture2D>(L"Textures\\DistortionMapGlass.png"s);
+		mDistortionMap = content.Load<Texture2D>(L"Textures\\DistortionMapGlass.png"s);
 		mTexturedModelMaterial->SetUpdateMaterialCallback([&]
 		{
 			ID3D11ShaderResourceView* const psShaderResources[] = { nullptr, mDistortionMap->ShaderResourceView().get() };

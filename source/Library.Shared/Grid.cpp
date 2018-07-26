@@ -7,7 +7,6 @@
 #include "VectorHelper.h"
 #include "MatrixHelper.h"
 #include "VertexDeclarations.h"
-#include "BasicMaterial.h"
 
 using namespace std;
 using namespace gsl;
@@ -19,8 +18,8 @@ namespace Library
 
 	Grid::Grid(Game& game, const std::shared_ptr<Camera>& camera, std::uint32_t size, std::uint32_t scale, const XMFLOAT4& color) :
 		DrawableGameComponent(game, camera),
-		mMaterial(make_shared<BasicMaterial>(*mGame)),
-		mPosition(Vector3Helper::Zero), mSize(size), mScale(scale), mColor(color)
+		mMaterial(*mGame),
+		mSize(size), mScale(scale), mColor(color)
 	{
 	}
 	
@@ -45,7 +44,7 @@ namespace Library
 
 	void Grid::SetColor(const XMFLOAT4& color)
 	{
-		mMaterial->SetSurfaceColor(color);
+		mMaterial.SetSurfaceColor(color);
 	}
 
 	const uint32_t Grid::Size() const
@@ -72,8 +71,8 @@ namespace Library
 
 	void Grid::Initialize()
 	{
-		mMaterial->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-		mMaterial->Initialize();
+		mMaterial.SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+		mMaterial.Initialize();
 		SetColor(mColor);
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
@@ -89,11 +88,11 @@ namespace Library
 		{
 			const XMMATRIX worldMatrix = XMLoadFloat4x4(&mWorldMatrix);
 			const XMMATRIX wvp = XMMatrixTranspose(worldMatrix * mCamera->ViewProjectionMatrix());
-			mMaterial->UpdateTransform(wvp);
+			mMaterial.UpdateTransform(wvp);
 			mUpdateMaterial = false;
 		}
 
-		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.get()), (mSize + 1) * 4, 0);
+		mMaterial.Draw(not_null<ID3D11Buffer*>(mVertexBuffer.get()), (mSize + 1) * 4, 0);
 	}
 
 	void Grid::InitializeGrid()

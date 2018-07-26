@@ -34,9 +34,6 @@
     <Filter Include="Materials">
       <UniqueIdentifier>{4be53d89-cb1b-412d-8bee-d2b4494542db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics\Projectors">
-      <UniqueIdentifier>{355b59d6-0188-4285-a53c-91a89422b1de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Content">
       <UniqueIdentifier>{220e8c1e-a57f-48c2-87bb-45666304c55f}</UniqueIdentifier>
     </Filter>
@@ -162,12 +159,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)RasterizerStates.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)PerspectiveProjector.cpp">
-      <Filter>Graphics\Projectors</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Projector.cpp">
-      <Filter>Graphics\Projectors</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)DepthStencilStates.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -270,6 +261,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)pch.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TexturedModelMaterial.cpp">
       <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)RenderableFrustum.cpp">
+      <Filter>Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -396,12 +390,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)VertexDeclarations.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)PerspectiveProjector.h">
-      <Filter>Graphics\Projectors</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Projector.h">
-      <Filter>Graphics\Projectors</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)DepthStencilStates.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -501,6 +489,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)pch.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TexturedModelMaterial.h">
       <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)RenderableFrustum.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
