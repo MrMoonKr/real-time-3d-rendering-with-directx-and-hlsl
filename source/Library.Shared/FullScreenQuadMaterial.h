@@ -27,9 +27,6 @@ namespace Library
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
-	protected:
-		virtual void BeginDraw() override;
-
 	private:
 		std::vector<ID3D11ShaderResourceView*> mTextures;
 		winrt::com_ptr<ID3D11SamplerState> mSamplerState;

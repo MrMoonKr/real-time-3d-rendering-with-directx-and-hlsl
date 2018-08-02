@@ -87,12 +87,12 @@ namespace Library
             direct3DDeviceContext->ClearRenderTargetView(mHorizontalBlurTarget.RenderTargetView().get(), Colors::Purple.f);
             direct3DDeviceContext->ClearDepthStencilView(mHorizontalBlurTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 			
-			fullScreenQuadMaterial->SetPixelShader(mBlurPixelShader);
+			fullScreenQuadMaterial->SetShader(mBlurPixelShader);
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 			fullScreenQuadMaterial->SetUpdateMaterialCallback(mHorizontalCBufferPerFrameMaterialCallback);
             mFullScreenQuad.Draw(gameTime);
             mHorizontalBlurTarget.End();
-			mGame->UnbindPixelShaderResources<1>();
+			fullScreenQuadMaterial->UnbindShaderResources<1>(ShaderStages::PS);
 
 			// Vertical blur for the final image
 			fullScreenQuadMaterial->SetTexture(mHorizontalBlurTarget.OutputTexture().get());
@@ -101,12 +101,12 @@ namespace Library
         }
         else
         {			
-			fullScreenQuadMaterial->SetPixelShader(mNoBlurPixelShader);
+			fullScreenQuadMaterial->SetShader(mNoBlurPixelShader);
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());	
             mFullScreenQuad.Draw(gameTime);
         }
 
-		mGame->UnbindPixelShaderResources<1>();
+		fullScreenQuadMaterial->UnbindShaderResources<1>(ShaderStages::PS);
     }	
 
 	void GaussianBlur::DrawToTexture(const GameTime& gameTime)
@@ -120,12 +120,12 @@ namespace Library
 			direct3DDeviceContext->ClearRenderTargetView(mHorizontalBlurTarget.RenderTargetView().get(), Colors::Purple.f);
 			direct3DDeviceContext->ClearDepthStencilView(mHorizontalBlurTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-			fullScreenQuadMaterial->SetPixelShader(mBlurPixelShader);
+			fullScreenQuadMaterial->SetShader(mBlurPixelShader);
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 			fullScreenQuadMaterial->SetUpdateMaterialCallback(mHorizontalCBufferPerFrameMaterialCallback);
 			mFullScreenQuad.Draw(gameTime);
 			mHorizontalBlurTarget.End();
-			mGame->UnbindPixelShaderResources<1>();
+			fullScreenQuadMaterial->UnbindShaderResources<1>(ShaderStages::PS);
 
 			// Vertical blur for the final image (with vertical blur render target for output to texture)
 			mVerticalBlurTarget.Begin();
@@ -137,7 +137,7 @@ namespace Library
 			mFullScreenQuad.Draw(gameTime);
 
 			mVerticalBlurTarget.End();
-			mGame->UnbindPixelShaderResources<1>();
+			fullScreenQuadMaterial->UnbindShaderResources<1>(ShaderStages::PS);
 
 			mOutputTexture = mVerticalBlurTarget.OutputTexture();
 		}
@@ -148,12 +148,12 @@ namespace Library
 			direct3DDeviceContext->ClearRenderTargetView(mHorizontalBlurTarget.RenderTargetView().get(), Colors::Purple.f);
 			direct3DDeviceContext->ClearDepthStencilView(mHorizontalBlurTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-			fullScreenQuadMaterial->SetPixelShader(mNoBlurPixelShader);
+			fullScreenQuadMaterial->SetShader(mNoBlurPixelShader);
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 			mFullScreenQuad.Draw(gameTime);
 			mHorizontalBlurTarget.End();
-			mGame->UnbindPixelShaderResources<1>();
-
+			fullScreenQuadMaterial->UnbindShaderResources<1>(ShaderStages::PS);
+			
 			mOutputTexture = mHorizontalBlurTarget.OutputTexture();
 		}
 	}

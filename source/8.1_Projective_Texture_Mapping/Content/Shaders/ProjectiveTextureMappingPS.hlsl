@@ -13,7 +13,7 @@ Texture2D ColorMap : register(t0);
 Texture2D ProjectedMap : register(t1);
 Texture2D DepthMap : register(t2);
 
-SamplerState ColorSampler : register(s0);
+SamplerState ColorMapSampler : register(s0);
 SamplerState ProjectedMapSampler : register(s1);
 SamplerState DepthMapSampler : register(s2);
 
@@ -40,7 +40,7 @@ class PointLightShader
 		float3 normal = normalize(IN.Normal);
 		float n_dot_l = dot(normal, lightDirection);
 
-		float4 color = ColorMap.Sample(ColorSampler, IN.TextureCoordinates);
+		float4 color = ColorMap.Sample(ColorMapSampler, IN.TextureCoordinates);
 
 		float3 ambient = color.rgb * AmbientColor;
 		float3 diffuse = color.rgb * saturate(n_dot_l) * LightColor * IN.Attenuation;

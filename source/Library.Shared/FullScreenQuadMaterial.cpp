@@ -28,21 +28,29 @@ namespace Library
 	void FullScreenQuadMaterial::SetSamplerState(const com_ptr<ID3D11SamplerState>& samplerState)
 	{
 		mSamplerState = samplerState;
+		Material::SetSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	void FullScreenQuadMaterial::SetTexture(ID3D11ShaderResourceView* texture)
 	{
-		mTextures.clear();
+		if (mTextures.size() > 1 || (!mTextures.empty() && (mTextures.front() != texture)))
+		{
+			mTextures.clear();
+			Material::ClearShaderResources(ShaderStages::PS);
+		}
 
 		if (texture != nullptr)
 		{
 			mTextures.push_back(texture);
+			Material::AddShaderResource(ShaderStages::PS, texture);
 		}
 	}
 
 	void FullScreenQuadMaterial::SetTextures(gsl::span<ID3D11ShaderResourceView*> textures)
 	{
 		mTextures = move(vector<ID3D11ShaderResourceView*>(textures.begin(), textures.end()));
+		ClearShaderResources(ShaderStages::PS);
+		AddShaderResources(ShaderStages::PS, textures);
 	}
 
 	uint32_t FullScreenQuadMaterial::VertexSize() const
@@ -54,20 +62,13 @@ namespace Library
 	{
 		Material::Initialize();
 
+		auto vertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\TexturedQuadPassThroughVS.cso");
+		SetShader(vertexShader);
+
 		auto direct3DDevice = mGame->Direct3DDevice();
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\TexturedQuadPassThroughVS.cso");
-		mVertexShader->CreateInputLayout<VertexPositionTexture>(direct3DDevice);
-	}
+		vertexShader->CreateInputLayout<VertexPositionTexture>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
-	void FullScreenQuadMaterial::BeginDraw()
-	{
-		Material::BeginDraw();
-
-		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-		direct3DDeviceContext->PSSetShaderResources(0, narrow_cast<uint32_t>(mTextures.size()), mTextures.data());
-
-		const auto psSamplers = mSamplerState.get();
-		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
+		AddSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 }

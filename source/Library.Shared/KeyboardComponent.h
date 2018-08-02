@@ -237,4 +237,23 @@ namespace Library
 
 		UpdateValue(increasePredicate, decreasePredicate, value, delta, updateFunc, minValue, maxValue);
 	}
+
+	template <typename T>
+	void IncrementEnumValue(const KeyboardComponent& keyboard, const Keys increaseKey, T& value, std::function<void(T)> updateFunc, T maxValue, T minValue = T(0), bool wrap = true)
+	{
+		if (keyboard.WasKeyPressedThisFrame(increaseKey))
+		{
+			T increasedValue = T(static_cast<int>(value) + 1);
+			if (increasedValue >= maxValue)
+			{
+				increasedValue = (wrap ? minValue : value);
+			}
+
+			if (value != increasedValue)
+			{
+				value = increasedValue;
+				updateFunc(value);
+			}
+		}
+	}
 }

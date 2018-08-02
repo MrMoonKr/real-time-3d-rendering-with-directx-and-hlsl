@@ -30,7 +30,9 @@ namespace Library
 
 	void SkyboxMaterial::SetSamplerState(const com_ptr<ID3D11SamplerState>& samplerState)
 	{
+		assert(samplerState != nullptr);
 		mSamplerState = samplerState;
+		Material::SetSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	shared_ptr<TextureCube> SkyboxMaterial::Texture() const
@@ -40,7 +42,9 @@ namespace Library
 
 	void SkyboxMaterial::SetTexture(shared_ptr<TextureCube> texture)
 	{
+		assert(texture != nullptr);
 		mTexture = move(texture);
+		Material::SetShaderResource(ShaderStages::PS, mTexture->ShaderResourceView().get());
 	}
 
 	uint32_t SkyboxMaterial::VertexSize() const
@@ -52,36 +56,38 @@ namespace Library
 	{
 		Material::Initialize();
 
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\SkyboxVS.cso");
-		mVertexShader->CreateInputLayout<VertexPosition>(mGame->Direct3DDevice());
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\SkyboxPS.cso");
+		auto& content = mGame->Content();
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\SkyboxVS.cso");
+		SetShader(vertexShader);
+
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\SkyboxPS.cso");
+		SetShader(pixelShader);
+
+		auto direct3DDevice = mGame->Direct3DDevice();
+		vertexShader->CreateInputLayout<VertexPosition>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(XMFLOAT4X4);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mConstantBuffer.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::VS, mConstantBuffer.get());
+
+		AddShaderResource(ShaderStages::PS, mTexture->ShaderResourceView().get());
+		AddSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	void SkyboxMaterial::BeginDraw()
 	{
 		Material::BeginDraw();
 
-		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-		const auto vsConstantBuffers = mConstantBuffer.get();
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
-		
-		const auto psShaderResources = mTexture->ShaderResourceView().get();
-		direct3DDeviceContext->PSSetShaderResources(0, 1, &psShaderResources);
-
-		const auto psSamplers = mSamplerState.get();
-		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
-
-		direct3DDeviceContext->RSSetState(RasterizerStates::DisabledCulling.get());		
+		mGame->Direct3DDeviceContext()->RSSetState(RasterizerStates::DisabledCulling.get());
 	}
 
 	void SkyboxMaterial::EndDraw()
 	{
+		Material::EndDraw();
+
 		mGame->Direct3DDeviceContext()->RSSetState(nullptr);
 	}
 

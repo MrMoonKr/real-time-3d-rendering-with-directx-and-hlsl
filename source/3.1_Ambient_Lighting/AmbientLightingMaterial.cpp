@@ -29,7 +29,9 @@ namespace Rendering
 
 	void AmbientLightingMaterial::SetSamplerState(com_ptr<ID3D11SamplerState> samplerState)
 	{
-		mSamplerState = move(samplerState);
+		assert(samplerState != nullptr);
+		mSamplerState = samplerState;
+		Material::SetSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	shared_ptr<Texture2D> AmbientLightingMaterial::Texture() const
@@ -39,7 +41,9 @@ namespace Rendering
 
 	void AmbientLightingMaterial::SetTexture(shared_ptr<Texture2D> texture)
 	{
+		assert(texture != nullptr);
 		mTexture = move(texture);
+		Material::SetShaderResource(ShaderStages::PS, mTexture->ShaderResourceView().get());
 	}
 
 	const XMFLOAT4& AmbientLightingMaterial::AmbientColor() const
@@ -62,20 +66,32 @@ namespace Rendering
 	{
 		Material::Initialize();
 
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\AmbientLightingDemoVS.cso"s);
-		mVertexShader->CreateInputLayout<VertexPositionTexture>(mGame->Direct3DDevice());
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\AmbientLightingDemoPS.cso");
+		auto& content = mGame->Content();
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\AmbientLightingDemoVS.cso"s);		
+		SetShader(vertexShader);
+
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\AmbientLightingDemoPS.cso");
+		SetShader(pixelShader);
+
+		auto direct3DDevice = mGame->Direct3DDevice();
+		vertexShader->CreateInputLayout<VertexPositionTexture>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::VS, mVertexCBufferPerObject.get());
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
+		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::PS, mPixelCBufferPerFrame.get());
 
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+
+		AddShaderResource(ShaderStages::PS, mTexture->ShaderResourceView().get());
+		AddSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	void AmbientLightingMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix)

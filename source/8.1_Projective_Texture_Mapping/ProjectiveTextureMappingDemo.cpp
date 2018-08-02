@@ -10,7 +10,9 @@
 #include "ProxyModel.h"
 #include "Frustum.h"
 #include "RenderableFrustum.h"
-#include "ProjectiveTextureMappingMaterial.h"
+#include "DepthMapMaterial.h"
+#include "Model.h"
+#include "Mesh.h"
 
 using namespace std;
 using namespace std::string_literals;
@@ -22,12 +24,28 @@ using namespace DirectX;
 namespace Rendering
 {
 	ProjectiveTextureMappingDemo::ProjectiveTextureMappingDemo(Game& game, const shared_ptr<Camera>& camera) :
-		DrawableGameComponent(game, camera)
+		DrawableGameComponent(game, camera),
+		mDepthMap(game, DepthMapWidth, DepthMapHeight)
 	{
 	}
 
 	ProjectiveTextureMappingDemo::~ProjectiveTextureMappingDemo()
 	{
+	}
+
+	ProjectiveTextureMappingDrawModes ProjectiveTextureMappingDemo::DrawMode() const
+	{
+		return mMaterial->DrawMode();
+	}
+
+	const string& ProjectiveTextureMappingDemo::DrawModeString() const
+	{
+		return mMaterial->DrawModeString();
+	}
+
+	void ProjectiveTextureMappingDemo::SetDrawMode(ProjectiveTextureMappingDrawModes drawMode)
+	{
+		mMaterial->SetDrawMode(drawMode);
 	}
 
 	float ProjectiveTextureMappingDemo::AmbientLightIntensity() const
@@ -62,12 +80,12 @@ namespace Rendering
 
 	const XMFLOAT3& ProjectiveTextureMappingDemo::ProjectorPosition() const
 	{
-		return mPointLight.Position();
+		return mProjector->Position();
 	}
 
 	const XMVECTOR ProjectiveTextureMappingDemo::ProjectorPositionVector() const
 	{
-		return mPointLight.PositionVector();
+		return mProjector->PositionVector();
 	}
 
 	void ProjectiveTextureMappingDemo::SetProjectorPosition(const XMFLOAT3& position)
@@ -77,6 +95,7 @@ namespace Rendering
 		mProxyModel->SetPosition(positionVector);
 		mProjector->SetPosition(positionVector);
 		mRenderableProjectorFrustum->SetPosition(positionVector);
+		mUpdateMaterial = true;
 	}
 
 	void ProjectiveTextureMappingDemo::SetProjectorPosition(FXMVECTOR position)
@@ -85,6 +104,7 @@ namespace Rendering
 		mProxyModel->SetPosition(position);
 		mProjector->SetPosition(position);
 		mRenderableProjectorFrustum->SetPosition(position);
+		mUpdateMaterial = true;
 	}
 
 	const XMFLOAT3& ProjectiveTextureMappingDemo::ProjectorDirection() const
@@ -123,15 +143,17 @@ namespace Rendering
 		auto projectedMap = content.Load<Texture2D>(L"Textures\\ProjectedTexture.png"s);
 		InitializeProjectedTextureScalingMatrix(projectedMap->Width(), projectedMap->Height());
 
-		//TODO: depthMap
-		mMaterial = make_shared<ProjectiveTextureMappingMaterial>(*mGame, colorMap, projectedMap, nullptr);
-		mMaterial->Initialize();
+		mDepthMapMaterial = make_shared<DepthMapMaterial>(*mGame);
+		mDepthMapMaterial->Initialize();
+
+		mMaterial = make_shared<ProjectiveTextureMappingMaterial>(*mGame, colorMap, projectedMap, mDepthMap.OutputTexture());
+		mMaterial->Initialize();		
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
 		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
 		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
 
-		const VertexPositionTextureNormal sourceVertices[]
+		const VertexPositionTextureNormal planeSourceVertices[]
 		{
 			VertexPositionTextureNormal(XMFLOAT4(-0.5f, 0.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 1.0f), Vector3Helper::Backward),
 			VertexPositionTextureNormal(XMFLOAT4(-0.5f, 1.0f, 0.0f, 1.0f), XMFLOAT2(0.0f, 0.0f), Vector3Helper::Backward),
@@ -142,12 +164,20 @@ namespace Rendering
 			VertexPositionTextureNormal(XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f), XMFLOAT2(1.0f, 1.0f), Vector3Helper::Backward),
 		};
 
-		const span<const VertexPositionTextureNormal> vertices{ sourceVertices };
-		mVertexCount = narrow_cast<uint32_t>(vertices.size());
-		VertexPositionTextureNormal::CreateVertexBuffer(mGame->Direct3DDevice(), vertices, not_null<ID3D11Buffer**>(mVertexBuffer.put()));
+		auto direct3DDevice = mGame->Direct3DDevice();
+		const span<const VertexPositionTextureNormal> planeVertices{ planeSourceVertices };
+		mPlaneVertexCount = narrow_cast<uint32_t>(planeVertices.size());
+		VertexPositionTextureNormal::CreateVertexBuffer(direct3DDevice, planeVertices, not_null<ID3D11Buffer**>(mPlaneVertexBuffer.put()));
 		
 		// Scale the plane
 		XMStoreFloat4x4(&mPlaneWorldMatrix, XMMatrixScaling(10.0f, 10.0f, 10.0f));
+
+		// Load teapot model and create its vertex and index buffers
+		const auto model = mGame->Content().Load<Model>(L"Models\\Teapot.obj.bin"s);
+		Mesh* mesh = model->Meshes().at(0).get();
+		VertexPosition::CreateVertexBuffer(direct3DDevice, *mesh, not_null<ID3D11Buffer**>(mTeapotVertexBuffer.put()));
+		mesh->CreateIndexBuffer(*direct3DDevice, not_null<ID3D11Buffer**>(mTeapotIndexBuffer.put()));
+		mTeapotIndexCount = narrow<uint32_t>(mesh->Indices().size());
 	}
 
 	void ProjectiveTextureMappingDemo::Update(const GameTime& gameTime)
@@ -162,18 +192,43 @@ namespace Rendering
 		mProxyModel->Draw(gameTime);
 		mRenderableProjectorFrustum->Draw(gameTime);
 
-		// Draw plane
 		if (mUpdateMaterial)
 		{
 			const XMMATRIX planeWorldMatrix = XMLoadFloat4x4(&mPlaneWorldMatrix);
-			const XMMATRIX wvp = XMMatrixTranspose(planeWorldMatrix * mCamera->ViewProjectionMatrix());
+			const XMMATRIX wvp = planeWorldMatrix * mCamera->ViewProjectionMatrix();
 			XMMATRIX projectiveTextureMatrix = planeWorldMatrix * mProjector->ViewProjectionMatrix() * XMLoadFloat4x4(&mProjectedTextureScalingMatrix);
 
-			mMaterial->UpdateTransforms(wvp, XMMatrixTranspose(planeWorldMatrix), projectiveTextureMatrix);
+			mMaterial->UpdateTransforms(XMMatrixTranspose(wvp), XMMatrixTranspose(planeWorldMatrix), XMMatrixTranspose(projectiveTextureMatrix));
 			mUpdateMaterial = false;
 		}
 
-		mMaterial->Draw(not_null<ID3D11Buffer*>(mVertexBuffer.get()), mVertexCount);
+		if (DrawMode() == ProjectiveTextureMappingDrawModes::WithDepthMap)
+		{
+			DrawWithDepthMap();
+		}
+		else
+		{
+			DrawWithoutDepthMap();
+		}		
+	}
+
+	void ProjectiveTextureMappingDemo::DrawWithDepthMap()
+	{
+		// Depth map pass (render the teapot model only)
+		mDepthMap.Begin();
+		
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->ClearDepthStencilView(mDepthMap.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		mDepthMapMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mTeapotVertexBuffer.get()), not_null<ID3D11Buffer*>(mTeapotIndexBuffer.get()), mTeapotIndexCount);
+
+		mDepthMap.End();
+		mDepthMapMaterial->UnbindShaderResources<1>(ShaderStages::PS);
+	}
+
+	void ProjectiveTextureMappingDemo::DrawWithoutDepthMap()
+	{		
+		mMaterial->Draw(not_null<ID3D11Buffer*>(mPlaneVertexBuffer.get()), mPlaneVertexCount);
 	}
 
 	void ProjectiveTextureMappingDemo::InitializeProjectedTextureScalingMatrix(uint32_t textureWidth, uint32_t textureHeight)

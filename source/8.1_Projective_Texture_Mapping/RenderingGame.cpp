@@ -86,6 +86,7 @@ namespace Rendering
 			AddImGuiTextField("Ambient Light Intensity (+PgUp/-PgDown): "s, mProjectiveTextureMappingDemo->AmbientLightIntensity(), 2);
 			AddImGuiTextField("Point Light Intensity (+Home/-End): "s, mProjectiveTextureMappingDemo->PointLightIntensity(), 2);
 			AddImGuiTextField("Point Light Radius (+B/-N): "s, mProjectiveTextureMappingDemo->PointLightRadius(), 2);
+			AddImGuiTextField("Draw Mode (Space): "s, mProjectiveTextureMappingDemo->DrawModeString());
 
 			ImGui::End();
 		});
@@ -128,6 +129,7 @@ namespace Rendering
 			mSkybox->SetVisible(!mSkybox->Visible());
 		}
 	
+		UpdateDrawMode();
 		UpdateAmbientLightIntensity(gameTime);
 		UpdateProjector(gameTime);
 
@@ -168,6 +170,13 @@ namespace Rendering
 	void RenderingGame::Exit()
 	{
 		PostQuitMessage(0);
+	}
+
+	void RenderingGame::UpdateDrawMode()
+	{
+		using namespace std::placeholders;
+		auto drawMode = mProjectiveTextureMappingDemo->DrawMode();		
+		IncrementEnumValue<ProjectiveTextureMappingDrawModes>(*mKeyboard, Keys::Space, drawMode, bind(&ProjectiveTextureMappingDemo::SetDrawMode, mProjectiveTextureMappingDemo, _1), ProjectiveTextureMappingDrawModes::End);
 	}
 
 	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)

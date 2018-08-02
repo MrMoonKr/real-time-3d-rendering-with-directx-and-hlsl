@@ -35,6 +35,9 @@ namespace Rendering
 		std::shared_ptr<Library::Texture2D> SpecularMap() const;
 		void SetSpecularMap(std::shared_ptr<Library::Texture2D> texture);
 
+		std::shared_ptr<Library::Texture2D> TransparencyMap() const;
+		void SetTransparencyMap(std::shared_ptr<Library::Texture2D> texture);
+
 		const DirectX::XMFLOAT4& AmbientColor() const;
 		void SetAmbientColor(const DirectX::XMFLOAT4& color);
 
@@ -96,6 +99,8 @@ namespace Rendering
 
 		virtual void BeginDraw() override;
 		virtual void EndDraw() override;
+
+		void ResetPixelShaderResources();
 
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerFrame;
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;

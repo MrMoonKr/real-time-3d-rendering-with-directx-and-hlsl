@@ -2,6 +2,7 @@
 
 #include <DirectXColors.h>
 #include <map>
+#include <array>
 #include "Material.h"
 #include "VectorHelper.h"
 #include "MatrixHelper.h"
@@ -27,7 +28,7 @@ namespace Rendering
 		RTTI_DECLARATIONS(ProjectiveTextureMappingMaterial, Library::Material)
 
 	public:
-		ProjectiveTextureMappingMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> colormap, std::shared_ptr<Library::Texture2D> projectedMap, std::shared_ptr<Library::Texture2D> depthMap);
+		ProjectiveTextureMappingMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> colormap, std::shared_ptr<Library::Texture2D> projectedMap, winrt::com_ptr<ID3D11ShaderResourceView> depthMap);
 		ProjectiveTextureMappingMaterial(const ProjectiveTextureMappingMaterial&) = default;
 		ProjectiveTextureMappingMaterial& operator=(const ProjectiveTextureMappingMaterial&) = default;
 		ProjectiveTextureMappingMaterial(ProjectiveTextureMappingMaterial&&) = default;
@@ -38,8 +39,14 @@ namespace Rendering
 		const std::string& DrawModeString() const;
 		void SetDrawMode(ProjectiveTextureMappingDrawModes drawMode);
 
-		winrt::com_ptr<ID3D11SamplerState> SamplerState() const;
-		void SetSamplerState(winrt::com_ptr<ID3D11SamplerState> samplerState);
+		winrt::com_ptr<ID3D11SamplerState> ColorMapSamplerState() const;
+		void SetColorMapSamplerState(winrt::com_ptr<ID3D11SamplerState> samplerState);
+
+		winrt::com_ptr<ID3D11SamplerState> ProjectedMapSamplerState() const;
+		void SetProjectedMapSamplerState(winrt::com_ptr<ID3D11SamplerState> samplerState);
+
+		winrt::com_ptr<ID3D11SamplerState> DepthMapSamplerState() const;
+		void SetDepthMapSamplerState(winrt::com_ptr<ID3D11SamplerState> samplerState);
 
 		std::shared_ptr<Library::Texture2D> ColorMap() const;
 		void SetColorMap(std::shared_ptr<Library::Texture2D> texture);
@@ -47,8 +54,8 @@ namespace Rendering
 		std::shared_ptr<Library::Texture2D> ProjectedMap() const;
 		void SetProjectedMap(std::shared_ptr<Library::Texture2D> texture);
 
-		std::shared_ptr<Library::Texture2D> DepthMap() const;
-		void SetDepthMap(std::shared_ptr<Library::Texture2D> texture);
+		winrt::com_ptr<ID3D11ShaderResourceView> DepthMap() const;
+		void SetDepthMap(winrt::com_ptr<ID3D11ShaderResourceView> depthMap);
 
 		const DirectX::XMFLOAT4& AmbientColor() const;
 		void SetAmbientColor(const DirectX::XMFLOAT4& color);
@@ -83,10 +90,10 @@ namespace Rendering
 
 		struct PixelCBufferPerFrame
 		{
-			float DepthBias;
+			float DepthBias{ 0.005f };
 			DirectX::XMFLOAT3 CameraPosition{ Library::Vector3Helper::Zero };
 			DirectX::XMFLOAT4 AmbientColor{ DirectX::Colors::White };
-			DirectX::XMFLOAT3 LightPosition{ 0.0f, 0.0f, 0.0f };
+			DirectX::XMFLOAT3 LightPosition{ Library::Vector3Helper::Zero };
 			float Padding;
 			DirectX::XMFLOAT4 LightColor{ DirectX::Colors::Black };			
 		};
@@ -113,8 +120,13 @@ namespace Rendering
 		bool mPixelCBufferPerFrameDataDirty{ true };
 		std::shared_ptr<Library::Texture2D> mColorMap;
 		std::shared_ptr<Library::Texture2D> mProjectedMap;
-		std::shared_ptr<Library::Texture2D> mDepthMap;
-		winrt::com_ptr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };
+		winrt::com_ptr<ID3D11ShaderResourceView> mDepthMap;
+		winrt::com_ptr<ID3D11SamplerState> mColorMapSamplerState{ Library::SamplerStates::TrilinearWrap };
+		winrt::com_ptr<ID3D11SamplerState> mProjectedMapSamplerState{ Library::SamplerStates::TrilinerBorder };
+		winrt::com_ptr<ID3D11SamplerState> mDepthMapSamplerState{ Library::SamplerStates::DepthMap };
+		std::array<ID3D11SamplerState*, 3> mPSSamplerStates;
+		std::array<ID3D11ShaderResourceView*, 2> mNoDepthMapPSShadersResources;
+		std::array<ID3D11ShaderResourceView*, 3> mDepthMapPSShadersResources;
 		std::map<ProjectiveTextureMappingShaderClasses, winrt::com_ptr<ID3D11ClassInstance>> mShaderClassInstances;
 		ProjectiveTextureMappingDrawModes mDrawMode;
 	};

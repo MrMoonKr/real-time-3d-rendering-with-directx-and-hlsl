@@ -24,7 +24,6 @@ namespace Library
 		void UpdateTransform(DirectX::CXMMATRIX worldViewProjectionMatrix);
 
 	private:
-		virtual void BeginDraw() override;
 		void SetSurfaceColor(const float* color);
 
 		winrt::com_ptr<ID3D11Buffer> mVSConstantBuffer;

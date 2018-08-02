@@ -265,6 +265,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)RenderableFrustum.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DepthMap.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DepthMapMaterial.cpp">
+      <Filter>Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GeometryShader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
@@ -493,6 +502,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderableFrustum.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DepthMap.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DepthMapMaterial.h">
+      <Filter>Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GeometryShader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ContentManager.inl">
@@ -521,6 +539,9 @@
     </None>
     <None Include="$(MSBuildThisFileDirectory)Game.inl">
       <Filter>Game</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Material.inl">
+      <Filter>Materials</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -31,7 +31,9 @@ namespace Rendering
 
 	void EnvironmentMappingMaterial::SetSamplerState(com_ptr<ID3D11SamplerState> samplerState)
 	{
-		mSamplerState = move(samplerState);
+		assert(samplerState != nullptr);
+		mSamplerState = samplerState;
+		Material::SetSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	shared_ptr<Texture2D> EnvironmentMappingMaterial::ColorMap() const
@@ -41,7 +43,9 @@ namespace Rendering
 
 	void EnvironmentMappingMaterial::SetColorMap(shared_ptr<Texture2D> texture)
 	{
+		assert(texture != nullptr);
 		mColorMap = move(texture);
+		ResetPixelShaderResources();
 	}
 
 	shared_ptr<TextureCube> EnvironmentMappingMaterial::EnvironmentMap() const
@@ -51,7 +55,9 @@ namespace Rendering
 
 	void EnvironmentMappingMaterial::SetEnvironmentMap(shared_ptr<TextureCube> texture)
 	{
+		assert(texture != nullptr);
 		mEnvironmentMap = move(texture);
+		ResetPixelShaderResources();
 	}
 
 	const XMFLOAT4& EnvironmentMappingMaterial::AmbientColor() const
@@ -96,30 +102,43 @@ namespace Rendering
 	{
 		Material::Initialize();
 
+		auto& content = mGame->Content();
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\EnvironmentMappingDemoVS.cso"s);
+		SetShader(vertexShader);
+
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\EnvironmentMappingDemoPS.cso");
+		SetShader(pixelShader);
+
 		auto direct3DDevice = mGame->Direct3DDevice();
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\EnvironmentMappingDemoVS.cso"s);
-		mVertexShader->CreateInputLayout<VertexPositionTextureNormal>(direct3DDevice);
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\EnvironmentMappingDemoPS.cso");
+		vertexShader->CreateInputLayout<VertexPositionTextureNormal>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerFrame);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::VS, mVertexCBufferPerFrame.get());
 
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::VS, mVertexCBufferPerObject.get());
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::PS, mPixelCBufferPerFrame.get());
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::PS, mPixelCBufferPerObject.get());
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerFrame.get(), 0, nullptr, &mVertexCBufferPerFrameData, 0, 0);
 		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
+	
+		ResetPixelShaderResources();
+		AddSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	void EnvironmentMappingMaterial::UpdateCameraPosition(const DirectX::XMFLOAT3& position)
@@ -139,24 +158,17 @@ namespace Rendering
 	{
 		Material::BeginDraw();
 
-		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
 		if (mPixelCBufferPerFrameDataDirty)
 		{
-			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+			mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 			mPixelCBufferPerFrameDataDirty = false;
 		}
+	}
 
-		ID3D11Buffer* const vsConstantBuffers[]{ mVertexCBufferPerFrame.get(), mVertexCBufferPerObject.get() };
-		direct3DDeviceContext->VSSetConstantBuffers(0, narrow_cast<uint32_t>(size(vsConstantBuffers)), vsConstantBuffers);
-
-		ID3D11Buffer* const psConstantBuffers[]{ mPixelCBufferPerFrame.get(), mPixelCBufferPerObject.get() };
-		direct3DDeviceContext->PSSetConstantBuffers(0, narrow_cast<uint32_t>(size(psConstantBuffers)), psConstantBuffers);
-
-		ID3D11ShaderResourceView* const psShaderResources[] = { mColorMap->ShaderResourceView().get(), mEnvironmentMap->ShaderResourceView().get() };
-		direct3DDeviceContext->PSSetShaderResources(0, narrow_cast<uint32_t>(size(psShaderResources)), psShaderResources);
-
-		const auto psSamplers = mSamplerState.get();
-		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
+	void EnvironmentMappingMaterial::ResetPixelShaderResources()
+	{
+		Material::ClearShaderResources(ShaderStages::PS);
+		ID3D11ShaderResourceView* shaderResources[] = { mColorMap->ShaderResourceView().get(), mEnvironmentMap->ShaderResourceView().get() };
+		Material::AddShaderResources(ShaderStages::PS, shaderResources);
 	}
 }

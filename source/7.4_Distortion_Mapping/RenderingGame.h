@@ -3,7 +3,6 @@
 #include <windows.h>
 #include <functional>
 #include "Game.h"
-#include "Bloom.h"
 
 namespace Library
 {

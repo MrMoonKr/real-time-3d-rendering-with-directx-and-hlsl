@@ -22,8 +22,8 @@ namespace Library
 		inline static winrt::com_ptr<ID3D11SamplerState> ShadowMap;
 		inline static winrt::com_ptr<ID3D11SamplerState> PcfShadowMap;
 
-		inline static DirectX::XMVECTORF32 BorderColor{ 0.0f, 0.0f, 0.0f, 1.0f };
-		inline static DirectX::XMVECTORF32 ShadowMapBorderColor{ DirectX::Colors::White };
+		static DirectX::XMVECTORF32 BorderColor;
+		static DirectX::XMVECTORF32 ShadowMapBorderColor;
 
 		static void Initialize(gsl::not_null<ID3D11Device*> direct3DDevice);
 		static void Shutdown();

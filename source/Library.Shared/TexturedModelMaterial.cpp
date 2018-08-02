@@ -28,7 +28,9 @@ namespace Library
 
 	void TexturedModelMaterial::SetSamplerState(com_ptr<ID3D11SamplerState> samplerState)
 	{
+		assert(samplerState != nullptr);
 		mSamplerState = move(samplerState);
+		Material::SetSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	shared_ptr<Texture2D> TexturedModelMaterial::Texture() const
@@ -39,6 +41,11 @@ namespace Library
 	void TexturedModelMaterial::SetTexture(shared_ptr<Texture2D> texture)
 	{
 		mTexture = move(texture);
+		ClearShaderResources(ShaderStages::PS);
+		if (mTexture != nullptr)
+		{
+			AddShaderResource(ShaderStages::PS, mTexture->ShaderResourceView().get());
+		}
 	}
 
 	uint32_t TexturedModelMaterial::VertexSize() const
@@ -50,34 +57,24 @@ namespace Library
 	{
 		Material::Initialize();
 
+		auto& content = mGame->Content();
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\TexturedModelVS.cso");
+		SetShader(vertexShader);
+
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\TexturedModelPS.cso");
+		SetShader(pixelShader);
+
 		auto direct3DDevice = mGame->Direct3DDevice();
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\TexturedModelVS.cso");
-		mVertexShader->CreateInputLayout<VertexPositionTexture>(direct3DDevice);
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\TexturedModelPS.cso");
+		vertexShader->CreateInputLayout<VertexPositionTexture>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(XMFLOAT4X4);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
-	}
+		AddConstantBuffer(ShaderStages::VS, mVertexCBufferPerObject.get());
 
-	void TexturedModelMaterial::BeginDraw()
-	{
-		Material::BeginDraw();
-
-		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-		const auto vsConstantBuffers = mVertexCBufferPerObject.get();
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
-
-		if (mTexture != nullptr)
-		{
-			const auto psShaderResources = mTexture->ShaderResourceView().get();
-			direct3DDeviceContext->PSSetShaderResources(0, 1, &psShaderResources);
-		}
-
-		const auto psSamplers = mSamplerState.get();
-		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
+		AddSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	void TexturedModelMaterial::UpdateTransform(CXMMATRIX worldViewProjectionMatrix)

@@ -72,12 +72,7 @@ namespace Library
     void Bloom::Initialize()
     {
 		mFullScreenQuad.Initialize();
-		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
-		fullScreenQuadMaterial->SetUpdateMaterialCallback([&]
-		{			
-			auto psConstantBuffers = mPixelCBufferPerObject.get();
-			mGame->Direct3DDeviceContext()->PSSetConstantBuffers(0, 1, &psConstantBuffers);
-		});
+		auto fullScreenQuadMaterial = mFullScreenQuad.Material();		
 
 		mGaussianBlur.SetSceneTexture(mRenderTarget.OutputTexture());
 		mGaussianBlur.Initialize();
@@ -87,16 +82,17 @@ namespace Library
 		auto classLinkage = Shader::CreateClassLinkage(direct3DDevice);
 		PixelShaderWithClassLinkageReader pixelShaderContentReader(*mGame, classLinkage);
 		auto pixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\BloomPS.cso", false, pixelShaderContentReader);
-		fullScreenQuadMaterial->SetPixelShader(pixelShader);
+		fullScreenQuadMaterial->SetShader(ShaderStages::PS, pixelShader);
 
 		ThrowIfFailed(classLinkage->CreateClassInstance("ExtractBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Extract].put()));
 		ThrowIfFailed(classLinkage->CreateClassInstance("CompositeBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::Composite].put()));
 		ThrowIfFailed(classLinkage->CreateClassInstance("NoBloomShader", 0, 0, 0, 0, mShaderClassInstances[BloomShaderClass::NoBloom].put()));
-				
+		
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		fullScreenQuadMaterial->AddConstantBuffer(ShaderStages::PS, mPixelCBufferPerObject.get());
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 
 		using namespace std::placeholders;
@@ -120,42 +116,42 @@ namespace Library
 			mGame->Direct3DDeviceContext()->ClearRenderTargetView(mRenderTarget.RenderTargetView().get(), Colors::Purple.f);
 			mGame->Direct3DDeviceContext()->ClearDepthStencilView(mRenderTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 						
-			fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(BloomShaderClass::Extract));
+			fullScreenQuadMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(BloomShaderClass::Extract).get());
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 			
 			mFullScreenQuad.Draw(gameTime);
 			mRenderTarget.End();
-			mGame->UnbindPixelShaderResources<1>();
+			fullScreenQuadMaterial->UnbindShaderResources<1>(ShaderStages::PS);
 
 			// Blur the bright spots in the scene
 			mGaussianBlur.DrawToTexture(gameTime);
 			
 			// Combine the original scene with the blurred bright spot image
-			fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(BloomShaderClass::Composite));
+			fullScreenQuadMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(BloomShaderClass::Composite).get());
 
 			ID3D11ShaderResourceView* psShaderResources[] = { mSceneTexture.get(), mGaussianBlur.OutputTexture() };			
 			const span<ID3D11ShaderResourceView*> textures{ psShaderResources };
 			fullScreenQuadMaterial->SetTextures(textures);
 			mFullScreenQuad.Draw(gameTime);
-			mGame->UnbindPixelShaderResources<2>();
+			fullScreenQuadMaterial->UnbindShaderResources<2>(ShaderStages::PS);
 		}
 		else
 		{
-			fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(BloomShaderClass::NoBloom));
+			fullScreenQuadMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(BloomShaderClass::NoBloom).get());
 			fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 
 			mFullScreenQuad.Draw(gameTime);
-			mGame->UnbindPixelShaderResources<2>();
+			fullScreenQuadMaterial->UnbindShaderResources<2>(ShaderStages::PS);
 		}
 	}
 
 	void Bloom::DrawGlowMap(const GameTime& gameTime)
 	{
 		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
-		fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(BloomShaderClass::Extract));
+		fullScreenQuadMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(BloomShaderClass::Extract).get());
 		fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 		mFullScreenQuad.Draw(gameTime);
-		mGame->UnbindPixelShaderResources<1>();
+		fullScreenQuadMaterial->UnbindShaderResources<1>(ShaderStages::PS);
 	}
 
 	void Bloom::DrawBlurredGlowMap(const GameTime& gameTime)
@@ -166,13 +162,13 @@ namespace Library
 		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mRenderTarget.DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
-		fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(BloomShaderClass::Extract));
+		fullScreenQuadMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(BloomShaderClass::Extract).get());
 		fullScreenQuadMaterial->SetTexture(mSceneTexture.get());
 
 		mFullScreenQuad.Draw(gameTime);
 		mRenderTarget.End();
-		mGame->UnbindPixelShaderResources<1>();
-
+		mFullScreenQuad.Material()->UnbindShaderResources<1>(ShaderStages::PS);
+		
 		// Blur the bright spots in the scene
 		mGaussianBlur.Draw(gameTime);
 	}

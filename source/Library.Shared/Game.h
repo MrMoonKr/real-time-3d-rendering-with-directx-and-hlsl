@@ -80,8 +80,6 @@ namespace Library
 		void UpdateRenderTargetSize();
 		void RegisterDeviceNotify(IDeviceNotify* deviceNotify);
 		
-		template <size_t _Count>
-		void UnbindPixelShaderResources(std::uint32_t startSlot = 0);
 		std::function<void*()> GetWindowCallback() const;
 
 		ContentManager& Content();

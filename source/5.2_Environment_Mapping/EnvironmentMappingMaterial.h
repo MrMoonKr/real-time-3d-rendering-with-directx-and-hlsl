@@ -77,6 +77,8 @@ namespace Rendering
 
 		virtual void BeginDraw() override;
 
+		void ResetPixelShaderResources();
+
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerFrame;
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;
 		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerFrame;

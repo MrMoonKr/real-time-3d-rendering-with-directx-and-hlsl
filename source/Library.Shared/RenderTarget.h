@@ -5,6 +5,7 @@
 #include <stack>
 #include <gsl\gsl>
 #include <vector>
+
 namespace Library
 {
 	class RenderTarget : public RTTI

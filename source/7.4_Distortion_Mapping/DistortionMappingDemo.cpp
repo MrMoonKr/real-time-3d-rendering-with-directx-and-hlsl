@@ -75,7 +75,7 @@ namespace Rendering
 		mFullScreenQuad.Initialize();
 		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
 		auto pixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\DistortionMappingPS.cso");
-		fullScreenQuadMaterial->SetPixelShader(pixelShader);
+		fullScreenQuadMaterial->SetShader(pixelShader);
 
 		auto& content = mGame->Content();
 		mDistortionMaps[DistortionMaps::Glass] = content.Load<Texture2D>(L"Textures\\DistortionMapGlass.png"s);
@@ -85,16 +85,11 @@ namespace Rendering
 		ID3D11ShaderResourceView* shaderResourceViews[] = { mRenderTarget.OutputTexture().get(), mDistortionMaps.at(mActiveDistortionMap)->ShaderResourceView().get() };
 		fullScreenQuadMaterial->SetTextures(shaderResourceViews);
 
-		fullScreenQuadMaterial->SetUpdateMaterialCallback([&]
-		{
-			auto psConstantBuffers = mPixelCBufferPerObject.get();
-			mGame->Direct3DDeviceContext()->PSSetConstantBuffers(0, 1, &psConstantBuffers);
-		});		
-
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(mGame->Direct3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		fullScreenQuadMaterial->AddConstantBuffer(ShaderStages::PS, mPixelCBufferPerObject.get());
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 	}
 
@@ -123,6 +118,6 @@ namespace Rendering
 		direct3DDeviceContext->ClearDepthStencilView(mGame->DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		mFullScreenQuad.Draw(gameTime);
-		mGame->UnbindPixelShaderResources<1>();
+		mFullScreenQuad.Material()->UnbindShaderResources<1>(ShaderStages::PS);
 	}
 }

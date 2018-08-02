@@ -30,15 +30,12 @@ namespace Library
 		std::shared_ptr<Library::Texture2D> Texture() const;
 		void SetTexture(std::shared_ptr<Library::Texture2D> texture);
 
-
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
 		void UpdateTransform(DirectX::CXMMATRIX worldViewProjectionMatrix);
 
 	private:
-		virtual void BeginDraw() override;
-
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;
 		std::shared_ptr<Library::Texture2D> mTexture;
 		winrt::com_ptr<ID3D11SamplerState> mSamplerState{ Library::SamplerStates::TrilinearClamp };

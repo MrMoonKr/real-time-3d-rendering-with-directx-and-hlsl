@@ -3,7 +3,6 @@
 #include <windows.h>
 #include <functional>
 #include "Game.h"
-#include "Bloom.h"
 
 namespace Library
 {
@@ -35,6 +34,7 @@ namespace Rendering
 	private:
 		inline static const DirectX::XMVECTORF32 BackgroundColor{ DirectX::Colors::CornflowerBlue };
 
+		void UpdateDrawMode();
 		void UpdateAmbientLightIntensity(const Library::GameTime& gameTime);
 		void UpdatePointLight(const Library::GameTime& gameTime);
 		void UpdateProjector(const Library::GameTime& gameTime);

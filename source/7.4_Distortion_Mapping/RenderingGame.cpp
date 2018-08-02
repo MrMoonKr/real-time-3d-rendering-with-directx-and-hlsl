@@ -212,16 +212,9 @@ namespace Rendering
 
 	void RenderingGame::UpdateDistortionMapping(const GameTime& gameTime)
 	{
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-		{
-			DistortionMaps activeDistortionMap = DistortionMaps(static_cast<int>(mDistortionMappingDemo->DistortionMap()) + 1);
-			if (activeDistortionMap >= DistortionMaps::End)
-			{
-				activeDistortionMap = DistortionMaps(0);
-			}
-
-			mDistortionMappingDemo->SetDistortionMap(activeDistortionMap);
-		}
+		using namespace std::placeholders;
+		auto distortionMap = mDistortionMappingDemo->DistortionMap();
+		IncrementEnumValue<DistortionMaps>(*mKeyboard, Keys::Space, distortionMap, bind(&DistortionMappingDemo::SetDistortionMap, mDistortionMappingDemo, _1), DistortionMaps::End);
 
 		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 		float displacementScale = mDistortionMappingDemo->DisplacementScale();

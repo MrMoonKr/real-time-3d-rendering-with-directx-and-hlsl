@@ -76,7 +76,7 @@ namespace Rendering
 		auto classLinkage = Shader::CreateClassLinkage(direct3DDevice);
 		PixelShaderWithClassLinkageReader pixelShaderContentReader(*mGame, classLinkage);
 		auto pixelShader = content.Load<PixelShader>(L"Shaders\\DistortionMaskingPS.cso", false, pixelShaderContentReader);
-		fullScreenQuadMaterial->SetPixelShader(pixelShader);
+		fullScreenQuadMaterial->SetShader(pixelShader);
 		
 		ThrowIfFailed(classLinkage->CreateClassInstance("CutoutDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::Cutout].put()));
 		ThrowIfFailed(classLinkage->CreateClassInstance("CompositeDistortionShader", 0, 0, 0, 0, mShaderClassInstances[DistortionShaderClass::Composite].put()));
@@ -84,15 +84,12 @@ namespace Rendering
 
 		mTexturedModelMaterial = make_shared<TexturedModelMaterial>(*mGame);
 		mTexturedModelMaterial->Initialize();
-		mTexturedModelMaterial->SetPixelShader(pixelShader);
-		mTexturedModelMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(DistortionShaderClass::Cutout));
+		mTexturedModelMaterial->SetShader(pixelShader);
+		mTexturedModelMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(DistortionShaderClass::Cutout).get());
 
 		mDistortionMap = content.Load<Texture2D>(L"Textures\\DistortionMapGlass.png"s);
-		mTexturedModelMaterial->SetUpdateMaterialCallback([&]
-		{
-			ID3D11ShaderResourceView* const psShaderResources[] = { nullptr, mDistortionMap->ShaderResourceView().get() };
-			mGame->Direct3DDeviceContext()->PSSetShaderResources(0, narrow_cast<uint32_t>(size(psShaderResources)), psShaderResources);
-		});
+		ID3D11ShaderResourceView* psShaderResources[] = { nullptr, mDistortionMap->ShaderResourceView().get() };
+		mTexturedModelMaterial->AddShaderResources(ShaderStages::PS, psShaderResources);
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
 		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
@@ -105,6 +102,8 @@ namespace Rendering
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mPixelCBufferPerObject.get(), 0, nullptr, &mPixelCBufferPerObjectData, 0, 0);
 
 		XMStoreFloat4x4(&mWorldMatrix, XMMatrixScaling(0.1f, 0.1f, 0.1f));
+
+		fullScreenQuadMaterial->SetAutoUnbindShaderResourcesEnabled(true);
 	}
 
 	void DistortionMaskingDemo::Draw(const GameTime& gameTime)
@@ -138,7 +137,6 @@ namespace Rendering
 		mTexturedModelMaterial->DrawIndexed(not_null<ID3D11Buffer*>(mVertexBuffer.get()), not_null<ID3D11Buffer*>(mIndexBuffer.get()), mIndexCount);
 
 		mCutoutRenderTarget.End();
-		mGame->UnbindPixelShaderResources<2>();
 
 		auto fullScreenQuadMaterial = mFullScreenQuad.Material();
 
@@ -147,13 +145,13 @@ namespace Rendering
 		direct3DDeviceContext->ClearDepthStencilView(mGame->DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		if (mDrawCutoutModeEnabled)
 		{
+			fullScreenQuadMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(DistortionShaderClass::NoDistortion).get());
 			fullScreenQuadMaterial->SetTexture(mCutoutRenderTarget.OutputTexture().get());
 			mFullScreenQuad.Draw(gameTime);
-			mGame->UnbindPixelShaderResources<1>();
 		}
 		else
 		{
-			fullScreenQuadMaterial->SetPixelShaderClassInstance(mShaderClassInstances.at(DistortionShaderClass::Composite));
+			fullScreenQuadMaterial->SetShaderClassInstance(ShaderStages::PS, mShaderClassInstances.at(DistortionShaderClass::Composite).get());
 			ID3D11ShaderResourceView* shaderResourceViews[] = { mSceneRenderTarget.OutputTexture().get(), mCutoutRenderTarget.OutputTexture().get() };
 			fullScreenQuadMaterial->SetTextures(shaderResourceViews);
 			
@@ -164,7 +162,6 @@ namespace Rendering
 			});
 
 			mFullScreenQuad.Draw(gameTime);
-			mGame->UnbindPixelShaderResources<2>();
 		}
 	}
 }

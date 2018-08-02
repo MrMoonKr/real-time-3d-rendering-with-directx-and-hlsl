@@ -13,6 +13,49 @@
 
 namespace Library
 {
+	enum class ShaderStages
+	{
+		IA,
+		VS,
+		HS,
+		DS,
+		GS,
+		SO,
+		RS,
+		PS,
+		OM,
+
+		CS
+	};
+
+	const std::array<ShaderStages, 5> ProgrammableGraphicsShaderStages
+	{
+		ShaderStages::VS,
+		ShaderStages::HS,
+		ShaderStages::DS,
+		ShaderStages::GS,
+		ShaderStages::PS,
+	};
+
+	inline bool ShaderStageIsProgrammable(ShaderStages shaderStage)
+	{
+		static const std::map<ShaderStages, bool> isProgrammableMap
+		{
+			{ShaderStages::IA, false },
+			{ ShaderStages::VS, true },
+			{ ShaderStages::HS, true },
+			{ ShaderStages::DS, true },
+			{ ShaderStages::GS, true },
+			{ ShaderStages::SO, false },
+			{ ShaderStages::RS, false },
+			{ ShaderStages::PS, true },
+			{ ShaderStages::OM, false },
+			{ ShaderStages::CS, true },
+		};
+
+		return isProgrammableMap.at(shaderStage);
+	}
+
 	void CreateIndexBuffer(gsl::not_null<ID3D11Device*> device, const gsl::span<const std::uint16_t>& indices, gsl::not_null<ID3D11Buffer**> indexBuffer);
 	void CreateIndexBuffer(gsl::not_null<ID3D11Device*> device, const gsl::span<const std::uint32_t>& indices, gsl::not_null<ID3D11Buffer**> indexBuffer);
 

@@ -6,6 +6,9 @@ using namespace DirectX;
 
 namespace Library
 {
+	XMVECTORF32 SamplerStates::BorderColor{ DirectX::Colors::White };
+	XMVECTORF32 SamplerStates::ShadowMapBorderColor{ DirectX::Colors::White };
+
 	void SamplerStates::Initialize(gsl::not_null<ID3D11Device*> direct3DDevice)
 	{
 		D3D11_SAMPLER_DESC samplerStateDesc;
@@ -57,7 +60,7 @@ namespace Library
 		samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
-		memcpy(samplerStateDesc.BorderColor, reinterpret_cast<FLOAT*>(&ShadowMapBorderColor), sizeof(FLOAT) * 4);
+		memcpy(samplerStateDesc.BorderColor, ShadowMapBorderColor.f, sizeof(FLOAT) * 4);
 		ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerStateDesc, ShadowMap.put()), "ID3D11Device::CreateSamplerState() failed.");
 
 		samplerStateDesc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
@@ -65,7 +68,7 @@ namespace Library
 		samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
-		memcpy(samplerStateDesc.BorderColor, reinterpret_cast<FLOAT*>(&ShadowMapBorderColor), sizeof(FLOAT) * 4);
+		memcpy(samplerStateDesc.BorderColor, ShadowMapBorderColor.f, sizeof(FLOAT) * 4);
 		ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerStateDesc, PcfShadowMap.put()), "ID3D11Device::CreateSamplerState() failed.");
 	}
 

@@ -33,33 +33,28 @@ namespace Library
 	{
 		Material::Initialize();
 
+		auto& content = mGame->Content();
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\BasicVS.cso");
+		SetShader(vertexShader);
+
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\BasicPS.cso");
+		SetShader(pixelShader);
+
 		auto direct3DDevice = mGame->Direct3DDevice();
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\BasicVS.cso");
-		mVertexShader->CreateInputLayout<VertexPosition>(direct3DDevice);
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\BasicPS.cso");
+		vertexShader->CreateInputLayout<VertexPosition>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(XMFLOAT4X4);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVSConstantBuffer.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::VS, mVSConstantBuffer.get());
 
 		constantBufferDesc.ByteWidth = sizeof(XMFLOAT4);		
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPSConstantBuffer.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::PS, mPSConstantBuffer.get());
 
 		SetSurfaceColor(Colors::White.f);
-	}
-
-	void BasicMaterial::BeginDraw()
-	{
-		Material::BeginDraw();
-
-		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-		const auto vsConstantBuffers = mVSConstantBuffer.get();
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
-
-		const auto psConstantBuffers = mPSConstantBuffer.get();
-		direct3DDeviceContext->PSSetConstantBuffers(0, 1, &psConstantBuffers);
 	}
 
 	void BasicMaterial::UpdateTransform(CXMMATRIX worldViewProjectionMatrix)

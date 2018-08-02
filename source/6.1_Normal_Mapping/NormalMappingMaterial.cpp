@@ -30,7 +30,9 @@ namespace Rendering
 
 	void NormalMappingMaterial::SetSamplerState(com_ptr<ID3D11SamplerState> samplerState)
 	{
-		mSamplerState = move(samplerState);
+		assert(samplerState != nullptr);
+		mSamplerState = samplerState;
+		Material::SetSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	shared_ptr<Texture2D> NormalMappingMaterial::ColorMap() const
@@ -40,7 +42,9 @@ namespace Rendering
 
 	void NormalMappingMaterial::SetColorMap(shared_ptr<Texture2D> texture)
 	{
+		assert(texture != nullptr);
 		mColorMap = move(texture);
+		ResetPixelShaderResources();
 	}
 
 	shared_ptr<Texture2D> NormalMappingMaterial::NormalMap() const
@@ -50,7 +54,9 @@ namespace Rendering
 
 	void NormalMappingMaterial::SetNormalMap(shared_ptr<Texture2D> texture)
 	{
+		assert(texture != nullptr);
 		mNormalMap = move(texture);
+		ResetPixelShaderResources();
 	}
 
 	const XMFLOAT4& NormalMappingMaterial::AmbientColor() const
@@ -95,22 +101,33 @@ namespace Rendering
 	{
 		Material::Initialize();
 
+		auto& content = mGame->Content();
+		auto vertexShader = content.Load<VertexShader>(L"Shaders\\NormalMappingDemoVS.cso"s);
+		SetShader(vertexShader);
+
+		auto pixelShader = content.Load<PixelShader>(L"Shaders\\NormalMappingDemoPS.cso");
+		SetShader(pixelShader);
+
 		auto direct3DDevice = mGame->Direct3DDevice();
-		mVertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\NormalMappingDemoVS.cso"s);
-		mVertexShader->CreateInputLayout<VertexPositionTextureNormalTangent>(direct3DDevice);
-		mPixelShader = mGame->Content().Load<PixelShader>(L"Shaders\\NormalMappingDemoPS.cso");
+		vertexShader->CreateInputLayout<VertexPositionTextureNormalTangent>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
 		D3D11_BUFFER_DESC constantBufferDesc{ 0 };
 		constantBufferDesc.ByteWidth = sizeof(VertexCBufferPerObject);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mVertexCBufferPerObject.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::VS, mVertexCBufferPerObject.get());
 
 		constantBufferDesc.ByteWidth = sizeof(PixelCBufferPerFrame);
 		ThrowIfFailed(direct3DDevice->CreateBuffer(&constantBufferDesc, nullptr, mPixelCBufferPerFrame.put()), "ID3D11Device::CreateBuffer() failed.");
+		AddConstantBuffer(ShaderStages::PS, mPixelCBufferPerFrame.get());
 
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
 		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
+	
+		ResetPixelShaderResources();
+		AddSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
 	void NormalMappingMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
@@ -131,17 +148,12 @@ namespace Rendering
 			direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 			mPixelCBufferPerFrameDataDirty = false;
 		}
+	}
 
-		const auto vsConstantBuffers = mVertexCBufferPerObject.get();
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
-
-		const auto psConstantBuffers = mPixelCBufferPerFrame.get();
-		direct3DDeviceContext->PSSetConstantBuffers(0, 1, &psConstantBuffers);
-
-		ID3D11ShaderResourceView* const psShaderResources[] = { mColorMap->ShaderResourceView().get(), mNormalMap->ShaderResourceView().get() };		
-		direct3DDeviceContext->PSSetShaderResources(0, narrow_cast<uint32_t>(size(psShaderResources)), psShaderResources);
-
-		const auto psSamplers = mSamplerState.get();
-		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
+	void NormalMappingMaterial::ResetPixelShaderResources()
+	{
+		Material::ClearShaderResources(ShaderStages::PS);
+		ID3D11ShaderResourceView* shaderResources[] = { mColorMap->ShaderResourceView().get(), mNormalMap->ShaderResourceView().get() };
+		Material::AddShaderResources(ShaderStages::PS, shaderResources);
 	}
 }

@@ -8,16 +8,18 @@ namespace Library
 	class RTTI
 	{
 	public:
+		using IdType = std::uint64_t;
+
 		virtual ~RTTI() = default;
 
 		virtual std::uint64_t TypeIdInstance() const = 0;
 
-		virtual RTTI* QueryInterface(const std::uint64_t)
+		virtual RTTI* QueryInterface(const IdType)
 		{
 			return nullptr;
 		}
 
-		virtual bool Is(std::uint64_t) const
+		virtual bool Is(IdType) const
 		{
 			return false;
 		}
@@ -47,13 +49,13 @@ namespace Library
 #define RTTI_DECLARATIONS(Type, ParentType)																				 \
 		public:																											 \
 			static std::string TypeName() { return std::string(#Type); }												 \
-			static std::uint64_t TypeIdClass() { return sRunTimeTypeId; }												 \
-			virtual std::uint64_t TypeIdInstance() const override { return Type::TypeIdClass(); }						 \
-			virtual Library::RTTI* QueryInterface(const std::uint64_t id) override										 \
+			static IdType TypeIdClass() { return sRunTimeTypeId; }												 \
+			virtual IdType TypeIdInstance() const override { return Type::TypeIdClass(); }						 \
+			virtual Library::RTTI* QueryInterface(const IdType id) override										 \
             {																											 \
 				return (id == sRunTimeTypeId ? reinterpret_cast<Library::RTTI*>(this) : ParentType::QueryInterface(id)); \
             }																											 \
-			virtual bool Is(std::uint64_t id) const override															 \
+			virtual bool Is(IdType id) const override															 \
 			{																											 \
 				return (id == sRunTimeTypeId ? true : ParentType::Is(id));												 \
 			}																											 \
@@ -62,7 +64,7 @@ namespace Library
 				return (name == TypeName() ? true : ParentType::Is(name));												 \
 			}																											 \
 			private:																									 \
-				static std::uint64_t sRunTimeTypeId;
+				static IdType sRunTimeTypeId;
 
-#define RTTI_DEFINITIONS(Type) std::uint64_t Type::sRunTimeTypeId = reinterpret_cast<std::uint64_t>(&Type::sRunTimeTypeId);
+#define RTTI_DEFINITIONS(Type) RTTI::IdType Type::sRunTimeTypeId = reinterpret_cast<RTTI::IdType>(&Type::sRunTimeTypeId);
 }

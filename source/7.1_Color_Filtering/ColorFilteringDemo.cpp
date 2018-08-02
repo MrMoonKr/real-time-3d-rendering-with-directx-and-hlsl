@@ -48,7 +48,7 @@ namespace Rendering
 	void ColorFilteringDemo::SetActiveColorFilter(ColorFilters colorFilter)
 	{
 		mActiveColorFilter = colorFilter;
-		mFullScreenQuad.Material()->SetPixelShader(mPixelShadersByColorFilter.at(mActiveColorFilter));
+		mFullScreenQuad.Material()->SetShader(mPixelShadersByColorFilter.at(mActiveColorFilter));
 	}
 
 	float ColorFilteringDemo::GenericFilterBrightness() const
@@ -118,6 +118,6 @@ namespace Rendering
 		mGame->Direct3DDeviceContext()->ClearDepthStencilView(mGame->DepthStencilView().get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 		mFullScreenQuad.Draw(gameTime);
-		mGame->UnbindPixelShaderResources<1>();
+		mFullScreenQuad.Material()->UnbindShaderResources<1>(ShaderStages::PS);
 	}
 }

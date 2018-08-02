@@ -9,17 +9,19 @@
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
 #include "PointLight.h"
+#include "DepthMap.h"
+#include "Rectangle.h"
+#include "ProjectiveTextureMappingMaterial.h"
 
 namespace Library
 {
 	class ProxyModel;
 	class RenderableFrustum;
+	class DepthMapMaterial;
 }
 
 namespace Rendering
 {
-	class ProjectiveTextureMappingMaterial;
-
 	class ProjectiveTextureMappingDemo final : public Library::DrawableGameComponent
 	{
 	public:
@@ -29,6 +31,10 @@ namespace Rendering
 		ProjectiveTextureMappingDemo& operator=(const ProjectiveTextureMappingDemo&) = default;		
 		ProjectiveTextureMappingDemo& operator=(ProjectiveTextureMappingDemo&&) = default;
 		~ProjectiveTextureMappingDemo();
+
+		ProjectiveTextureMappingDrawModes DrawMode() const;
+		const std::string& DrawModeString() const;
+		void SetDrawMode(ProjectiveTextureMappingDrawModes drawMode);
 
 		float AmbientLightIntensity() const;
 		void SetAmbientLightIntensity(float intensity);
@@ -52,14 +58,25 @@ namespace Rendering
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
+		inline static const std::uint32_t DepthMapWidth{ 1024 };
+		inline static const std::uint32_t DepthMapHeight{ 1024 };
+		static inline const Library::Rectangle DepthMapDestinationRectangle{ 0, 512, 256, 768 };
+		
 		void InitializeProjectedTextureScalingMatrix(uint32_t textureWidth, uint32_t textureHeight);
+		void DrawWithDepthMap();
+		void DrawWithoutDepthMap();		
 		
 		DirectX::XMFLOAT4X4 mPlaneWorldMatrix{ Library::MatrixHelper::Identity };
 		DirectX::XMFLOAT4X4 mProjectedTextureScalingMatrix{ Library::MatrixHelper::Zero };
 		Library::PointLight mPointLight;
+		Library::DepthMap mDepthMap;
 		std::shared_ptr<ProjectiveTextureMappingMaterial> mMaterial;
-		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
-		std::uint32_t mVertexCount{ 0 };		
+		std::shared_ptr<Library::DepthMapMaterial> mDepthMapMaterial;
+		winrt::com_ptr<ID3D11Buffer> mPlaneVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mTeapotVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mTeapotIndexBuffer;
+		std::uint32_t mPlaneVertexCount{ 0 };		
+		std::uint32_t mTeapotIndexCount{ 0 };
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
 		std::unique_ptr<Library::Camera> mProjector;
 		std::unique_ptr<Library::RenderableFrustum> mRenderableProjectorFrustum;		
