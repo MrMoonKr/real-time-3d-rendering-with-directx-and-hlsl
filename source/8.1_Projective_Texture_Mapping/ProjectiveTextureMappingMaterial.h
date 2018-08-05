@@ -26,6 +26,7 @@ namespace Rendering
 	class ProjectiveTextureMappingMaterial : public Library::Material
 	{
 		RTTI_DECLARATIONS(ProjectiveTextureMappingMaterial, Library::Material)
+		friend class ProjectiveTextureMappingDemo;
 
 	public:
 		ProjectiveTextureMappingMaterial(Library::Game& game, std::shared_ptr<Library::Texture2D> colormap, std::shared_ptr<Library::Texture2D> projectedMap, winrt::com_ptr<ID3D11ShaderResourceView> depthMap);
@@ -109,6 +110,9 @@ namespace Rendering
 		static const std::map<ProjectiveTextureMappingDrawModes, ProjectiveTextureMappingShaderClasses> DrawModeShaderClassMap;
 
 		virtual void BeginDraw() override;
+		virtual void EndDraw() override;
+
+		void UpdateTransforms(const VertexCBufferPerObject& transforms);
 
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerFrame;
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;

@@ -98,7 +98,7 @@ namespace Rendering
 
 		Game::Initialize();
 	
-		camera->SetPosition(0.0f, 2.5f, 20.0f);
+		camera->SetPosition(0.0f, 5.0f, 20.0f);
 		mSkybox->SetVisible(false);
 	}
 
@@ -194,30 +194,53 @@ namespace Rendering
 		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
 
 		// Move projector
-		bool updatePosition = false;
-		auto updatePositionFunc = [&updatePosition](const float&) { updatePosition = true; };
-		const float ProjectorMovementRate = 10.0f * elapsedTime;
-		XMFLOAT3 movementAmount = Vector3Helper::Zero;
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad6, Keys::NumPad4, movementAmount.x, ProjectorMovementRate, updatePositionFunc);
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad9, Keys::NumPad3, movementAmount.y, ProjectorMovementRate, updatePositionFunc);
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad2, Keys::NumPad8, movementAmount.z, ProjectorMovementRate, updatePositionFunc);
-
-		if (updatePosition)
 		{
-			mProjectiveTextureMappingDemo->SetProjectorPosition(mProjectiveTextureMappingDemo->ProjectorPositionVector() + XMLoadFloat3(&movementAmount));
+			bool updatePosition = false;
+			auto updatePositionFunc = [&updatePosition](const float&) { updatePosition = true; };
+			const float ProjectorMovementRate = 10.0f * elapsedTime;
+			XMFLOAT3 movementAmount = Vector3Helper::Zero;
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad6, Keys::NumPad4, movementAmount.x, ProjectorMovementRate, updatePositionFunc);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad9, Keys::NumPad3, movementAmount.y, ProjectorMovementRate, updatePositionFunc);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad2, Keys::NumPad8, movementAmount.z, ProjectorMovementRate, updatePositionFunc);
+
+			if (updatePosition)
+			{
+				mProjectiveTextureMappingDemo->SetProjectorPosition(mProjectiveTextureMappingDemo->ProjectorPositionVector() + XMLoadFloat3(&movementAmount));
+			}
 		}
 
 		// Rotate projector
-		bool updateRotation = false;
-		auto updateRotationFunc = [&updateRotation](const float&) { updateRotation = true; };
-		const float RotationRate = XM_2PI * elapsedTime;		
-		XMFLOAT2 rotationAmount = Vector2Helper::Zero;
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Left, Keys::Right, rotationAmount.x, RotationRate, updateRotationFunc);
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, rotationAmount.y, RotationRate, updateRotationFunc);
-
-		if (updateRotation)
 		{
-			mProjectiveTextureMappingDemo->RotateProjector(rotationAmount);
+			bool updateRotation = false;
+			auto updateRotationFunc = [&updateRotation](const float&) { updateRotation = true; };
+			const float RotationRate = XM_2PI * elapsedTime;
+			XMFLOAT2 rotationAmount = Vector2Helper::Zero;
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Left, Keys::Right, rotationAmount.x, RotationRate, updateRotationFunc);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, rotationAmount.y, RotationRate, updateRotationFunc);
+
+			if (updateRotation)
+			{
+				mProjectiveTextureMappingDemo->RotateProjector(rotationAmount);
+			}
+		}
+
+		// Update point light intensity
+		{
+			float intensity = mProjectiveTextureMappingDemo->PointLightIntensity();
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Home, Keys::End, intensity, elapsedTime, [&](const float& intensity)
+			{
+				mProjectiveTextureMappingDemo->SetPointLightIntensity(intensity);
+			}, 0.0f, 1.0f);
+		}
+		
+		// Update point light radius
+		{
+			const float LightModulationRate = static_cast<float>(numeric_limits<uint8_t>::max()) * elapsedTime;
+			float pointLightRadius = mProjectiveTextureMappingDemo->PointLightRadius();
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::B, Keys::N, pointLightRadius, LightModulationRate, [&](const float& pointLightRadius)
+			{
+				mProjectiveTextureMappingDemo->SetPointLightRadius(pointLightRadius);
+			}, 0.0f);
 		}
 	}
 }

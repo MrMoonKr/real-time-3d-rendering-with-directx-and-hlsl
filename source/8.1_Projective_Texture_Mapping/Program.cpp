@@ -14,9 +14,6 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 #endif
 	ThrowIfFailed(CoInitializeEx(nullptr, COINITBASE_MULTITHREADED), "Error initializing COM.");
 
-	int* a = new int;
-	a;
-
 	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
 
 	const wstring windowClassName = L"RenderingClass";

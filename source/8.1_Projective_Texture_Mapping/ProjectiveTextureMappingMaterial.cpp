@@ -72,6 +72,16 @@ namespace Rendering
 		return mProjectedMapSamplerState;
 	}
 
+	void ProjectiveTextureMappingMaterial::SetProjectedMapSamplerState(com_ptr<ID3D11SamplerState> samplerState)
+	{
+		mProjectedMapSamplerState = move(samplerState);
+	}
+
+	com_ptr<ID3D11SamplerState> ProjectiveTextureMappingMaterial::DepthMapSamplerState() const
+	{
+		return mDepthMapSamplerState;
+	}
+
 	void ProjectiveTextureMappingMaterial::SetDepthMapSamplerState(com_ptr<ID3D11SamplerState> samplerState)
 	{
 		mDepthMapSamplerState = move(samplerState);
@@ -169,6 +179,7 @@ namespace Rendering
 
 		auto direct3DDevice = mGame->Direct3DDevice();
 		vertexShader->CreateInputLayout<VertexPositionTextureNormal>(direct3DDevice);
+		SetInputLayout(vertexShader->InputLayout());
 
 		// Create the projected texture mapping shader with class linkage
 		auto classLinkage = Shader::CreateClassLinkage(direct3DDevice);
@@ -203,9 +214,12 @@ namespace Rendering
 
 		mDepthMapPSShadersResources = { mColorMap->ShaderResourceView().get(), mProjectedMap->ShaderResourceView().get(), mDepthMap.get() };
 		mNoDepthMapPSShadersResources = { mColorMap->ShaderResourceView().get(), mProjectedMap->ShaderResourceView().get() };
-	
-		ID3D11SamplerState* psSamplerStates[] = { mColorMapSamplerState.get(), mProjectedMapSamplerState.get(), mDepthMapSamplerState.get() };
-		AddSamplerStates(ShaderStages::PS, psSamplerStates);
+	}
+
+	void ProjectiveTextureMappingMaterial::UpdateTransforms(const VertexCBufferPerObject& transforms)
+	{
+		mVertexCBufferPerObjectData = transforms;
+		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 	}
 
 	void ProjectiveTextureMappingMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix, CXMMATRIX projectiveTextureMatrix)
@@ -242,5 +256,13 @@ namespace Rendering
 		{
 			direct3DDeviceContext->PSSetShaderResources(0, narrow_cast<uint32_t>(mNoDepthMapPSShadersResources.size()), mNoDepthMapPSShadersResources.data());
 		}
+
+		ID3D11SamplerState* const psSamplerStates[] = { mColorMapSamplerState.get(), mProjectedMapSamplerState.get(), mDepthMapSamplerState.get() };
+		direct3DDeviceContext->PSSetSamplers(0, narrow_cast<uint32_t>(size(psSamplerStates)), psSamplerStates);
+	}
+
+	void ProjectiveTextureMappingMaterial::EndDraw()
+	{
+		UnbindShaderResources<3>(ShaderStages::PS);
 	}
 }

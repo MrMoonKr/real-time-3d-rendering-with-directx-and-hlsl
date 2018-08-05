@@ -4,6 +4,7 @@
 #include "GameException.h"
 #include "VertexDeclarations.h"
 #include "VertexShader.h"
+#include "PixelShader.h"
 
 using namespace std;
 using namespace gsl;
@@ -29,6 +30,7 @@ namespace Library
 
 		auto vertexShader = mGame->Content().Load<VertexShader>(L"Shaders\\DepthMapVS.cso");
 		SetShader(vertexShader);
+		SetShader<PixelShader>(nullptr);
 		
 		auto direct3DDevice = mGame->Direct3DDevice();
 		vertexShader->CreateInputLayout<VertexPosition>(direct3DDevice);

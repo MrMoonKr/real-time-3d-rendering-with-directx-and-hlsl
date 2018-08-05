@@ -12,6 +12,12 @@
 #include "DepthMap.h"
 #include "Rectangle.h"
 #include "ProjectiveTextureMappingMaterial.h"
+#include "RenderStateHelper.h"
+
+namespace DirectX
+{
+	class SpriteBatch;
+}
 
 namespace Library
 {
@@ -60,26 +66,33 @@ namespace Rendering
 	private:
 		inline static const std::uint32_t DepthMapWidth{ 1024 };
 		inline static const std::uint32_t DepthMapHeight{ 1024 };
-		static inline const Library::Rectangle DepthMapDestinationRectangle{ 0, 512, 256, 768 };
-		
-		void InitializeProjectedTextureScalingMatrix(uint32_t textureWidth, uint32_t textureHeight);
+		static inline const RECT DepthMapDestinationRectangle{ 0, 512, 256, 768 };
+				
 		void DrawWithDepthMap();
 		void DrawWithoutDepthMap();		
-		
+		void UpdateTransforms(ProjectiveTextureMappingMaterial::VertexCBufferPerObject& transforms, DirectX::FXMMATRIX worldViewProjectionMatrix, DirectX::CXMMATRIX worldMatrix, DirectX::CXMMATRIX projectiveTextureMatrix);
+		void InitializeProjectedTextureScalingMatrix(uint32_t textureWidth, uint32_t textureHeight);
+
+		ProjectiveTextureMappingMaterial::VertexCBufferPerObject mPlaneTransforms;
+		ProjectiveTextureMappingMaterial::VertexCBufferPerObject mTeapotTransforms;
 		DirectX::XMFLOAT4X4 mPlaneWorldMatrix{ Library::MatrixHelper::Identity };
+		DirectX::XMFLOAT4X4 mTeapotWorldMatrix{ Library::MatrixHelper::Identity };
 		DirectX::XMFLOAT4X4 mProjectedTextureScalingMatrix{ Library::MatrixHelper::Zero };
 		Library::PointLight mPointLight;
 		Library::DepthMap mDepthMap;
+		Library::RenderStateHelper mRenderStateHelper;
 		std::shared_ptr<ProjectiveTextureMappingMaterial> mMaterial;
 		std::shared_ptr<Library::DepthMapMaterial> mDepthMapMaterial;
 		winrt::com_ptr<ID3D11Buffer> mPlaneVertexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mTeapotVertexBuffer;
+		winrt::com_ptr<ID3D11Buffer> mTeapotPositionOnlyVertexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mTeapotIndexBuffer;
 		std::uint32_t mPlaneVertexCount{ 0 };		
 		std::uint32_t mTeapotIndexCount{ 0 };
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
 		std::unique_ptr<Library::Camera> mProjector;
-		std::unique_ptr<Library::RenderableFrustum> mRenderableProjectorFrustum;		
+		std::unique_ptr<Library::RenderableFrustum> mRenderableProjectorFrustum;
+		std::unique_ptr<DirectX::SpriteBatch> mSpriteBatch;
 		bool mUpdateMaterial{ true };
 	};
 }
