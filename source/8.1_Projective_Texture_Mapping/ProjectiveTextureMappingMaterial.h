@@ -113,6 +113,7 @@ namespace Rendering
 		virtual void EndDraw() override;
 
 		void UpdateTransforms(const VertexCBufferPerObject& transforms);
+		void ResetPixelShaderResources();
 
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerFrame;
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;

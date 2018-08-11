@@ -95,6 +95,7 @@ namespace Rendering
 	void ProjectiveTextureMappingMaterial::SetColorMap(shared_ptr<Texture2D> texture)
 	{
 		mColorMap = move(texture);
+		ResetPixelShaderResources();
 	}
 
 	shared_ptr<Texture2D> ProjectiveTextureMappingMaterial::ProjectedMap() const
@@ -105,6 +106,7 @@ namespace Rendering
 	void ProjectiveTextureMappingMaterial::SetProjectedMap(shared_ptr<Texture2D> texture)
 	{
 		mProjectedMap = move(texture);
+		ResetPixelShaderResources();
 	}
 
 	com_ptr<ID3D11ShaderResourceView> ProjectiveTextureMappingMaterial::DepthMap() const
@@ -115,6 +117,7 @@ namespace Rendering
 	void ProjectiveTextureMappingMaterial::SetDepthMap(com_ptr<ID3D11ShaderResourceView> depthMap)
 	{
 		mDepthMap = move(depthMap);
+		ResetPixelShaderResources();
 	}
 
 	const XMFLOAT4& ProjectiveTextureMappingMaterial::AmbientColor() const
@@ -212,8 +215,7 @@ namespace Rendering
 		direct3DDeviceContext->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 		direct3DDeviceContext->UpdateSubresource(mPixelCBufferPerFrame.get(), 0, nullptr, &mPixelCBufferPerFrameData, 0, 0);
 
-		mDepthMapPSShadersResources = { mColorMap->ShaderResourceView().get(), mProjectedMap->ShaderResourceView().get(), mDepthMap.get() };
-		mNoDepthMapPSShadersResources = { mColorMap->ShaderResourceView().get(), mProjectedMap->ShaderResourceView().get() };
+		ResetPixelShaderResources();		
 	}
 
 	void ProjectiveTextureMappingMaterial::UpdateTransforms(const VertexCBufferPerObject& transforms)
@@ -264,5 +266,11 @@ namespace Rendering
 	void ProjectiveTextureMappingMaterial::EndDraw()
 	{
 		UnbindShaderResources<3>(ShaderStages::PS);
+	}
+
+	void ProjectiveTextureMappingMaterial::ResetPixelShaderResources()
+	{
+		mDepthMapPSShadersResources = { mColorMap->ShaderResourceView().get(), mProjectedMap->ShaderResourceView().get(), mDepthMap.get() };
+		mNoDepthMapPSShadersResources = { mColorMap->ShaderResourceView().get(), mProjectedMap->ShaderResourceView().get() };
 	}
 }

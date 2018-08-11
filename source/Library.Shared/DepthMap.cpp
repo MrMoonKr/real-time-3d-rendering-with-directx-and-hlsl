@@ -50,6 +50,21 @@ namespace Library
         mViewport.MaxDepth = 1.0f;
     }
 
+	uint32_t DepthMap::Width() const
+	{
+		return static_cast<uint32_t>(mViewport.Width);
+	}
+
+	uint32_t DepthMap::Height() const
+	{
+		return static_cast<uint32_t>(mViewport.Height);
+	}
+
+	const D3D11_VIEWPORT& DepthMap::Viewport() const
+	{
+		return mViewport;
+	}
+
 	com_ptr<ID3D11ShaderResourceView> DepthMap::OutputTexture() const
 	{
 		return mOutputTexture;

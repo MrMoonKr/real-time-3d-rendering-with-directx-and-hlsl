@@ -48,6 +48,7 @@ namespace Library
 
 	void RenderStateHelper::SaveRasterizerState()
 	{
+		mRasterizerState = nullptr;
 		mGame.Direct3DDeviceContext()->RSGetState(mRasterizerState.put());
 	}
 
@@ -58,6 +59,7 @@ namespace Library
 
 	void RenderStateHelper::SaveBlendState()
 	{
+		mBlendState = nullptr;
 		mGame.Direct3DDeviceContext()->OMGetBlendState(mBlendState.put(), mBlendFactor.data(), &mSampleMask);
 	}
 
@@ -68,6 +70,7 @@ namespace Library
 
 	void RenderStateHelper::SaveDepthStencilState()
 	{
+		mDepthStencilState = nullptr;
 		mGame.Direct3DDeviceContext()->OMGetDepthStencilState(mDepthStencilState.put(), &mStencilRef);
 	}
 
@@ -88,5 +91,12 @@ namespace Library
 		RestoreRasterizerState();
 		RestoreBlendState();
 		RestoreDepthStencilState();
+	}
+
+	void RenderStateHelper::ClearAll()
+	{
+		mRasterizerState = nullptr;
+		mBlendState = nullptr;
+		mDepthStencilState = nullptr;
 	}
 }

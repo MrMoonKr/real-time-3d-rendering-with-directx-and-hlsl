@@ -19,6 +19,10 @@ namespace Library
 		DepthMap& operator=(DepthMap&&) = default;
 		~DepthMap() = default;
 
+		std::uint32_t Width() const;
+		std::uint32_t Height() const;
+		const D3D11_VIEWPORT& Viewport() const;
+
 		winrt::com_ptr<ID3D11ShaderResourceView> OutputTexture() const;
 		winrt::com_ptr<ID3D11DepthStencilView> DepthStencilView() const;
 	

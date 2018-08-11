@@ -44,6 +44,7 @@ namespace Library
 
 		void SaveAll();
 		void RestoreAll() const;
+		void ClearAll();
 
 	private:
 		Game& mGame;
