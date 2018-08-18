@@ -38,8 +38,8 @@ namespace Library
 		ModelMaterial(Model& model, ModelMaterialData&& modelMaterialData);
 		ModelMaterial(const ModelMaterial&) = default;
 		ModelMaterial(ModelMaterial&&) = default;
-		ModelMaterial& operator=(const ModelMaterial& rhs) = default;
-		ModelMaterial& operator=(ModelMaterial&& rhs) = default;
+		ModelMaterial& operator=(const ModelMaterial&) = default;
+		ModelMaterial& operator=(ModelMaterial&&) = default;
 		~ModelMaterial() = default;
 
         Model& GetModel();

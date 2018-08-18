@@ -22,7 +22,7 @@ namespace Library
 		ThrowIfFailed(device->CreateBuffer(&vertexBufferDesc, &vertexSubResourceData, vertexBuffer), "ID3D11Device::CreateBuffer() failed.");
 	}
 
-	void VertexPosition::CreateVertexBuffer(not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer)
+	void VertexPosition::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer)
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 
@@ -38,7 +38,7 @@ namespace Library
 		VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
 	}
 
-	void VertexPositionColor::CreateVertexBuffer(not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer)
+	void VertexPositionColor::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer)
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 
@@ -59,7 +59,7 @@ namespace Library
 		VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
 	}
 
-	void VertexPositionTexture::CreateVertexBuffer(not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer)
+	void VertexPositionTexture::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer)
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const vector<XMFLOAT3>& textureCoordinates = mesh.TextureCoordinates().at(0);
@@ -77,7 +77,7 @@ namespace Library
 		VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
 	}
 
-	void VertexPositionNormal::CreateVertexBuffer(not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer)
+	void VertexPositionNormal::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer)
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const vector<XMFLOAT3>& sourceNormals = mesh.Normals();
@@ -95,7 +95,7 @@ namespace Library
 		VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
 	}
 
-	void VertexPositionTextureNormal::CreateVertexBuffer(not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer)
+	void VertexPositionTextureNormal::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer)
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
@@ -116,7 +116,7 @@ namespace Library
 		VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
 	}
 
-	void VertexPositionTextureNormalTangent::CreateVertexBuffer(not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer)
+	void VertexPositionTextureNormalTangent::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer)
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
@@ -140,7 +140,7 @@ namespace Library
 		VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
 	}
 
-	/*void VertexSkinnedPositionTextureNormal::CreateVertexBuffer(not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer)
+	void VertexSkinnedPositionTextureNormal::CreateVertexBuffer(not_null<ID3D11Device*> device, const Mesh& mesh, not_null<ID3D11Buffer**> vertexBuffer)
 	{
 		const vector<XMFLOAT3>& sourceVertices = mesh.Vertices();
 		const auto& sourceUVs = mesh.TextureCoordinates().at(0);
@@ -150,7 +150,7 @@ namespace Library
 		const auto& boneWeights = mesh.BoneWeights();
 		assert(boneWeights.size() == sourceVertices.size());
 
-		vector<VertexPositionTextureNormal> vertices;
+		vector<VertexSkinnedPositionTextureNormal> vertices;
 		vertices.reserve(sourceVertices.size());
 		for (size_t i = 0; i < sourceVertices.size(); i++)
 		{
@@ -174,5 +174,5 @@ namespace Library
 		}
 
 		VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
-	}*/
+	}
 }

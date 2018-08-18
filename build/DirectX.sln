@@ -73,6 +73,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "8_1_Projective_Texture_Mapp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "8_2_Shadow_Mapping", "..\source\8.2_Shadow_Mapping\8_2_Shadow_Mapping.vcxproj", "{B9BD9491-02EE-40E8-83DD-7A2B9627A60C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "9_1_Animation", "..\source\9.1_Animation\9_1_Animation.vcxproj", "{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -325,6 +327,14 @@ Global
 		{B9BD9491-02EE-40E8-83DD-7A2B9627A60C}.Release|Win32.Build.0 = Release|Win32
 		{B9BD9491-02EE-40E8-83DD-7A2B9627A60C}.Release|x64.ActiveCfg = Release|x64
 		{B9BD9491-02EE-40E8-83DD-7A2B9627A60C}.Release|x64.Build.0 = Release|x64
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Debug|Win32.Build.0 = Debug|Win32
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Debug|x64.ActiveCfg = Debug|x64
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Debug|x64.Build.0 = Debug|x64
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Release|Win32.ActiveCfg = Release|Win32
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Release|Win32.Build.0 = Release|Win32
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Release|x64.ActiveCfg = Release|x64
+		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

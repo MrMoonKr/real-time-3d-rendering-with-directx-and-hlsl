@@ -3,6 +3,7 @@
 #include "StreamHelper.h"
 
 using namespace std;
+using namespace gsl;
 using namespace Library;
 
 ModelMaterial::ModelMaterial(Model& model, InputStreamHelper& streamHelper) :
@@ -35,11 +36,11 @@ void ModelMaterial::Save(OutputStreamHelper& streamHelper) const
 {
 	streamHelper << mData.Name;
 
-	streamHelper << static_cast<uint32_t>(mData.Textures.size());
+	streamHelper << narrow_cast<uint32_t>(mData.Textures.size());
 	for (const auto& texturePair : mData.Textures)
 	{
-		streamHelper << static_cast<int32_t>(texturePair.first);
-		streamHelper << static_cast<uint32_t>(texturePair.second.size());
+		streamHelper << narrow_cast<int32_t>(texturePair.first);
+		streamHelper << narrow_cast<uint32_t>(texturePair.second.size());
 		for (const auto& texture : texturePair.second)
 		{
 			streamHelper << texture;

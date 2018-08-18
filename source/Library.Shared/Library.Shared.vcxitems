@@ -14,9 +14,13 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AnimationClip.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)AnimationPlayer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BasicMaterial.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BlendStates.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bloom.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bone.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BoneAnimation.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Camera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColorHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ContentManager.cpp" />
@@ -51,6 +55,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)JsonObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)JsonObjectReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)KeyboardComponent.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Keyframe.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Light.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Material.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MatrixHelper.cpp" />
@@ -76,6 +81,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)RenderStateHelper.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)RenderTarget.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SamplerStates.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SceneNode.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ServiceContainer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Shader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Skybox.cpp" />
@@ -99,9 +105,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)VertexShaderReader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)AnimationClip.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)AnimationPlayer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BasicMaterial.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BlendStates.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Bloom.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bone.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BoneAnimation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ColorHelper.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ContentManager.h" />
@@ -134,6 +144,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonObjectReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KeyboardComponent.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Keyframe.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Light.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Material.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MatrixHelper.h" />
@@ -158,6 +169,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)RenderTarget.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)RTTI.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SamplerStates.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SceneNode.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ServiceContainer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Shader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Skybox.h" />

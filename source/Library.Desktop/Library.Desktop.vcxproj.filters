@@ -16,6 +16,9 @@
     <Filter Include="Content\Fonts">
       <UniqueIdentifier>{51588a5f-d4de-4eb8-b5c0-03896918dad5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Content\Models">
+      <UniqueIdentifier>{601c3bd1-08c3-4ed8-8ee6-25f188d29191}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\Shaders\BasicPS.hlsl">
@@ -52,6 +55,9 @@
   <ItemGroup>
     <None Include="Content\Fonts\Arial_14_Regular.spritefont">
       <Filter>Content\Fonts</Filter>
+    </None>
+    <None Include="Content\Models\Sphere.obj.bin">
+      <Filter>Content\Models</Filter>
     </None>
   </ItemGroup>
 </Project>

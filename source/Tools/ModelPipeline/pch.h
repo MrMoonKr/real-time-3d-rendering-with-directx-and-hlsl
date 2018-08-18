@@ -21,6 +21,9 @@
 #endif
 #include <winrt\Windows.Foundation.h>
 
+// Guidelines Support Library
+#include <gsl\gsl>
+
 // DirectX
 #include <DirectXMath.h>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include "Model.h"
+#include <memory>
 
 struct aiNode;
 
@@ -19,5 +19,8 @@ namespace ModelPipeline
 		ModelProcessor() = delete;
 
 		static Library::Model LoadModel(const std::string& filename, bool flipUVs = false);
+
+	private:
+		static std::shared_ptr<Library::SceneNode> BuildSkeleton(Library::ModelData& modelData, aiNode& node, const std::shared_ptr<Library::SceneNode>& parentSceneNode);
     };
 }

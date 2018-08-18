@@ -1,11 +1,8 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <cstdint>
 #include <gsl\gsl>
-#include <DirectXMath.h>
 #include <d3d11.h>
+#include "Bone.h"
 
 namespace Library
 {
@@ -27,6 +24,7 @@ namespace Library
 		std::vector<std::vector<DirectX::XMFLOAT4>> VertexColors;
 		std::uint32_t FaceCount{ 0 };
 		std::vector<std::uint32_t> Indices;
+		std::vector<BoneVertexWeights> BoneWeights;
 	};
 
     class Mesh final
@@ -52,6 +50,7 @@ namespace Library
 		const std::vector<std::vector<DirectX::XMFLOAT4>>& VertexColors() const;
 		std::uint32_t FaceCount() const;
 		const std::vector<std::uint32_t>& Indices() const;
+		const std::vector<BoneVertexWeights>& BoneWeights() const;
 
         void CreateIndexBuffer(ID3D11Device& device, gsl::not_null<ID3D11Buffer**> indexBuffer);
 		void Save(OutputStreamHelper& streamHelper) const;

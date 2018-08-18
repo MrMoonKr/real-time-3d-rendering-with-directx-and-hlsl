@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationClipProcessor.cpp" />
+    <ClCompile Include="BoneAnimationProcessor.cpp" />
     <ClCompile Include="MeshProcessor.cpp" />
     <ClCompile Include="ModelMaterialProcessor.cpp" />
     <ClCompile Include="ModelProcessor.cpp" />
     <ClCompile Include="Program.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationClipProcessor.h" />
+    <ClInclude Include="BoneAnimationProcessor.h" />
     <ClInclude Include="MeshProcessor.h" />
     <ClInclude Include="ModelMaterialProcessor.h" />
     <ClInclude Include="ModelProcessor.h" />

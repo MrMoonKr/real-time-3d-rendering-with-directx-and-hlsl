@@ -219,6 +219,7 @@ IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Con
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Models\nickzucc_blogspot_male_fleshbust_L2_MID.OBJ.bin" />
+    <None Include="Content\Models\Sphere.obj.bin" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Library.Desktop\Library.Desktop.vcxproj">
