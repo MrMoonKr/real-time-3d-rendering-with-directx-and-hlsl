@@ -29,6 +29,7 @@
     <None Include="Content\Models\DirectionalLightProxy.obj.bin">
       <Filter>Content\Models</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\Shaders\NormalMappingDemoPS.hlsl">

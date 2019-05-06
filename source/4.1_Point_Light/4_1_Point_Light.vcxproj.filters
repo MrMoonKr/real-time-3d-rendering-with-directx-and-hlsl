@@ -32,6 +32,7 @@
     <None Include="Content\Models\PointLightProxy.obj.bin">
       <Filter>Content\Models</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\Shaders\PointLightDemoPS.hlsl">

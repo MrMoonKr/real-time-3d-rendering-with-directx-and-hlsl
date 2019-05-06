@@ -59,5 +59,6 @@
     <None Include="Content\Models\Sphere.obj.bin">
       <Filter>Content\Models</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

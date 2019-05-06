@@ -46,7 +46,7 @@ namespace ModelPipeline
                         textures.push_back(path.C_Str());
                     }
                 }
-				modelMaterialData.Textures.emplace(textureType, textures);
+				modelMaterialData.Textures.emplace(textureType, move(textures));
             }
         }
 

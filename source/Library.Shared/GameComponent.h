@@ -14,7 +14,7 @@ namespace Library
 
 	public:
 		GameComponent() = default;
-		GameComponent(Game& game);
+		explicit GameComponent(Game& game);
 		GameComponent(const GameComponent&) = default;
 		GameComponent& operator=(const GameComponent&) = default;
 		GameComponent(GameComponent&&) = default;

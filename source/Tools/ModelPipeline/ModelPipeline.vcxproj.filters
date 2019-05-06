@@ -15,4 +15,7 @@
     <ClInclude Include="BoneAnimationProcessor.h" />
     <ClInclude Include="AnimationClipProcessor.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

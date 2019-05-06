@@ -30,6 +30,7 @@
     <None Include="Content\Models\Sphere.obj.bin">
       <Filter>Content\Models</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\Textures\Maskonaive2_1024.dds">
