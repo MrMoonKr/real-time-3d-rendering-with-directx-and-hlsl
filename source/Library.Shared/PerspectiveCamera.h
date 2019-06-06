@@ -4,8 +4,6 @@
 
 namespace Library
 {
-    class GameTime;
-
     class PerspectiveCamera : public Camera
     {
 		RTTI_DECLARATIONS(PerspectiveCamera, Camera)
