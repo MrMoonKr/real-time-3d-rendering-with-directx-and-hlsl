@@ -14,8 +14,6 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 #endif
 	ThrowIfFailed(CoInitializeEx(nullptr, COINITBASE_MULTITHREADED), "Error initializing COM.");
 
-	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
-
 	const wstring windowClassName = L"RenderingClass";
 	const wstring windowTitle = L"3.3 - Specular Highlights";
 

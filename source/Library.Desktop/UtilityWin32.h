@@ -17,11 +17,6 @@ namespace Library
 		static LRESULT WINAPI WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
 		static POINT CenterWindow(const SIZE& windowSize);
 
-		static std::string CurrentDirectory();
-		static std::wstring ExecutableDirectory();
-		static void PathJoin(std::wstring& dest, const std::wstring& sourceDirectory, const std::wstring& sourceFile);
-		static void GetPathExtension(const std::wstring& source, std::wstring& dest);
-
 		static const std::vector<std::shared_ptr<WndProcHandler>>& WndProcHandlers();
 		static void AddWndProcHandler(std::shared_ptr<WndProcHandler> handler);
 		static void RemoveWndProcHandler(std::shared_ptr<WndProcHandler> handler);

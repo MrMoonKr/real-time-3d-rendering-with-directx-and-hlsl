@@ -91,37 +91,6 @@ namespace Library
 		return DefWindowProc(windowHandle, message, wParam, lParam);
 	}
 
-	string UtilityWin32::CurrentDirectory()
-	{
-		WCHAR buffer[MAX_PATH];
-		GetCurrentDirectory(MAX_PATH, buffer);
-		wstring currentDirectoryW(buffer);
-
-		return string(currentDirectoryW.begin(), currentDirectoryW.end());
-	}
-
-	wstring UtilityWin32::ExecutableDirectory()
-	{
-		WCHAR buffer[MAX_PATH];
-		GetModuleFileName(nullptr, buffer, MAX_PATH);
-		PathRemoveFileSpec(buffer);
-
-		return wstring(buffer);
-	}
-
-	void UtilityWin32::PathJoin(wstring& dest, const wstring& sourceDirectory, const wstring& sourceFile)
-	{
-		WCHAR buffer[MAX_PATH];
-
-		PathCombine(buffer, sourceDirectory.c_str(), sourceFile.c_str());
-		dest = buffer;
-	}
-
-	void UtilityWin32::GetPathExtension(const wstring& source, wstring& dest)
-	{
-		dest = PathFindExtension(source.c_str());
-	}
-
 	const vector<shared_ptr<UtilityWin32::WndProcHandler>>& UtilityWin32::WndProcHandlers()
 	{
 		return sWndProcHandlers;

@@ -16,8 +16,6 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 
 	ThrowIfFailed(CoInitializeEx(nullptr, COINITBASE_MULTITHREADED), "Error initializing COM.");
 
-	SetCurrentDirectory(UtilityWin32::ExecutableDirectory().c_str());
-
 	const wstring windowClassName = L"RenderingClass"s;
 	const wstring windowTitle = L"1.2 - Win32 Startup Framework"s;
 
