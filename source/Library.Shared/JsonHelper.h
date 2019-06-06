@@ -2,7 +2,7 @@
 
 #include <DirectXMath.h>
 #include "VectorHelper.h"
-#include <json\json.h>
+#include <json/json.h>
 
 namespace Json
 {
