@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-
 #include <winrt\Windows.Foundation.h>
 #include "Material.h"
 #include "SamplerStates.h"

@@ -1,18 +1,14 @@
 #pragma once
 
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include <map>
+#include <gsl\gsl>
 #include "DrawableGameComponent.h"
 #include "GaussianBlur.h"
 #include "FullScreenRenderTarget.h"
 #include "FullScreenQuad.h"
 #include <winrt\Windows.Foundation.h>
-#include <d3d11.h>
-#include <DirectXMath.h>
-#include <map>
-#include <gsl\gsl>
 
 namespace Library
 {

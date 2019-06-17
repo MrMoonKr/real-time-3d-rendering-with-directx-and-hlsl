@@ -176,6 +176,12 @@ namespace Rendering
 		AddSamplerState(ShaderStages::PS, mSamplerState.get());
 	}
 
+	void PointLightMaterial::UpdateCameraPosition(const XMFLOAT3& position)
+	{
+		mPixelCBufferPerFrameData.CameraPosition = position;
+		mPixelCBufferPerFrameDataDirty = true;
+	}
+
 	void PointLightMaterial::UpdateTransforms(FXMMATRIX worldViewProjectionMatrix, CXMMATRIX worldMatrix)
 	{
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, worldViewProjectionMatrix);

@@ -55,6 +55,7 @@ namespace Rendering
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
+		void UpdateCameraPosition(const DirectX::XMFLOAT3& position);
 		void UpdateTransforms(DirectX::FXMMATRIX worldViewProjectionMatrix, DirectX::CXMMATRIX worldMatrix);
 		
 	private:

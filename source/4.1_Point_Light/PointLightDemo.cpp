@@ -134,13 +134,21 @@ namespace Rendering
 		mMaterial->Initialize();
 	
 		mProxyModel = make_unique<ProxyModel>(*mGame, mCamera, "Models\\PointLightProxy.obj.bin"s, 0.5f);
-		mProxyModel->Initialize();		
+		mProxyModel->Initialize();
 
 		SetLightPosition(XMFLOAT3(1.0f, 0.0, 8.0f));
 
 		auto updateMaterialFunc = [this]() { mUpdateMaterial = true; };
 		mCamera->AddViewMatrixUpdatedCallback(updateMaterialFunc);
 		mCamera->AddProjectionMatrixUpdatedCallback(updateMaterialFunc);
+
+		auto firstPersonCamera = mCamera->As<FirstPersonCamera>();
+		if (firstPersonCamera != nullptr)
+		{
+			firstPersonCamera->AddPositionUpdatedCallback([this]() {
+				mMaterial->UpdateCameraPosition(mCamera->Position());
+			});
+		}
 	}
 
 	void PointLightDemo::Update(const GameTime& gameTime)
