@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	current_path(UtilityWin32::ExecutableDirectory());
 
 	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"8.1 - Projective Texture Mapping";
+	const wstring windowTitle = L"8.2 - Shadow Mapping";
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;
