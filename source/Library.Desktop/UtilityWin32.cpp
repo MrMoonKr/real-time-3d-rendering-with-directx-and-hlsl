@@ -6,6 +6,7 @@
 #include <algorithm>
 
 using namespace std;
+using namespace std::filesystem;
 
 namespace Library
 {
@@ -45,6 +46,14 @@ namespace Library
 		center.y = (screenHeight - windowSize.cy) / 2;
 
 		return center;
+	}
+
+	path UtilityWin32::ExecutableDirectory()
+	{
+		int argCount;
+		LPWSTR* args = CommandLineToArgvW(GetCommandLine(), &argCount);
+		assert(args != nullptr);
+		return path(args[0]).parent_path();
 	}
 
 	LRESULT WINAPI UtilityWin32::WndProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)

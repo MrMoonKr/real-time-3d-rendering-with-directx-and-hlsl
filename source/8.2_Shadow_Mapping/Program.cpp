@@ -14,6 +14,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 #endif
 	ThrowIfFailed(CoInitializeEx(nullptr, COINITBASE_MULTITHREADED), "Error initializing COM.");
 
+	current_path(UtilityWin32::ExecutableDirectory());
+
 	const wstring windowClassName = L"RenderingClass";
 	const wstring windowTitle = L"8.1 - Projective Texture Mapping";
 
