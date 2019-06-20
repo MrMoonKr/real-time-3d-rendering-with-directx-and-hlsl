@@ -22,8 +22,6 @@ using namespace std;
 using namespace DirectX;
 using namespace Library;
 
-IMGUI_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 namespace Rendering
 {
 	RenderingGame::RenderingGame(function<void*()> getWindowCallback, function<void(SIZE&)> getRenderTargetSizeCallback) :

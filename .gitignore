@@ -17,3 +17,10 @@ content/Models/Sphere.obj.bin
 content/Fonts/Arial_14_Regular.spritefont
 build/obj/
 build/bin/
+content/Shaders/TexturedQuadPassThroughVS.cso
+content/Shaders/TexturedModelVS.cso
+content/Shaders/TexturedModelPS.cso
+content/Shaders/DepthMapVS.hlsl
+content/Shaders/DepthMapVS.cso
+content/Shaders/BloomPS.cso
+content/Shaders/GaussianBlurPS.cso
