@@ -27,6 +27,7 @@ namespace Library
 		static void GetUp(DirectX::CXMMATRIX matrix, DirectX::XMFLOAT3 &vector);
 		static void GetRight(DirectX::CXMMATRIX matrix, DirectX::XMFLOAT3 &vector);
 		static void GetTranslation(DirectX::CXMMATRIX matrix, DirectX::XMFLOAT3 &vector);
+		static void GetTranslation(const DirectX::XMFLOAT4X4& matrix, DirectX::XMFLOAT3 &vector);
 
 		static void SetForward(DirectX::XMMATRIX& matrix, DirectX::XMFLOAT3 &forward);
 		static void SetUp(DirectX::XMMATRIX& matrix, DirectX::XMFLOAT3 &up);

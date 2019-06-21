@@ -172,8 +172,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>mkdir "$(SolutionDir)..\content"
+
+IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
+xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>
     <FxCompile>
       <EntryPointName>
@@ -187,10 +189,8 @@
       </AdditionalOptions>
     </FxCompile>
     <PreBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
-IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
-xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
@@ -209,8 +209,10 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>mkdir "$(SolutionDir)..\content"
+
+IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
+xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>
     <FxCompile>
       <EntryPointName>
@@ -224,10 +226,8 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       </AdditionalOptions>
     </FxCompile>
     <PreBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
-IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
-xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
@@ -249,8 +249,10 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>mkdir "$(SolutionDir)..\content"
+
+IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
+xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>
     <FxCompile>
       <EntryPointName>
@@ -264,10 +266,8 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       </AdditionalOptions>
     </FxCompile>
     <PreBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
-IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
-xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>
@@ -289,8 +289,10 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>mkdir "$(SolutionDir)..\content"
+
+IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
+xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>
     <FxCompile>
       <EntryPointName>
@@ -304,10 +306,8 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       </AdditionalOptions>
     </FxCompile>
     <PreBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
-IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
-xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
       <TreatLibWarningAsErrors>true</TreatLibWarningAsErrors>

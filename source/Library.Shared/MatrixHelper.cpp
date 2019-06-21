@@ -45,6 +45,13 @@ namespace Library
         vector.z = m4.z;
 	}
 
+	void MatrixHelper::GetTranslation(const XMFLOAT4X4& matrix, XMFLOAT3& vector)
+	{
+		vector.x = matrix._41;
+		vector.y = matrix._42;
+		vector.z = matrix._43;
+	}
+
 	void MatrixHelper::SetForward(XMMATRIX& matrix, XMFLOAT3 &forward)
 	{
 		XMFLOAT4 m3;

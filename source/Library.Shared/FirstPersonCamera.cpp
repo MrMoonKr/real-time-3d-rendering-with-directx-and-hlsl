@@ -93,8 +93,8 @@ namespace Library
 	void FirstPersonCamera::Initialize()
 	{
 		mGamePad = reinterpret_cast<GamePadComponent*>(mGame->Services().GetService(GamePadComponent::TypeIdClass()));
-		mKeyboard = (KeyboardComponent*)mGame->Services().GetService(KeyboardComponent::TypeIdClass());
-		mMouse = (MouseComponent*)mGame->Services().GetService(MouseComponent::TypeIdClass());
+		mKeyboard = reinterpret_cast<KeyboardComponent*>(mGame->Services().GetService(KeyboardComponent::TypeIdClass()));
+		mMouse = reinterpret_cast<MouseComponent*>(mGame->Services().GetService(MouseComponent::TypeIdClass()));
 
 		Camera::Initialize();
 	}
