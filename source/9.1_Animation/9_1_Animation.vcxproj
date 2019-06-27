@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Models\DirectionalLightProxy.obj.bin" />
+    <None Include="Content\Models\RunningSoldier.dae.bin" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,9 @@
-#define MaxBones 60
-
-cbuffer CBufferPerFrame
-{
-	float3 LightDirection;
-}
+static const unsigned int MaxBones = 60;
 
 cbuffer CBufferPerObject
 {
-	float4x4 WorldViewProjection : WORLDVIEWPROJECTION;
-	float4x4 World : WORLD;
+	float4x4 WorldViewProjection;
+	float4x4 World;
 }
 
 cbuffer CBufferSkinning
@@ -19,7 +14,7 @@ cbuffer CBufferSkinning
 struct VS_INPUT
 {
 	float4 ObjectPosition: POSITION;
-	float2 TextureCoordinate : TEXCOORD;
+	float2 TextureCoordinates : TEXCOORD;
 	float3 Normal : NORMAL;
 	uint4 BoneIndices : BONEINDICES;
 	float4 BoneWeights : BONEWEIGHTS;
@@ -28,9 +23,8 @@ struct VS_INPUT
 struct VS_OUTPUT
 {
 	float4 Position: SV_Position;
-	float2 TextureCoordinate : TEXCOORD;
+	float2 TextureCoordinates : TEXCOORD;
 	float3 Normal : NORMAL;
-	float3 LightDirection : LIGHTDIR;
 };
 
 VS_OUTPUT main(VS_INPUT IN)
@@ -45,12 +39,10 @@ VS_OUTPUT main(VS_INPUT IN)
 
 	float4 position = mul(IN.ObjectPosition, skinTransform);
 	OUT.Position = mul(position, WorldViewProjection);
-	OUT.TextureCoordinate = IN.TextureCoordinate;
+	OUT.TextureCoordinates = IN.TextureCoordinates;
 
 	float4 normal = mul(float4(IN.Normal, 0), skinTransform);
 	OUT.Normal = normalize(mul(normal, World).xyz);
-
-	OUT.LightDirection = normalize(-LightDirection.xyz);
 
 	return OUT;
 }

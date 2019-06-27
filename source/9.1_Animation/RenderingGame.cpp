@@ -92,7 +92,11 @@ namespace Rendering
 			}
 			else
 			{
-				AddImGuiTextField("Current Keyframe: "s, mAnimationDemo->AnimationPlayer()->CurrentKeyframe());
+				if (!mAnimationDemo->InterpolationEnabled())
+				{
+					AddImGuiTextField("Current Keyframe: "s, mAnimationDemo->AnimationPlayer()->CurrentKeyframe());
+				}
+
 				AddImGuiTextField("Current Animation Time: "s, mAnimationDemo->AnimationPlayer()->CurrentTime());
 				AddImGuiTextField("Animation Status (P): "s, (mAnimationDemo->AnimationPlayer()->IsPlayingClip() ? "Playing"s : "Paused"s));
 			}

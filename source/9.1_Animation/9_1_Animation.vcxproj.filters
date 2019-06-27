@@ -30,6 +30,9 @@
       <Filter>Content\Models</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="Content\Models\RunningSoldier.dae.bin">
+      <Filter>Content\Models</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\Shaders\SkinnedModelVS.hlsl">
