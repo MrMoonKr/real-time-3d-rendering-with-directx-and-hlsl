@@ -83,7 +83,7 @@ namespace Rendering
 			AddImGuiTextField("Toggle Skybox (K): "s, (mSkybox->Visible() ? "Visible"s : "Not Visible"s));
 			AddImGuiTextField("Ambient Light Intensity (+PgUp/-PgDown): "s, mShadowMappingDemo->AmbientLightIntensity(), 2);
 			AddImGuiTextField("Point Light Intensity (+Home/-End): "s, mShadowMappingDemo->PointLightIntensity(), 2);
-			AddImGuiTextField("Point Light Radius (+B/-N): "s, mShadowMappingDemo->PointLightRadius(), 2);
+			AddImGuiTextField("Point Light Radius (+B/-N): "s, mShadowMappingDemo->PointLightRadius());
 			AddImGuiTextField("Draw Mode (Space): "s, mShadowMappingDemo->DrawModeString());
 			AddImGuiTextField("Depth Bias (+Z/-X): "s, mShadowMappingDemo->DepthBias());
 			AddImGuiTextField("Slope-Scaled Depth Bias (+C/-V): "s, mShadowMappingDemo->SlopeScaledDepthBias());
@@ -185,7 +185,7 @@ namespace Rendering
 
 	void RenderingGame::UpdateAmbientLightIntensity()
 	{
-		const float IntensityRateOfChange = 0.2f;
+		const float IntensityRateOfChange = 0.017f;
 		float ambientIntensity = mShadowMappingDemo->AmbientLightIntensity();
 		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::PageUp, Keys::PageDown, ambientIntensity, IntensityRateOfChange, [&](const float& ambientIntensity)
 		{
@@ -237,10 +237,11 @@ namespace Rendering
 
 		const float MovementRateRateOfChange = 1.0f;
 		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::U, Keys::I, mCamera->MovementRate(), MovementRateRateOfChange, nullptr, 0.0f);
+
 		// Update point light intensity
 		{
 			float intensity = mShadowMappingDemo->PointLightIntensity();
-			const float IntensityRateOfChange = 0.2f;
+			const float IntensityRateOfChange = 0.017f;
 			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Home, Keys::End, intensity, IntensityRateOfChange, [&](const float& intensity)
 			{
 				mShadowMappingDemo->SetPointLightIntensity(intensity);
@@ -260,7 +261,7 @@ namespace Rendering
 
 	void RenderingGame::UpdateDepthBias()
 	{
-		const float DepthBiasModulationRate = 0.001f;
+		const float DepthBiasModulationRate = 0.01f;
 
 		// Update depth bias
 		{
