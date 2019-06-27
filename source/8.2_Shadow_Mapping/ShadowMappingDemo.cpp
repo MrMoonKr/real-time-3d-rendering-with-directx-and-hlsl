@@ -101,6 +101,11 @@ namespace Rendering
 		mMaterial->SetLightRadius(radius);
 	}
 
+	const Camera& ShadowMappingDemo::Projector() const
+	{
+		return *mProjector;
+	}
+
 	const XMFLOAT3& ShadowMappingDemo::ProjectorPosition() const
 	{
 		return mProjector->Position();

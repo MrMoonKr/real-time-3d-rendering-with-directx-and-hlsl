@@ -13,6 +13,7 @@ namespace Library
 	class FpsComponent;
 	class Grid;
 	class Skybox;
+	class FirstPersonCamera;
 }
 
 namespace Rendering
@@ -35,11 +36,12 @@ namespace Rendering
 		inline static const DirectX::XMVECTORF32 BackgroundColor{ DirectX::Colors::CornflowerBlue };
 
 		void UpdateDrawMode();
-		void UpdateAmbientLightIntensity(const Library::GameTime& gameTime);
-		void UpdatePointLight(const Library::GameTime& gameTime);
-		void UpdateProjector(const Library::GameTime& gameTime);
-		void UpdateDepthBias(const Library::GameTime& gameTime);
+		void UpdateAmbientLightIntensity();
+		void UpdateProjector();
+		void UpdateDepthBias();
+		void UpdateCamera();
 
+		std::shared_ptr<Library::FirstPersonCamera> mCamera;
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::MouseComponent> mMouse;
 		std::shared_ptr<Library::GamePadComponent> mGamePad;

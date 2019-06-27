@@ -5,7 +5,7 @@ using namespace DirectX;
 
 namespace Library
 {
-	void MatrixHelper::GetForward(CXMMATRIX matrix, XMFLOAT3 &vector)
+	void MatrixHelper::GetForward(FXMMATRIX matrix, XMFLOAT3 &vector)
 	{
 		XMFLOAT4 m3;
 		XMStoreFloat4(&m3, matrix.r[2]);
@@ -15,7 +15,7 @@ namespace Library
         vector.z = -m3.z;
 	}
 
-	void MatrixHelper::GetUp(CXMMATRIX matrix, XMFLOAT3 &vector)
+	void MatrixHelper::GetUp(FXMMATRIX matrix, XMFLOAT3 &vector)
 	{
 		XMFLOAT4 m2;
 		XMStoreFloat4(&m2, matrix.r[1]);
@@ -25,7 +25,7 @@ namespace Library
         vector.z = m2.z;
 	}
 
-	void MatrixHelper::GetRight(CXMMATRIX matrix, XMFLOAT3 &vector)
+	void MatrixHelper::GetRight(FXMMATRIX matrix, XMFLOAT3 &vector)
 	{
 		XMFLOAT4 m1;
 		XMStoreFloat4(&m1, matrix.r[0]);
@@ -35,7 +35,7 @@ namespace Library
         vector.z = m1.z;
 	}
 
-	void MatrixHelper::GetTranslation(CXMMATRIX matrix, XMFLOAT3 &vector)
+	void MatrixHelper::GetTranslation(FXMMATRIX matrix, XMFLOAT3 &vector)
 	{
 		XMFLOAT4 m4;
 		XMStoreFloat4(&m4, matrix.r[3]);		

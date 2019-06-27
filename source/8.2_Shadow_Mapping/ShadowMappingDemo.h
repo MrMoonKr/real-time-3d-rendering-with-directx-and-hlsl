@@ -54,12 +54,12 @@ namespace Rendering
 		float PointLightRadius() const;
 		void SetPointLightRadius(float radius);
 
+		const Library::Camera& Projector() const;
 		const DirectX::XMFLOAT3& ProjectorPosition() const;
 		const DirectX::XMVECTOR ProjectorPositionVector() const;
 		void SetProjectorPosition(const DirectX::XMFLOAT3& position);
 		void SetProjectorPosition(DirectX::FXMVECTOR position);
-
-		const DirectX::XMFLOAT3& ProjectorDirection() const;
+		const DirectX::XMFLOAT3& ProjectorDirection() const;		
 		void RotateProjector(const DirectX::XMFLOAT2& amount);
 
 		virtual void Initialize() override;

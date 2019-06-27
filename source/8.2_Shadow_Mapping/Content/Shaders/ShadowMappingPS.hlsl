@@ -4,10 +4,10 @@ static const float DepthBias = 0.005;
 
 cbuffer CBufferPerFrame
 {
-	float4 AmbientColor = { 1.0f, 1.0f, 1.0f, 0.0f };
-	float4 LightColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-	float3 LightPosition = { 0.0f, 0.0f, 0.0f };
 	float3 CameraPosition;
+	float4 AmbientColor = { 1.0f, 1.0f, 1.0f, 0.0f };
+	float3 LightPosition = { 0.0f, 0.0f, 0.0f };
+	float4 LightColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float2 ShadowMapSize = { 1024.0f, 1024.0f };
 }
 
@@ -22,10 +22,10 @@ struct VS_OUTPUT
 {
 	float4 Position: SV_Position;
 	float3 WorldPosition : WORLDPOS;
-	float2 TextureCoordinate : TEXCOORD;
+	float2 TextureCoordinates : TEXCOORD;
 	float3 Normal : NORMAL;
 	float Attenuation : ATTENUATION;
-	float4 ShadowTextureCoordinate : PROJCOORD;
+	float4 ShadowTextureCoordinates : PROJCOORD;
 };
 
 interface IShadowMappingShader
@@ -43,7 +43,7 @@ class PointLightShader
 		float3 normal = normalize(IN.Normal);
 		float n_dot_l = dot(normal, lightDirection);
 
-		float4 color = ColorTexture.Sample(ColorSampler, IN.TextureCoordinate);
+		float4 color = ColorTexture.Sample(ColorSampler, IN.TextureCoordinates);
 
 		float3 ambient = AmbientColor.rgb * color.rgb;
 		float3 diffuse = LightColor.rgb * saturate(n_dot_l) * color.rgb * IN.Attenuation;
@@ -55,18 +55,18 @@ class PointLightShader
 	}
 };
 
-class SimpleShadowMappingShader : IShadowMappingShader
+class BasicShadowMappingShader : IShadowMappingShader
 {
 	float4 ComputeFinalColor(VS_OUTPUT IN)
 	{
 		PointLightShader pointLightShader;
 		float4 OUT = pointLightShader.ComputeFinalColor(IN);
 
-		if (IN.ShadowTextureCoordinate.w >= 0.0f)
+		if (IN.ShadowTextureCoordinates.w >= 0.0f)
 		{
-			IN.ShadowTextureCoordinate.xyz /= IN.ShadowTextureCoordinate.w;
-			float pixelDepth = IN.ShadowTextureCoordinate.z;
-			float sampledDepth = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinate.xy).x + DepthBias;
+			IN.ShadowTextureCoordinates.xyz /= IN.ShadowTextureCoordinates.w;
+			float pixelDepth = IN.ShadowTextureCoordinates.z;
+			float sampledDepth = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinates.xy).x + DepthBias;
 
 			// Shadow applied in a boolean fashion -- either in shadow or not
 			float3 shadow = (pixelDepth > sampledDepth ? ColorBlack : ColorWhite);
@@ -84,21 +84,21 @@ class ManualPcfShadowMappingShader : IShadowMappingShader
 		PointLightShader pointLightShader;
 		float4 OUT = pointLightShader.ComputeFinalColor(IN);
 
-		if (IN.ShadowTextureCoordinate.w >= 0.0f)
+		if (IN.ShadowTextureCoordinates.w >= 0.0f)
 		{
-			IN.ShadowTextureCoordinate.xyz /= IN.ShadowTextureCoordinate.w;
+			IN.ShadowTextureCoordinates.xyz /= IN.ShadowTextureCoordinates.w;
 
 			float2 texelSize = 1.0f / ShadowMapSize;
 			float4 sampledDepth;
-			sampledDepth.x = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinate.xy).x;
-			sampledDepth.y = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinate.xy + float2(texelSize.x, 0)).x;
-			sampledDepth.z = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinate.xy + float2(0, texelSize.y)).x;
-			sampledDepth.w = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinate.xy + float2(texelSize.x, texelSize.y)).x;
+			sampledDepth.x = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinates.xy).x;
+			sampledDepth.y = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinates.xy + float2(texelSize.x, 0)).x;
+			sampledDepth.z = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinates.xy + float2(0, texelSize.y)).x;
+			sampledDepth.w = ShadowMap.Sample(ShadowMapSampler, IN.ShadowTextureCoordinates.xy + float2(texelSize.x, texelSize.y)).x;
 			sampledDepth += DepthBias;
 
-			float pixelDepth = IN.ShadowTextureCoordinate.z;
+			float pixelDepth = IN.ShadowTextureCoordinates.z;
 			float4 shadowFactor = (pixelDepth > sampledDepth ? 0.0f : 1.0f);
-			float2 lerpValues = frac(IN.ShadowTextureCoordinate.xy * ShadowMapSize);
+			float2 lerpValues = frac(IN.ShadowTextureCoordinates.xy * ShadowMapSize);
 			float shadow = lerp(lerp(shadowFactor.x, shadowFactor.y, lerpValues.x), lerp(shadowFactor.z, shadowFactor.w, lerpValues.x), lerpValues.y);
 			OUT.rgb *= shadow;
 		}
@@ -114,10 +114,10 @@ class PcfShadowMappingShader : IShadowMappingShader
 		PointLightShader pointLightShader;
 		float4 OUT = pointLightShader.ComputeFinalColor(IN);
 
-		IN.ShadowTextureCoordinate.xyz /= IN.ShadowTextureCoordinate.w;
-		float pixelDepth = IN.ShadowTextureCoordinate.z;
+		IN.ShadowTextureCoordinates.xyz /= IN.ShadowTextureCoordinates.w;
+		float pixelDepth = IN.ShadowTextureCoordinates.z;
 
-		float shadow = ShadowMap.SampleCmpLevelZero(PcfShadowMapSampler, IN.ShadowTextureCoordinate.xy, pixelDepth).x;
+		float shadow = ShadowMap.SampleCmpLevelZero(PcfShadowMapSampler, IN.ShadowTextureCoordinates.xy, pixelDepth).x;
 		OUT *= shadow;
 
 		return OUT;

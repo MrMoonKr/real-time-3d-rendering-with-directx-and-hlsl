@@ -46,17 +46,17 @@ namespace Rendering
 		mComponents.push_back(mGamePad);
 		mServices.AddService(GamePadComponent::TypeIdClass(), mGamePad.get());
 
-		auto camera = make_shared<FirstPersonCamera>(*this);
-		mComponents.push_back(camera);
-		mServices.AddService(Camera::TypeIdClass(), camera.get());
+		mCamera = make_shared<FirstPersonCamera>(*this);
+		mComponents.push_back(mCamera);
+		mServices.AddService(Camera::TypeIdClass(), mCamera.get());
 
-		mGrid = make_shared<Grid>(*this, camera);
+		mGrid = make_shared<Grid>(*this, mCamera);
 		mComponents.push_back(mGrid);
 
-		mSkybox = make_shared<Skybox>(*this, camera, L"Textures\\Maskonaive2_1024.dds", 500.0f);
+		mSkybox = make_shared<Skybox>(*this, mCamera, L"Textures\\Maskonaive2_1024.dds", 500.0f);
 		mComponents.push_back(mSkybox);
 		
-		mShadowMappingDemo = make_shared<ShadowMappingDemo>(*this, camera);
+		mShadowMappingDemo = make_shared<ShadowMappingDemo>(*this, mCamera);
 		mComponents.push_back(mShadowMappingDemo);
 
 		auto imGui = make_shared<ImGuiComponent>(*this);
@@ -87,6 +87,8 @@ namespace Rendering
 			AddImGuiTextField("Draw Mode (Space): "s, mShadowMappingDemo->DrawModeString());
 			AddImGuiTextField("Depth Bias (+Z/-X): "s, mShadowMappingDemo->DepthBias());
 			AddImGuiTextField("Slope-Scaled Depth Bias (+C/-V): "s, mShadowMappingDemo->SlopeScaledDepthBias());
+			AddImGuiTextField("Camera Movement Rate (+U/-I): "s, mCamera->MovementRate());
+			AddImGuiTextField("Camera Mouse Sensitivity (+O/-P): "s, mCamera->MouseSensitivity());
 
 			ImGui::End();
 		});
@@ -98,7 +100,7 @@ namespace Rendering
 
 		Game::Initialize();
 	
-		camera->SetPosition(0.0f, 5.0f, 20.0f);
+		mCamera->SetPosition(0.0f, 5.0f, 20.0f);
 		mSkybox->SetVisible(false);
 	}
 
@@ -130,9 +132,10 @@ namespace Rendering
 		}
 	
 		UpdateDrawMode();
-		UpdateAmbientLightIntensity(gameTime);
-		UpdateProjector(gameTime);
-		UpdateDepthBias(gameTime);
+		UpdateAmbientLightIntensity();
+		UpdateProjector();
+		UpdateDepthBias();
+		UpdateCamera();
 
 		Game::Update(gameTime);		
 	}
@@ -180,55 +183,65 @@ namespace Rendering
 		IncrementEnumValue<ShadowMappingDrawModes>(*mKeyboard, Keys::Space, drawMode, bind(&ShadowMappingDemo::SetDrawMode, mShadowMappingDemo, _1), ShadowMappingDrawModes::End);
 	}
 
-	void RenderingGame::UpdateAmbientLightIntensity(const GameTime& gameTime)
+	void RenderingGame::UpdateAmbientLightIntensity()
 	{
-		const float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		const float IntensityRateOfChange = 0.2f;
 		float ambientIntensity = mShadowMappingDemo->AmbientLightIntensity();
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::PageUp, Keys::PageDown, ambientIntensity, elapsedTime, [&](const float& ambientIntensity)
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::PageUp, Keys::PageDown, ambientIntensity, IntensityRateOfChange, [&](const float& ambientIntensity)
 		{
 			mShadowMappingDemo->SetAmbientLightIntensity(ambientIntensity);
 		}, 0.0f, 1.0f);
 	}
 
-	void RenderingGame::UpdateProjector(const Library::GameTime& gameTime)
+	void RenderingGame::UpdateProjector()
 	{
-		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
-
-		// Move projector
+		// Move and rotate projector
 		{
 			bool updatePosition = false;
 			auto updatePositionFunc = [&updatePosition](const float&) { updatePosition = true; };
-			const float ProjectorMovementRate = 10.0f * elapsedTime;
+			const float MovementRate = 0.2f;
 			XMFLOAT3 movementAmount = Vector3Helper::Zero;
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad6, Keys::NumPad4, movementAmount.x, ProjectorMovementRate, updatePositionFunc);
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad9, Keys::NumPad3, movementAmount.y, ProjectorMovementRate, updatePositionFunc);
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad2, Keys::NumPad8, movementAmount.z, ProjectorMovementRate, updatePositionFunc);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad6, Keys::NumPad4, movementAmount.x, MovementRate, updatePositionFunc);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad9, Keys::NumPad3, movementAmount.y, MovementRate, updatePositionFunc);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::NumPad8, Keys::NumPad2, movementAmount.z, MovementRate, updatePositionFunc);
+
+			const float RotationRate = 0.1f;
+			XMFLOAT2 rotationAmount = Vector2Helper::Zero;
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Left, Keys::Right, rotationAmount.x, RotationRate, updatePositionFunc);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, rotationAmount.y, RotationRate, updatePositionFunc);
 
 			if (updatePosition)
 			{
-				mShadowMappingDemo->SetProjectorPosition(mShadowMappingDemo->ProjectorPositionVector() + XMLoadFloat3(&movementAmount));
-			}
-		}
-
-		// Rotate projector
-		{
-			bool updateRotation = false;
-			auto updateRotationFunc = [&updateRotation](const float&) { updateRotation = true; };
-			const float RotationRate = XM_2PI * elapsedTime;
-			XMFLOAT2 rotationAmount = Vector2Helper::Zero;
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Left, Keys::Right, rotationAmount.x, RotationRate, updateRotationFunc);
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, rotationAmount.y, RotationRate, updateRotationFunc);
-
-			if (updateRotation)
-			{
+				const Camera& projector = mShadowMappingDemo->Projector();
+				XMVECTOR rotationVector = XMLoadFloat2(&rotationAmount);
+				
 				mShadowMappingDemo->RotateProjector(rotationAmount);
+
+				XMVECTOR position = XMLoadFloat3(&projector.Position());
+				XMVECTOR movement = XMLoadFloat3(&movementAmount);
+
+				XMVECTOR right = XMLoadFloat3(&projector.Right());
+				XMVECTOR horizontalStrafe = right * XMVectorGetX(movement);
+				position += horizontalStrafe;
+
+				XMVECTOR up = XMLoadFloat3(&projector.Up());
+				XMVECTOR verticalStrafe = up * XMVectorGetY(movement);
+				position += verticalStrafe;
+
+				XMVECTOR forward = XMLoadFloat3(&projector.Direction()) * XMVectorGetZ(movement);
+				position += forward;
+
+				mShadowMappingDemo->SetProjectorPosition(position);
 			}
 		}
 
+		const float MovementRateRateOfChange = 1.0f;
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::U, Keys::I, mCamera->MovementRate(), MovementRateRateOfChange, nullptr, 0.0f);
 		// Update point light intensity
 		{
 			float intensity = mShadowMappingDemo->PointLightIntensity();
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Home, Keys::End, intensity, elapsedTime, [&](const float& intensity)
+			const float IntensityRateOfChange = 0.2f;
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Home, Keys::End, intensity, IntensityRateOfChange, [&](const float& intensity)
 			{
 				mShadowMappingDemo->SetPointLightIntensity(intensity);
 			}, 0.0f, 1.0f);
@@ -236,22 +249,22 @@ namespace Rendering
 		
 		// Update point light radius
 		{
-			const float LightModulationRate = static_cast<float>(numeric_limits<uint8_t>::max()) * elapsedTime;
+			const float RadiusRateOfChange = 4.25f;
 			float pointLightRadius = mShadowMappingDemo->PointLightRadius();
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::B, Keys::N, pointLightRadius, LightModulationRate, [&](const float& pointLightRadius)
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::B, Keys::N, pointLightRadius, RadiusRateOfChange, [&](const float& pointLightRadius)
 			{
 				mShadowMappingDemo->SetPointLightRadius(pointLightRadius);
 			}, 0.0f);
 		}
 	}
 
-	void RenderingGame::UpdateDepthBias(const Library::GameTime & gameTime)
+	void RenderingGame::UpdateDepthBias()
 	{
-		float elapsedTime = gameTime.ElapsedGameTimeSeconds().count();
+		const float DepthBiasModulationRate = 0.001f;
 
 		// Update depth bias
 		{
-			const float DepthBiasModulationRate = 5000 * elapsedTime;
+			
 			float depthBias = mShadowMappingDemo->DepthBias();
 			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Z, Keys::X, depthBias, DepthBiasModulationRate, [&](const float& depthBias)
 			{
@@ -262,10 +275,19 @@ namespace Rendering
 		// Update slope-scaled depth bias
 		{
 			float depthBias = mShadowMappingDemo->SlopeScaledDepthBias();
-			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::C, Keys::V, depthBias, elapsedTime, [&](const float& depthBias)
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::C, Keys::V, depthBias, DepthBiasModulationRate, [&](const float& depthBias)
 			{
 				mShadowMappingDemo->SetSlopeScaledDepthBias(depthBias);
 			}, 0.0f);
 		}
+	}
+
+	void RenderingGame::UpdateCamera()
+	{
+		const float MovementRateRateOfChange = 1.0f;
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::U, Keys::I, mCamera->MovementRate(), MovementRateRateOfChange, nullptr, 0.0f);
+
+		const float MouseSensitivityRateOfChange = 0.001f;
+		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::O, Keys::P, mCamera->MouseSensitivity(), MouseSensitivityRateOfChange, nullptr, 0.0f);
 	}
 }
