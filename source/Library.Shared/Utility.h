@@ -4,6 +4,7 @@
 #include <vector>
 #include <limits>
 #include <functional>
+#include <tuple>
 
 namespace Library
 {
@@ -12,7 +13,7 @@ namespace Library
 	public:
 		static void GetFileName(const std::string& inputPath, std::string& filename);
 		static void GetDirectory(const std::string& inputPath, std::string& directory);
-		static void GetFileNameAndDirectory(const std::string& inputPath, std::string& directory, std::string& filename);
+		static std::tuple<std::string, std::string> GetFileNameAndDirectory(const std::string& inputPath);
 		static void LoadBinaryFile(const std::wstring& filename, std::vector<char>& data);
 		static void ToWideString(const std::string& source, std::wstring& dest);
 		static std::wstring ToWideString(const std::string& source);

@@ -39,12 +39,15 @@ namespace Library
 		}
 	}
 
-	void Utility::GetFileNameAndDirectory(const string& inputPath, string& directory, string& filename)
+	tuple<string, string> Utility::GetFileNameAndDirectory(const string& inputPath)
 	{
 		string fullPath(inputPath);
 		replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
 		string::size_type lastSlashIndex = fullPath.find_last_of('/');
+
+		string directory;
+		string filename;
 
 		if (lastSlashIndex == string::npos)
 		{
@@ -56,6 +59,8 @@ namespace Library
 			directory = fullPath.substr(0, lastSlashIndex);
 			filename = fullPath.substr(lastSlashIndex + 1, fullPath.size() - lastSlashIndex - 1);
 		}
+
+		return make_tuple(filename, directory);
 	}
 
 	void Utility::LoadBinaryFile(const wstring& filename, vector<char>& data)

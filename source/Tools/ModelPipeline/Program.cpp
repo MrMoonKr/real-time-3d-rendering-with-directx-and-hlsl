@@ -4,6 +4,7 @@
 #include "UtilityWin32.h"
 
 using namespace std;
+using namespace std::filesystem;
 using namespace std::string_literals;
 using namespace ModelPipeline;
 using namespace Library;
@@ -22,17 +23,13 @@ int main(int argc, char* argv[])
 		}
 
 		string inputFile = argv[1];
-
-		//TODO: rewrite this to use <filesystem>
-		string inputFilename;
-		string inputDirectory;			
-		Library::Utility::GetFileNameAndDirectory(inputFile, inputDirectory, inputFilename);
+		auto [inputFilename, inputDirectory] = Library::Utility::GetFileNameAndDirectory(inputFile);
 		if (inputDirectory.empty())
 		{
-			//inputDirectory = UtilityWin32::CurrentDirectory();
+			inputDirectory = current_path().string();
 		}
 
-		SetCurrentDirectory(Library::Utility::ToWideString(inputDirectory).c_str());
+		current_path(inputDirectory);
 
 		cout << "Reading: "s << inputFilename << endl;
 		Model model = ModelProcessor::LoadModel(inputFilename, true);
