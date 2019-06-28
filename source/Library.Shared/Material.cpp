@@ -3,6 +3,8 @@
 #include "Material.h"
 #include "Game.h"
 #include "VertexShader.h"
+#include "HullShader.h"
+#include "DomainShader.h"
 #include "GeometryShader.h"
 #include "PixelShader.h"
 
@@ -19,6 +21,8 @@ namespace Library
 	const map<ShaderStages, RTTI::IdType> Material::ShaderStageTypeMap
 	{
 		{ ShaderStages::VS, VertexShader::TypeIdClass() },
+		{ ShaderStages::HS, HullShader::TypeIdClass() },
+		{ ShaderStages::DS, DomainShader::TypeIdClass() },
 		{ ShaderStages::GS, GeometryShader::TypeIdClass() },
 		{ ShaderStages::PS, PixelShader::TypeIdClass() },
 	};
@@ -26,6 +30,8 @@ namespace Library
 	const map<RTTI::IdType, ShaderStages> Material::TypeShaderStageMap
 	{
 		{ VertexShader::TypeIdClass(), ShaderStages::VS },
+		{ HullShader::TypeIdClass(), ShaderStages::HS },
+		{ DomainShader::TypeIdClass(), ShaderStages::DS },
 		{ GeometryShader::TypeIdClass(), ShaderStages::GS },
 		{ PixelShader::TypeIdClass(), ShaderStages::PS },
 	};
@@ -42,7 +48,25 @@ namespace Library
 			}
 		},
 		{
-			ShaderStages::VS,
+			ShaderStages::HS,
+			{
+				SetHSShader,
+				bind(&ID3D11DeviceContext::HSSetConstantBuffers, _1, _2, _3, _4),
+				bind(&ID3D11DeviceContext::HSSetShaderResources, _1, _2, _3, _4),
+				bind(&ID3D11DeviceContext::HSSetSamplers, _1, _2, _3, _4),
+			}
+		},
+		{
+			ShaderStages::DS,
+			{
+				SetDSShader,
+				bind(&ID3D11DeviceContext::DSSetConstantBuffers, _1, _2, _3, _4),
+				bind(&ID3D11DeviceContext::DSSetShaderResources, _1, _2, _3, _4),
+				bind(&ID3D11DeviceContext::DSSetSamplers, _1, _2, _3, _4),
+			}
+		},
+		{
+			ShaderStages::GS,
 			{
 				SetGSShader,
 				bind(&ID3D11DeviceContext::GSSetConstantBuffers, _1, _2, _3, _4),
@@ -259,6 +283,32 @@ namespace Library
 		assert(shaderStageData.Shader != nullptr);
 		auto vertexShader = static_pointer_cast<VertexShader>(shaderStageData.Shader);
 		direct3DDeviceContext.VSSetShader(vertexShader->Shader().get(), &shaderStageData.ShaderClassInstance, shaderStageData.ShaderClassInstance != nullptr ? 1 : 0);
+	}
+
+	void Material::SetHSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData)
+	{
+		if (shaderStageData.Shader != nullptr)
+		{
+			auto hullShader = static_pointer_cast<HullShader>(shaderStageData.Shader);
+			direct3DDeviceContext.HSSetShader(hullShader->Shader().get(), &shaderStageData.ShaderClassInstance, shaderStageData.ShaderClassInstance != nullptr ? 1 : 0);
+		}
+		else
+		{
+			direct3DDeviceContext.HSSetShader(nullptr, nullptr, 0);
+		}
+	}
+
+	void Material::SetDSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData)
+	{
+		if (shaderStageData.Shader != nullptr)
+		{
+			auto domainShader = static_pointer_cast<DomainShader>(shaderStageData.Shader);
+			direct3DDeviceContext.DSSetShader(domainShader->Shader().get(), &shaderStageData.ShaderClassInstance, shaderStageData.ShaderClassInstance != nullptr ? 1 : 0);
+		}
+		else
+		{
+			direct3DDeviceContext.DSSetShader(nullptr, nullptr, 0);
+		}
 	}
 
 	void Material::SetGSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData)

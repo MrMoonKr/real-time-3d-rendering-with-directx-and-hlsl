@@ -4,6 +4,8 @@
 #include "TextureCubeReader.h"
 #include "VertexShaderReader.h"
 #include "PixelShaderReader.h"
+#include "HullShaderReader.h"
+#include "DomainShaderReader.h"
 #include "JsonObjectReader.h"
 #include "ModelReader.h"
 
@@ -33,6 +35,8 @@ namespace Library
 			AddContentTypeReader(make_shared<TextureCubeReader>(game));
 			AddContentTypeReader(make_shared<VertexShaderReader>(game));
 			AddContentTypeReader(make_shared<PixelShaderReader>(game));
+			AddContentTypeReader(make_shared<HullShaderReader>(game));
+			AddContentTypeReader(make_shared<DomainShaderReader>(game));
 			AddContentTypeReader(make_shared<JsonObjectReader>(game));
 			AddContentTypeReader(make_shared<ModelReader>(game));
 

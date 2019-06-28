@@ -99,23 +99,4 @@ namespace Rendering
 		XMStoreFloat4x4(&mVertexCBufferPerObjectData.WorldViewProjection, worldViewProjectionMatrix);
 		mGame->Direct3DDeviceContext()->UpdateSubresource(mVertexCBufferPerObject.get(), 0, nullptr, &mVertexCBufferPerObjectData, 0, 0);
 	}
-
-	void AmbientLightingMaterial::BeginDraw()
-	{
-		Material::BeginDraw();
-
-		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
-
-		const auto vsConstantBuffers = mVertexCBufferPerObject.get();
-		direct3DDeviceContext->VSSetConstantBuffers(0, 1, &vsConstantBuffers);
-
-		const auto psConstantBuffers = mPixelCBufferPerFrame.get();
-		direct3DDeviceContext->PSSetConstantBuffers(0, 1, &psConstantBuffers);
-
-		const auto psShaderResources = mTexture->ShaderResourceView().get();
-		direct3DDeviceContext->PSSetShaderResources(0, 1, &psShaderResources);
-
-		const auto psSamplers = mSamplerState.get();
-		direct3DDeviceContext->PSSetSamplers(0, 1, &psSamplers);
-	}
 }

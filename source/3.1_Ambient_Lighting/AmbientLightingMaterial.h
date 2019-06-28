@@ -49,8 +49,6 @@ namespace Rendering
 			DirectX::XMFLOAT4 AmbientColor{ DirectX::Colors::White };
 		};
 
-		virtual void BeginDraw() override;
-
 		winrt::com_ptr<ID3D11Buffer> mVertexCBufferPerObject;
 		winrt::com_ptr<ID3D11Buffer> mPixelCBufferPerFrame;
 		VertexCBufferPerObject mVertexCBufferPerObjectData;

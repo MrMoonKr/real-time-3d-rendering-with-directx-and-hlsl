@@ -292,6 +292,18 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)AnimationPlayer.cpp">
       <Filter>Models</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HullShader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DomainShader.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)HullShaderReader.cpp">
+      <Filter>Content\ContentReaders</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)DomainShaderReader.cpp">
+      <Filter>Content\ContentReaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
@@ -546,6 +558,18 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)AnimationPlayer.h">
       <Filter>Models</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HullShader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DomainShader.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)HullShaderReader.h">
+      <Filter>Content\ContentReaders</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)DomainShaderReader.h">
+      <Filter>Content\ContentReaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{67DD0724-C093-4DE4-ADE2-83C11C0278F7}"
 EndProject
@@ -74,6 +74,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "8_2_Shadow_Mapping", "..\source\8.2_Shadow_Mapping\8_2_Shadow_Mapping.vcxproj", "{B9BD9491-02EE-40E8-83DD-7A2B9627A60C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "9_1_Animation", "..\source\9.1_Animation\9_1_Animation.vcxproj", "{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_2_Basic_Tessellation", "..\source\10.2_Basic_Tessellation\10_2_Basic_Tessellation.vcxproj", "{39330455-D9A2-4438-A309-2F79BE7197E4}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -335,6 +337,14 @@ Global
 		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Release|Win32.Build.0 = Release|Win32
 		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Release|x64.ActiveCfg = Release|x64
 		{6A4E84B1-65D5-459E-A4A5-4B2250E3A250}.Release|x64.Build.0 = Release|x64
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Debug|Win32.Build.0 = Debug|Win32
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Debug|x64.ActiveCfg = Debug|x64
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Debug|x64.Build.0 = Debug|x64
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Release|Win32.ActiveCfg = Release|Win32
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Release|Win32.Build.0 = Release|Win32
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Release|x64.ActiveCfg = Release|x64
+		{39330455-D9A2-4438-A309-2F79BE7197E4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

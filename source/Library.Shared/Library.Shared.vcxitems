@@ -31,6 +31,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DepthStencilStates.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DirectionalLight.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DirectXHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DomainShader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)DomainShaderReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)DrawableGameComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FirstPersonCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FpsComponent.cpp" />
@@ -47,6 +49,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GaussianBlur.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GeometryShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Grid.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HullShader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HullShaderReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ImGuiComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)imgui_impl_dx11.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -122,6 +126,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DepthStencilStates.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DirectionalLight.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DirectXHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DomainShader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)DomainShaderReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)DrawableGameComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FirstPersonCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FpsComponent.h" />
@@ -138,6 +144,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GaussianBlur.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GeometryShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Grid.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HullShader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)HullShaderReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ImGuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)imgui_impl_dx11.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)JsonHelper.h" />
