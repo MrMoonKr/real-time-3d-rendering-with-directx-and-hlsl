@@ -7,6 +7,7 @@
 #include "PixelShader.h"
 #include "DomainShader.h"
 #include "HullShader.h"
+#include "RasterizerStates.h"
 
 using namespace std;
 using namespace gsl;
@@ -33,6 +34,22 @@ namespace Rendering
 	{
 		mShowQuadTopology = showQuadTopology;
 		UpdateTopology();
+	}
+
+	span<const float> BasicTessellationMaterial::EdgeFactors() const
+	{
+		return mShowQuadTopology ? span<const float>{ mQuadHullCBufferPerFrameData.TessellationEdgeFactors } : span<const float>{ mTriHullCBufferPerFrameData.TessellationEdgeFactors };
+	}
+
+	void BasicTessellationMaterial::SetUniformEdgeFactors(float factor)
+	{
+		UpdateUniformTessellationFactors(factor, mQuadHullCBufferPerFrameData.TessellationEdgeFactors, mQuadHullCBufferPerFrameData.TessellationInsideFactors);
+		UpdateUniformTessellationFactors(factor, mTriHullCBufferPerFrameData.TessellationEdgeFactors, mTriHullCBufferPerFrameData.TessellationInsideFactors);
+	}
+
+	span<const float> BasicTessellationMaterial::InsideFactors() const
+	{
+		return mShowQuadTopology ? span<const float>{ mQuadHullCBufferPerFrameData.TessellationInsideFactors } : span<const float>{ mTriHullCBufferPerFrameData.TessellationInsideFactors };
 	}
 
 	uint32_t BasicTessellationMaterial::VertexSize() const
@@ -81,6 +98,12 @@ namespace Rendering
 		UpdateTopology();		
 	}
 
+	void BasicTessellationMaterial::BeginDraw()
+	{
+		Material::BeginDraw();
+		mGame->Direct3DDeviceContext()->RSSetState(RasterizerStates::Wireframe.get());
+	}
+
 	void BasicTessellationMaterial::EndDraw()
 	{
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
@@ -112,5 +135,22 @@ namespace Rendering
 			SetShader(mTriHullShader);
 			SetConstantBuffer(ShaderStages::HS, mTriHullCBufferPerFrame.get());
 		}
+	}
+
+	void BasicTessellationMaterial::UpdateUniformTessellationFactors(float source, span<float> edgeFactors, span<float> insideFactors)
+	{
+		for (auto& factor : edgeFactors)
+		{
+			factor = source;
+		}
+
+		for (auto& factor : insideFactors)
+		{
+			factor = source;
+		}
+
+		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
+		direct3DDeviceContext->UpdateSubresource(mQuadHullCBufferPerFrame.get(), 0, nullptr, &mQuadHullCBufferPerFrameData, 0, 0);
+		direct3DDeviceContext->UpdateSubresource(mTriHullCBufferPerFrame.get(), 0, nullptr, &mTriHullCBufferPerFrameData, 0, 0);
 	}
 }

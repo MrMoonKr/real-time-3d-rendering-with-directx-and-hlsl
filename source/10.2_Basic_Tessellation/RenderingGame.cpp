@@ -13,6 +13,7 @@
 #include "UtilityWin32.h"
 
 using namespace std;
+using namespace gsl;
 using namespace DirectX;
 using namespace Library;
 
@@ -33,7 +34,7 @@ namespace Rendering
 		mComponents.push_back(mKeyboard);
 		mServices.AddService(KeyboardComponent::TypeIdClass(), mKeyboard.get());
 
-		auto camera = make_shared<OrthographicCamera>(*this, 20.0f, 20.0f);
+		auto camera = make_shared<OrthographicCamera>(*this, 3.0f, 3.0f);
 		mComponents.push_back(camera);
 		mServices.AddService(Camera::TypeIdClass(), camera.get());
 
@@ -52,9 +53,33 @@ namespace Rendering
 				ImGui::SetNextWindowPos(ImVec2(10, 10));
 
 				{
-					stringstream fpsLabel;
+					ostringstream fpsLabel;
 					fpsLabel << setprecision(3) << "Frame Rate: " << mFpsComponent->FrameRate() << "    Total Elapsed Time: " << mGameTime.TotalGameTimeSeconds().count();
 					ImGui::Text(fpsLabel.str().c_str());
+				}
+
+				AddImGuiTextField("Topology (T): "s, (mBasicTessellationDemo->ShowQuadTopology() ? "Quadrilateral"s : "Triangle"));
+				AddImGuiTextField("Uniform Tessellation (Space): "s, (mBasicTessellationDemo->UseUniformTessellation() ? "True"s : "False"s));
+				
+				if (mBasicTessellationDemo->UseUniformTessellation())
+				{
+					{
+						ostringstream edgeFactorsLabel;
+						edgeFactorsLabel << "Edge Factors (+Up/-Down): ["s;
+						edgeFactorsLabel << Join(mBasicTessellationDemo->EdgeFactors(), ", ").str() << "]"s;
+						ImGui::Text(edgeFactorsLabel.str().c_str());
+					}
+
+					{
+						ostringstream insideFactorsLabel;
+						insideFactorsLabel << "Inside Factors: ["s;
+						insideFactorsLabel << Join(mBasicTessellationDemo->InsideFactors(), ", ").str() << "]"s;
+						ImGui::Text(insideFactorsLabel.str().c_str());
+					}
+				}
+				else
+				{
+
 				}
 
 				ImGui::End();
@@ -76,6 +101,8 @@ namespace Rendering
 		{
 			Exit();
 		}
+
+		UpdateTessellationOptions();
 
 		Game::Update(gameTime);
 	}
@@ -102,6 +129,8 @@ namespace Rendering
 
 	void RenderingGame::Shutdown()
 	{
+		mFpsComponent = nullptr;
+		mBasicTessellationDemo = nullptr;
 		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
 		Game::Shutdown();		
@@ -114,6 +143,39 @@ namespace Rendering
 
 	void RenderingGame::UpdateTessellationOptions()
 	{
-		//TODO
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::T))
+		{
+			mBasicTessellationDemo->ToggleTopology();
+		}
+
+		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
+		{
+			mBasicTessellationDemo->ToggleUseUniformTessellation();
+		}
+
+		// Update uniform tessellation factors
+		const float MinTessellationFactor = 2.0f;
+		const float MaxTessellationFactor = 64.0f;
+		if (mBasicTessellationDemo->UseUniformTessellation())
+		{
+			float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(0);
+			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, edgeFactor, 1, [&](const float& edgeFactor)
+			{
+				mBasicTessellationDemo->SetUniformEdgeFactors(edgeFactor);
+			}, MinTessellationFactor, MaxTessellationFactor);
+		}
+		else
+		{
+
+		}
+	}
+
+	ostringstream RenderingGame::Join(const span<const float>& values, const string& delimiter)
+	{
+		ostringstream out;
+		std::copy(values.begin(), values.end() - 1, ostream_iterator<float>(out, delimiter.c_str()));
+		out << *(values.end() - 1);
+
+		return out;
 	}
 }

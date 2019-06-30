@@ -114,7 +114,7 @@ namespace Rendering
 
 		Game::Initialize();
 		
-		camera->SetPosition(0.0f, 2.5f, 20.0f);
+		camera->SetPosition(0.0f, 0.0f, 1.0f);
 		mAmbientLightIntensity = mAnimationDemo->AmbientLightIntensity();
 		mDirectionalLightIntensity = mAnimationDemo->DirectionalLightIntensity();
 	}

@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <functional>
 #include "Game.h"
+#include <iosfwd>
 
 namespace Library
 {
@@ -33,6 +34,8 @@ namespace Rendering
 		inline static const DirectX::XMVECTORF32 BackgroundColor{ DirectX::Colors::CornflowerBlue };
 
 		void UpdateTessellationOptions();
+		
+		std::ostringstream Join(const gsl::span<const float>& values, const std::string& delimiter);
 
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
 		std::shared_ptr<Library::MouseComponent> mMouse;

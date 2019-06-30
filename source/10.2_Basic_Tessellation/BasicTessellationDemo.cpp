@@ -24,6 +24,21 @@ namespace Rendering
 	{
 	}
 
+	bool BasicTessellationDemo::UseUniformTessellation() const
+	{
+		return mUseUniformTessellation;
+	}
+
+	void BasicTessellationDemo::SetUseUniformTessellation(bool useUniformTessellation)
+	{
+		mUseUniformTessellation = useUniformTessellation;
+	}
+
+	void BasicTessellationDemo::ToggleUseUniformTessellation()
+	{
+		mUseUniformTessellation = !mUseUniformTessellation;
+	}
+
 	bool BasicTessellationDemo::ShowQuadTopology() const
 	{
 		return mMaterial.ShowQuadTopology();
@@ -32,6 +47,26 @@ namespace Rendering
 	void BasicTessellationDemo::SetShowQuadTopology(bool showQuadTopology)
 	{
 		mMaterial.SetShowQuadTopology(showQuadTopology);
+	}
+
+	void BasicTessellationDemo::ToggleTopology()
+	{
+		mMaterial.SetShowQuadTopology(!mMaterial.ShowQuadTopology());
+	}
+
+	span<const float> BasicTessellationDemo::EdgeFactors() const
+	{
+		return mMaterial.EdgeFactors();
+	}
+
+	void BasicTessellationDemo::SetUniformEdgeFactors(float factor)
+	{
+		mMaterial.SetUniformEdgeFactors(factor);
+	}
+
+	span<const float> BasicTessellationDemo::InsideFactors() const
+	{
+		return mMaterial.InsideFactors();
 	}
 
 	void BasicTessellationDemo::Initialize()
@@ -43,19 +78,19 @@ namespace Rendering
 		// Create vertex buffer for a triangle
 		const VertexPosition triVertices[] =
 		{
-			VertexPosition(XMFLOAT4(-5.0f, 1.0f, 0.0f, 1.0f)),
-			VertexPosition(XMFLOAT4(0.0f, 6.0f, 0.0f, 1.0f)),
-			VertexPosition(XMFLOAT4(5.0f, 1.0f, 0.0f, 1.0f))
+			VertexPosition(XMFLOAT4(-1.0f, -0.5f, 0.0f, 1.0f)),
+			VertexPosition(XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)),
+			VertexPosition(XMFLOAT4(1.0f, -0.5f, 0.0f, 1.0f))
 		};
 		VertexPosition::CreateVertexBuffer(direct3DDevice, triVertices, not_null<ID3D11Buffer **>(mTriVertexBuffer.put()));
 
 		// Create vertex buffer for a quad
 		const VertexPosition quadVertices[] =
 		{
-			VertexPosition(XMFLOAT4(-5.0f, 6.0f, 0.0f, 1.0f)),
-			VertexPosition(XMFLOAT4(5.0f, 6.0f, 0.0f, 1.0f)),
-			VertexPosition(XMFLOAT4(-5.0f, 1.0f, 0.0f, 1.0f)),
-			VertexPosition(XMFLOAT4(5.0f, 1.0f, 0.0f, 1.0f))
+			VertexPosition(XMFLOAT4(-1.0f, 0.5f, 0.0f, 1.0f)),
+			VertexPosition(XMFLOAT4(1.0f, 0.5f, 0.0f, 1.0f)),
+			VertexPosition(XMFLOAT4(-1.0f, -0.5f, 0.0f, 1.0f)),
+			VertexPosition(XMFLOAT4(1.0f, -0.5f, 0.0f, 1.0f))
 		};
 		VertexPosition::CreateVertexBuffer(direct3DDevice, quadVertices, not_null<ID3D11Buffer * *>(mQuadVertexBuffer.put()));
 
@@ -72,7 +107,7 @@ namespace Rendering
 			mUpdateMaterial = false;
 		}
 
-		mRenderStateHelper.SaveAll();
+		mRenderStateHelper.SaveRasterizerState();
 		if (mMaterial.ShowQuadTopology())
 		{
 			mMaterial.Draw(mQuadVertexBuffer.get(), 4);
@@ -81,6 +116,7 @@ namespace Rendering
 		{
 			mMaterial.Draw(mTriVertexBuffer.get(), 3);
 		}
-		mRenderStateHelper.RestoreAll();
+
+		mRenderStateHelper.RestoreRasterizerState();
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gsl\gsl>
-#include <winrt\Windows.Foundation.h>
+#include <winrt\base.h>
 #include <d3d11.h>
 #include "DrawableGameComponent.h"
 #include "BasicTessellationMaterial.h"
@@ -19,17 +19,30 @@ namespace Rendering
 		BasicTessellationDemo& operator=(BasicTessellationDemo&&) = default;
 		~BasicTessellationDemo();
 
+		bool UseUniformTessellation() const;
+		void SetUseUniformTessellation(bool useUniformTessellation);
+		void ToggleUseUniformTessellation();
 		bool ShowQuadTopology() const;
 		void SetShowQuadTopology(bool showQuadTopology);
+		void ToggleTopology();
+
+		gsl::span<const float> EdgeFactors() const;
+		void SetUniformEdgeFactors(float factor);
+
+		gsl::span<const float> InsideFactors() const;
 
 		virtual void Initialize() override;
 		virtual void Draw(const Library::GameTime& gameTime) override;
 
 	private:
-		BasicTessellationMaterial mMaterial;
+		/*void UpdateEdgeFactors();
+		void UpdateInsideEdgeFactors();*/
+
 		Library::RenderStateHelper mRenderStateHelper;
+		BasicTessellationMaterial mMaterial;
 		winrt::com_ptr<ID3D11Buffer> mTriVertexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mQuadVertexBuffer;
 		bool mUpdateMaterial{ true };
+		bool mUseUniformTessellation{ true };
 	};
 }

@@ -19,6 +19,7 @@
 #include <limits>
 #include <filesystem>
 #include <tuple>
+#include <iterator>
 
 #if defined(DEBUG) || defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC

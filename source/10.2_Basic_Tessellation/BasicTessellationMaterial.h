@@ -27,8 +27,14 @@ namespace Rendering
 		bool ShowQuadTopology() const;
 		void SetShowQuadTopology(bool showQuadTopology);
 
+		gsl::span<const float> EdgeFactors() const;
+		void SetUniformEdgeFactors(float factor);
+
+		gsl::span<const float> InsideFactors() const;
+
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
+		virtual void BeginDraw() override;
 		virtual void EndDraw() override;
 
 		void UpdateTransforms(DirectX::FXMMATRIX viewProjectionMatrix);
@@ -49,10 +55,11 @@ namespace Rendering
 		struct TriHullCBufferPerFrame final
 		{
 			float TessellationEdgeFactors[3]{ 2.0f, 2.0f, 2.0f };
-			float TessellationInsideFactor{ 2.0f };
+			float TessellationInsideFactors[1] { 2.0f };
 		};
 
 		void UpdateTopology();
+		void UpdateUniformTessellationFactors(float source, gsl::span<float> edgeFactors, gsl::span<float> insideFactors);
 
 		winrt::com_ptr<ID3D11Buffer> mDomainCBufferPerObject;
 		winrt::com_ptr<ID3D11Buffer> mQuadHullCBufferPerFrame;
