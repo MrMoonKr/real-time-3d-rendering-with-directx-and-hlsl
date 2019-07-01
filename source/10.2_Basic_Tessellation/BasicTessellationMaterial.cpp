@@ -47,6 +47,38 @@ namespace Rendering
 		UpdateUniformTessellationFactors(factor, mTriHullCBufferPerFrameData.TessellationEdgeFactors, mTriHullCBufferPerFrameData.TessellationInsideFactors);
 	}
 
+	void BasicTessellationMaterial::SetEdgeFactor(float factor, uint32_t index)
+	{
+		if (mShowQuadTopology)
+		{
+			assert(index < std::size(mQuadHullCBufferPerFrameData.TessellationEdgeFactors));
+			mQuadHullCBufferPerFrameData.TessellationEdgeFactors[index] = factor;
+			mGame->Direct3DDeviceContext()->UpdateSubresource(mQuadHullCBufferPerFrame.get(), 0, nullptr, &mQuadHullCBufferPerFrameData, 0, 0);
+		}
+		else
+		{
+			assert(index < std::size(mTriHullCBufferPerFrameData.TessellationEdgeFactors));
+			mTriHullCBufferPerFrameData.TessellationEdgeFactors[index] = factor;
+			mGame->Direct3DDeviceContext()->UpdateSubresource(mTriHullCBufferPerFrame.get(), 0, nullptr, &mTriHullCBufferPerFrameData, 0, 0);
+		}
+	}
+
+	void BasicTessellationMaterial::SetInsideFactor(float factor, std::uint32_t index)
+	{
+		if (mShowQuadTopology)
+		{
+			assert(index < std::size(mQuadHullCBufferPerFrameData.TessellationInsideFactors));
+			mQuadHullCBufferPerFrameData.TessellationInsideFactors[index] = factor;
+			mGame->Direct3DDeviceContext()->UpdateSubresource(mQuadHullCBufferPerFrame.get(), 0, nullptr, &mQuadHullCBufferPerFrameData, 0, 0);
+		}
+		else
+		{
+			assert(index < std::size(mTriHullCBufferPerFrameData.TessellationInsideFactors));
+			mTriHullCBufferPerFrameData.TessellationInsideFactors[index] = factor;
+			mGame->Direct3DDeviceContext()->UpdateSubresource(mTriHullCBufferPerFrame.get(), 0, nullptr, &mTriHullCBufferPerFrameData, 0, 0);
+		}
+	}
+
 	span<const float> BasicTessellationMaterial::InsideFactors() const
 	{
 		return mShowQuadTopology ? span<const float>{ mQuadHullCBufferPerFrameData.TessellationInsideFactors } : span<const float>{ mTriHullCBufferPerFrameData.TessellationInsideFactors };

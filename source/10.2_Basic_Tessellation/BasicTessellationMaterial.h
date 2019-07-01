@@ -29,6 +29,8 @@ namespace Rendering
 
 		gsl::span<const float> EdgeFactors() const;
 		void SetUniformEdgeFactors(float factor);
+		void SetEdgeFactor(float factor, std::uint32_t index);
+		void SetInsideFactor(float factor, std::uint32_t index);
 
 		gsl::span<const float> InsideFactors() const;
 

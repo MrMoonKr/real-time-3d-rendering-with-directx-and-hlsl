@@ -61,25 +61,36 @@ namespace Rendering
 				AddImGuiTextField("Topology (T): "s, (mBasicTessellationDemo->ShowQuadTopology() ? "Quadrilateral"s : "Triangle"));
 				AddImGuiTextField("Uniform Tessellation (Space): "s, (mBasicTessellationDemo->UseUniformTessellation() ? "True"s : "False"s));
 				
-				if (mBasicTessellationDemo->UseUniformTessellation())
 				{
+					string edgeFactorControls;
+					string insideFactorControls;
+					if (mBasicTessellationDemo->UseUniformTessellation())
 					{
-						ostringstream edgeFactorsLabel;
-						edgeFactorsLabel << "Edge Factors (+Up/-Down): ["s;
-						edgeFactorsLabel << Join(mBasicTessellationDemo->EdgeFactors(), ", ").str() << "]"s;
-						ImGui::Text(edgeFactorsLabel.str().c_str());
+						edgeFactorControls = "+Up/-Down"s;
+					}
+					else
+					{
+						if (mBasicTessellationDemo->ShowQuadTopology())
+						{
+							edgeFactorControls = "+U/-H, +I/-J, +O/-K, +P/-L"s;
+							insideFactorControls = "+V/-B, +N/-M";
+						}
+						else
+						{
+							edgeFactorControls = "+U/-H, +I/-J, +O/-K"s;
+							insideFactorControls = "+V/-B";
+						}
 					}
 
-					{
-						ostringstream insideFactorsLabel;
-						insideFactorsLabel << "Inside Factors: ["s;
-						insideFactorsLabel << Join(mBasicTessellationDemo->InsideFactors(), ", ").str() << "]"s;
-						ImGui::Text(insideFactorsLabel.str().c_str());
-					}
-				}
-				else
-				{
+					ostringstream edgeFactorsLabel;
+					edgeFactorsLabel << "Edge Factors ("s << edgeFactorControls << "): ["s;
+					edgeFactorsLabel << Join(mBasicTessellationDemo->EdgeFactors(), ", ").str() << "]"s;
+					ImGui::Text(edgeFactorsLabel.str().c_str());
 
+					ostringstream insideFactorsLabel;
+					insideFactorsLabel << "Inside Factors (" << insideFactorControls << "): ["s;
+					insideFactorsLabel << Join(mBasicTessellationDemo->InsideFactors(), ", ").str() << "]"s;
+					ImGui::Text(insideFactorsLabel.str().c_str());
 				}
 
 				ImGui::End();
@@ -166,7 +177,56 @@ namespace Rendering
 		}
 		else
 		{
+			// Update non-uniform edge factors
+			{
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(0);
+				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::U, Keys::H, edgeFactor, 1, [&](const float& edgeFactor)
+				{
+					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 0);
+				}, MinTessellationFactor, MaxTessellationFactor);
+			}
+			{
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(1);
+				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::I, Keys::J, edgeFactor, 1, [&](const float& edgeFactor)
+				{
+					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 1);
+				}, MinTessellationFactor, MaxTessellationFactor);
+			}
+			{
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(2);
+				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::O, Keys::K, edgeFactor, 1, [&](const float& edgeFactor)
+				{
+					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 2);
+				}, MinTessellationFactor, MaxTessellationFactor);
+			}
 
+			if (mBasicTessellationDemo->ShowQuadTopology())
+			{
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(3);
+				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::P, Keys::L, edgeFactor, 1, [&](const float& edgeFactor)
+				{
+					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 3);
+				}, MinTessellationFactor, MaxTessellationFactor);
+			}
+
+			// Update non-uniform inside factors
+			{
+				float insideFactor = mBasicTessellationDemo->InsideFactors().at(0);
+				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::V, Keys::B, insideFactor, 1, [&](const float& insideFactor)
+					{
+						mBasicTessellationDemo->SetInsideFactor(insideFactor, 0);
+					}, MinTessellationFactor, MaxTessellationFactor);
+			}
+
+			if (mBasicTessellationDemo->ShowQuadTopology())
+			{
+				// Update non-uniform inside factors
+				float insideFactor = mBasicTessellationDemo->InsideFactors().at(1);
+				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::N, Keys::M, insideFactor, 1, [&](const float& insideFactor)
+				{
+					mBasicTessellationDemo->SetInsideFactor(insideFactor, 1);
+				}, MinTessellationFactor, MaxTessellationFactor);
+			}
 		}
 	}
 

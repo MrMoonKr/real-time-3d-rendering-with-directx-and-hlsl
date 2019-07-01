@@ -64,6 +64,16 @@ namespace Rendering
 		mMaterial.SetUniformEdgeFactors(factor);
 	}
 
+	void BasicTessellationDemo::SetEdgeFactor(float factor, uint32_t index)
+	{
+		mMaterial.SetEdgeFactor(factor, index);
+	}
+
+	void BasicTessellationDemo::SetInsideFactor(float factor, std::uint32_t index)
+	{
+		mMaterial.SetInsideFactor(factor, index);
+	}
+
 	span<const float> BasicTessellationDemo::InsideFactors() const
 	{
 		return mMaterial.InsideFactors();
