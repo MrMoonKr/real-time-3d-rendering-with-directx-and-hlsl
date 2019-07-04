@@ -16,7 +16,7 @@ namespace Library
 
 namespace Rendering
 {
-	class BasicTessellationDemo;
+	class HeightmapTessellationDemo;
 
 	class RenderingGame final : public Library::Game
 	{
@@ -34,14 +34,12 @@ namespace Rendering
 		inline static const DirectX::XMVECTORF32 BackgroundColor{ DirectX::Colors::CornflowerBlue };
 
 		void UpdateTessellationOptions();
-		
-		std::ostringstream Join(const gsl::span<const float>& values, const std::string& delimiter);
-
+	
 		std::shared_ptr<Library::KeyboardComponent> mKeyboard;
+		std::shared_ptr<Library::MouseComponent> mMouse;
+		std::shared_ptr<Library::GamePadComponent> mGamePad;
 		std::shared_ptr<Library::FpsComponent> mFpsComponent;
 		std::shared_ptr<Library::Grid> mGrid;
-		std::shared_ptr<BasicTessellationDemo> mBasicTessellationDemo;
-		float mAmbientLightIntensity{ 0.0f };
-		float mDirectionalLightIntensity{ 0.0f };
+		std::shared_ptr<HeightmapTessellationDemo> mHeightmapTessellationDemo;
 	};
 }

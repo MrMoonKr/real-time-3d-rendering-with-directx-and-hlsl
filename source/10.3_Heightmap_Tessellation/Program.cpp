@@ -6,8 +6,6 @@
 using namespace Library;
 using namespace Rendering;
 using namespace std;
-using namespace std::string_literals;
-using namespace std::filesystem;
 
 int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 {
@@ -19,7 +17,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	current_path(UtilityWin32::ExecutableDirectory());
 
 	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"1.5 - Colored Cube";
+	const wstring windowTitle = L"10.2 - Basic Tessellation";
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;
