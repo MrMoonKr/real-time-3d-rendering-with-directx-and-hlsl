@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE, LPSTR, int showCommand)
 	current_path(UtilityWin32::ExecutableDirectory());
 
 	const wstring windowClassName = L"RenderingClass";
-	const wstring windowTitle = L"10.2 - Basic Tessellation";
+	const wstring windowTitle = L"10.3 - Heightmap Tessellation";
 
 	const SIZE RenderTargetSize = { 1024, 768 };
 	HWND windowHandle;
