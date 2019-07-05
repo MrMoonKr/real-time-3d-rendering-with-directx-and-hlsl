@@ -7,13 +7,13 @@
 #include "FpsComponent.h"
 #include "FirstPersonCamera.h"
 #include "Grid.h"
+#include "PointSpriteDemo.h"
 #include "SamplerStates.h"
 #include "RasterizerStates.h"
 #include "VectorHelper.h"
 #include "ImGuiComponent.h"
 #include "imgui_impl_dx11.h"
 #include "UtilityWin32.h"
-#include "HeightmapTessellationDemo.h"
 
 using namespace std;
 using namespace gsl;
@@ -50,11 +50,10 @@ namespace Rendering
 		mServices.AddService(Camera::TypeIdClass(), camera.get());
 
 		mGrid = make_shared<Grid>(*this, camera);
-		mGrid->SetVisible(false);
 		mComponents.push_back(mGrid);
 
-		mHeightmapTessellationDemo = make_shared<HeightmapTessellationDemo>(*this, camera);
-		mComponents.push_back(mHeightmapTessellationDemo);
+		mPointSpriteDemo = make_shared<PointSpriteDemo>(*this, camera);
+		mComponents.push_back(mPointSpriteDemo);
 
 		auto imGui = make_shared<ImGuiComponent>(*this);
 		mComponents.push_back(imGui);
@@ -76,20 +75,6 @@ namespace Rendering
 				ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");
 				AddImGuiTextField("Toggle Grid (G): "s, (mGrid->Visible() ? "Visible"s : "Not Visible"s));
 
-				{
-					ostringstream edgeFactorsLabel;
-					edgeFactorsLabel << "Uniform Tessellation Factor (+Up/-Down): "s << mHeightmapTessellationDemo->EdgeFactors().at(0);
-					ImGui::Text(edgeFactorsLabel.str().c_str());
-				}
-
-				{
-					ostringstream displacementScaleLabel;
-					displacementScaleLabel << "Displacement Scale (+PageUp/-PageDown): "s << mHeightmapTessellationDemo->DisplacementScale();
-					ImGui::Text(displacementScaleLabel.str().c_str());
-				}
-
-				AddImGuiTextField("Toggle Animation (Space): "s, (mHeightmapTessellationDemo->AnimationEnabled() ? "True"s : "False"s));
-
 				ImGui::End();
 			});
 		imGui->AddRenderBlock(helpTextImGuiRenderBlock);
@@ -99,7 +84,8 @@ namespace Rendering
 		mComponents.push_back(mFpsComponent);
 
 		Game::Initialize();
-		camera->SetPosition(0.0f, 5.0f, 35.0f);
+
+		camera->SetPosition(0.0f, 2.5f, 20.0f);
 	}
 
 	void RenderingGame::Update(const GameTime &gameTime)
@@ -123,14 +109,7 @@ namespace Rendering
 		{
 			mGrid->SetVisible(!mGrid->Visible());
 		}
-
-		if (mKeyboard->WasKeyPressedThisFrame(Keys::Space))
-		{
-			mHeightmapTessellationDemo->SetAnimationEnabled(!mHeightmapTessellationDemo->AnimationEnabled());
-		}
-
-		UpdateTessellationOptions();
-
+		
 		Game::Update(gameTime);
 	}
 
@@ -158,7 +137,7 @@ namespace Rendering
 	{
 		mGrid = nullptr;
 		mFpsComponent = nullptr;
-		mHeightmapTessellationDemo = nullptr;
+		mPointSpriteDemo = nullptr;
 		RasterizerStates::Shutdown();
 		SamplerStates::Shutdown();
 		Game::Shutdown();		
@@ -167,23 +146,5 @@ namespace Rendering
 	void RenderingGame::Exit()
 	{
 		PostQuitMessage(0);
-	}
-
-	void RenderingGame::UpdateTessellationOptions()
-	{
-		// Update uniform tessellation factors
-		const float MinTessellationFactor = 1.0f;
-		const float MaxTessellationFactor = 64.0f;
-		float edgeFactor = mHeightmapTessellationDemo->EdgeFactors().at(0);
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, edgeFactor, 1, [&](const float& edgeFactor)
-		{
-			mHeightmapTessellationDemo->SetUniformFactors(edgeFactor);
-		}, MinTessellationFactor, MaxTessellationFactor);
-
-		float displacementScale = mHeightmapTessellationDemo->DisplacementScale();
-		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::PageUp, Keys::PageDown, displacementScale, 0.05f, [&](const float& displacementScale)
-			{
-				mHeightmapTessellationDemo->SetDisplacementScale(displacementScale);
-			});
 	}
 }

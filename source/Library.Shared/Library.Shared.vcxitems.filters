@@ -304,6 +304,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)DomainShaderReader.cpp">
       <Filter>Content\ContentReaders</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GeometryShaderReader.cpp">
+      <Filter>Content\ContentReaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h">
@@ -571,6 +574,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)DomainShaderReader.h">
       <Filter>Content\ContentReaders</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GeometryShaderReader.h">
+      <Filter>Content\ContentReaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ContentManager.inl">
@@ -602,6 +608,9 @@
     </None>
     <None Include="$(MSBuildThisFileDirectory)Material.inl">
       <Filter>Materials</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)VertexDeclarations.inl">
+      <Filter>Graphics</Filter>
     </None>
   </ItemGroup>
 </Project>

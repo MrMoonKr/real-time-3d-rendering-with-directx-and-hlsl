@@ -11,7 +11,7 @@ namespace Library
 
 namespace Rendering
 {
-    class RenderingGame : public Library::Game
+    class RenderingGame final : public Library::Game
     {
     public:
 		RenderingGame(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback);

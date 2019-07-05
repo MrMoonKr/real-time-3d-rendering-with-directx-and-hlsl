@@ -20,6 +20,7 @@
 #include <filesystem>
 #include <tuple>
 #include <iterator>
+#include <random>
 
 #if defined(DEBUG) || defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC

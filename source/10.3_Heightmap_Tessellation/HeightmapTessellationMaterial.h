@@ -39,8 +39,6 @@ namespace Rendering
 
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
-		virtual void BeginDraw() override;
-		virtual void EndDraw() override;
 
 		void UpdateTransforms(DirectX::FXMMATRIX viewProjectionMatrix);
 		void UpdateTextureMatrix(DirectX::FXMMATRIX textureMatrix);
@@ -49,7 +47,7 @@ namespace Rendering
 		struct VertexCBufferPerObject final
 		{
 			DirectX::XMFLOAT4X4 TextureMatrix{ Library::MatrixHelper::Identity };
-		};
+		};		
 
 		struct DomainCBufferPerObject final
 		{
@@ -64,6 +62,9 @@ namespace Rendering
 			float TessellationInsideFactors[2]{ 10.0f, 10.0f };
 			DirectX::XMFLOAT2 Padding;
 		};
+
+		virtual void BeginDraw() override;
+		virtual void EndDraw() override;
 
 		void UpdateUniformTessellationFactors(float source, gsl::span<float> edgeFactors, gsl::span<float> insideFactors);
 

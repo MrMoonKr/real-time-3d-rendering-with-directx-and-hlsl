@@ -1,14 +1,7 @@
 #pragma once
 
-#include <DirectXColors.h>
 #include "Material.h"
 #include "MatrixHelper.h"
-
-namespace Library
-{
-	class HullShader;
-	class DomainShader;
-}
 
 namespace Rendering
 {
@@ -24,20 +17,13 @@ namespace Rendering
 		BasicTessellationMaterial& operator=(BasicTessellationMaterial&&) = default;
 		virtual ~BasicTessellationMaterial() = default;
 
-		bool ShowQuadTopology() const;
-		void SetShowQuadTopology(bool showQuadTopology);
-
-		gsl::span<const float> EdgeFactors() const;
-		void SetUniformEdgeFactors(float factor);
-		void SetEdgeFactor(float factor, std::uint32_t index);
-		void SetInsideFactor(float factor, std::uint32_t index);
-
-		gsl::span<const float> InsideFactors() const;
-
 		virtual std::uint32_t VertexSize() const override;
 		virtual void Initialize() override;
 
-		void UpdateTransforms(DirectX::FXMMATRIX viewProjectionMatrix);
+		void UpdateTransforms(DirectX::FXMMATRIX worldViewProjectionMatrix);
+		void UpdateEdgeFactors();
+		void UpdateInsideFactors();
+		void UpdateUniformTessellationFactors();
 		
 	private:
 		struct DomainCBufferPerObject final
@@ -47,21 +33,18 @@ namespace Rendering
 		
 		struct QuadHullCBufferPerFrame final
 		{
-			float TessellationEdgeFactors[4]{ 2.0f, 2.0f, 2.0f, 2.0f };
-			float TessellationInsideFactors[2]{ 2.0f, 2.0f };
+			float TessellationEdgeFactors[4];
+			float TessellationInsideFactors[2];
 			DirectX::XMFLOAT2 Padding;
 		};
 
 		struct TriHullCBufferPerFrame final
 		{
-			float TessellationEdgeFactors[3]{ 2.0f, 2.0f, 2.0f };
-			float TessellationInsideFactors[1] { 2.0f };
+			float TessellationEdgeFactors[3];
+			float TessellationInsideFactor;
 		};
 
 		virtual void BeginDraw() override;
-		virtual void EndDraw() override;
-		void UpdateTopology();
-		void UpdateUniformTessellationFactors(float source, gsl::span<float> edgeFactors, gsl::span<float> insideFactors);
 
 		winrt::com_ptr<ID3D11Buffer> mDomainCBufferPerObject;
 		winrt::com_ptr<ID3D11Buffer> mQuadHullCBufferPerFrame;
@@ -69,11 +52,5 @@ namespace Rendering
 		DomainCBufferPerObject mDomainCBufferPerObjectData;
 		QuadHullCBufferPerFrame mQuadHullCBufferPerFrameData;
 		TriHullCBufferPerFrame mTriHullCBufferPerFrameData;
-		std::shared_ptr<Library::HullShader> mQuadHullShader;
-		std::shared_ptr<Library::HullShader> mTriHullShader;
-		std::shared_ptr<Library::DomainShader> mQuadDomainShader;
-		std::shared_ptr<Library::DomainShader> mTriDomainShader;
-
-		bool mShowQuadTopology{ false };
 	};
 }

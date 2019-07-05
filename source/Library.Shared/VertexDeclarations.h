@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 
 #include <DirectXMath.h>
 #include <d3d11.h>
@@ -114,7 +114,6 @@ namespace Library
 
 		inline static const gsl::span<const D3D11_INPUT_ELEMENT_DESC> InputElements{ _InputElements };
 
-		static void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer);
 		static void CreateVertexBuffer(gsl::not_null<ID3D11Device*> device, const gsl::span<const VertexPositionSize>& vertices, gsl::not_null<ID3D11Buffer**> vertexBuffer)
 		{
 			VertexDeclaration::CreateVertexBuffer(device, vertices, vertexBuffer);
@@ -241,3 +240,5 @@ namespace Library
 		}
 	};
 }
+
+#include "VertexDeclarations.inl"

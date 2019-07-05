@@ -79,6 +79,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_2_Basic_Tessellation", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_3_Heightmap_Tessellation", "..\source\10.3_Heightmap_Tessellation\10_3_Heightmap_Tessellation.vcxproj", "{BE51DA78-4357-401D-BC9D-915A04AB0DD8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_1_Point_Sprites", "..\source\10.1_Point_Sprites\10_1_Point_Sprites.vcxproj", "{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -355,6 +357,14 @@ Global
 		{BE51DA78-4357-401D-BC9D-915A04AB0DD8}.Release|Win32.Build.0 = Release|Win32
 		{BE51DA78-4357-401D-BC9D-915A04AB0DD8}.Release|x64.ActiveCfg = Release|x64
 		{BE51DA78-4357-401D-BC9D-915A04AB0DD8}.Release|x64.Build.0 = Release|x64
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Debug|Win32.Build.0 = Debug|Win32
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Debug|x64.ActiveCfg = Debug|x64
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Debug|x64.Build.0 = Debug|x64
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Release|Win32.ActiveCfg = Release|Win32
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Release|Win32.Build.0 = Release|Win32
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Release|x64.ActiveCfg = Release|x64
+		{EDF9FC00-37BB-4D80-84DE-899CEC0E4DF5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

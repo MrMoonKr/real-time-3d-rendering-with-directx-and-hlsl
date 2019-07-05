@@ -6,6 +6,7 @@
 #include "PixelShaderReader.h"
 #include "HullShaderReader.h"
 #include "DomainShaderReader.h"
+#include "GeometryShaderReader.h"
 #include "JsonObjectReader.h"
 #include "ModelReader.h"
 
@@ -37,6 +38,7 @@ namespace Library
 			AddContentTypeReader(make_shared<PixelShaderReader>(game));
 			AddContentTypeReader(make_shared<HullShaderReader>(game));
 			AddContentTypeReader(make_shared<DomainShaderReader>(game));
+			AddContentTypeReader(make_shared<GeometryShaderReader>(game));
 			AddContentTypeReader(make_shared<JsonObjectReader>(game));
 			AddContentTypeReader(make_shared<ModelReader>(game));
 

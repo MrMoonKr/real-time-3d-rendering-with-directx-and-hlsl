@@ -48,6 +48,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameTime.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GaussianBlur.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GeometryShader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GeometryShaderReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Grid.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HullShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)HullShaderReader.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameTime.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GaussianBlur.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GeometryShader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GeometryShaderReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Grid.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HullShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)HullShaderReader.h" />
@@ -210,5 +212,6 @@
     <None Include="$(MSBuildThisFileDirectory)StopWatch.inl" />
     <None Include="$(MSBuildThisFileDirectory)Texture.inl" />
     <None Include="$(MSBuildThisFileDirectory)VectorHelper.inl" />
+    <None Include="$(MSBuildThisFileDirectory)VertexDeclarations.inl" />
   </ItemGroup>
 </Project>

@@ -33,7 +33,7 @@ namespace Rendering
 		// Load a compiled vertex shader
 		vector<char> compiledVertexShader;
 		Utility::LoadBinaryFile(L"Content\\Shaders\\ColoredCubeDemoVS.cso", compiledVertexShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.put()), "ID3D11Device::CreatedVertexShader() failed.");
+		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(compiledVertexShader.data(), compiledVertexShader.size(), nullptr, mVertexShader.put()), "ID3D11Device::CreatedVertexShader() failed.");
 
 		// Load a compiled pixel shader
 		vector<char> compiledPixelShader;
