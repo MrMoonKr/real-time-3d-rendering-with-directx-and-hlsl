@@ -228,8 +228,8 @@ namespace Rendering
 
 	void FogMaterial::ResetPixelShaderResources()
 	{
-		Material::ClearShaderResources(ShaderStages::PS);
+		ClearShaderResources(ShaderStages::PS);
 		ID3D11ShaderResourceView* shaderResources[] = { mColorMap->ShaderResourceView().get(), mSpecularMap->ShaderResourceView().get() };
-		Material::AddShaderResources(ShaderStages::PS, shaderResources);
+		AddShaderResources(ShaderStages::PS, shaderResources);
 	}
 }
