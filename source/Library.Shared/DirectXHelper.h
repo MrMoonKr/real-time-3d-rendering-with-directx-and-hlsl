@@ -25,13 +25,14 @@ namespace Library
 		CS
 	};
 
-	const std::array<ShaderStages, 5> ProgrammableGraphicsShaderStages
+	const std::array<ShaderStages, 6> ProgrammableGraphicsShaderStages
 	{
 		ShaderStages::VS,
 		ShaderStages::HS,
 		ShaderStages::DS,
 		ShaderStages::GS,
 		ShaderStages::PS,
+		ShaderStages::CS,
 	};
 
 	inline bool ShaderStageIsProgrammable(ShaderStages shaderStage)

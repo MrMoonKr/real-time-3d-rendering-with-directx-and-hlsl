@@ -82,7 +82,7 @@ namespace Library
 		virtual void Draw();
 		virtual void Draw(gsl::not_null<ID3D11Buffer*> vertexBuffer, std::uint32_t vertexCount, std::uint32_t startVertexLocation = 0, std::uint32_t offset = 0);
 		virtual void DrawIndexed(gsl::not_null<ID3D11Buffer*> vertexBuffer, gsl::not_null<ID3D11Buffer*> indexBuffer, std::uint32_t indexCount, DXGI_FORMAT format = DXGI_FORMAT_R32_UINT, std::uint32_t startIndexLocation = 0, std::uint32_t baseVertexLocation = 0, std::uint32_t vertexOffset = 0, std::uint32_t indexOffset = 0);
-		virtual std::uint32_t VertexSize() const = 0;
+		virtual std::uint32_t VertexSize() const;
 
 	private:
 		struct ShaderStageCallInfo
@@ -98,6 +98,7 @@ namespace Library
 		static void SetDSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData);
 		static void SetGSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData);
 		static void SetPSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData);
+		static void SetCSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData);
 
 	protected:
 		static const std::map<ShaderStages, RTTI::IdType> ShaderStageTypeMap;

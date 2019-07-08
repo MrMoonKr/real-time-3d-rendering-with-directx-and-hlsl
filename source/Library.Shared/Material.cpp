@@ -7,6 +7,7 @@
 #include "DomainShader.h"
 #include "GeometryShader.h"
 #include "PixelShader.h"
+#include "ComputeShader.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -25,6 +26,7 @@ namespace Library
 		{ ShaderStages::DS, DomainShader::TypeIdClass() },
 		{ ShaderStages::GS, GeometryShader::TypeIdClass() },
 		{ ShaderStages::PS, PixelShader::TypeIdClass() },
+		{ ShaderStages::CS, ComputeShader::TypeIdClass() },
 	};
 
 	const map<RTTI::IdType, ShaderStages> Material::TypeShaderStageMap
@@ -34,6 +36,7 @@ namespace Library
 		{ DomainShader::TypeIdClass(), ShaderStages::DS },
 		{ GeometryShader::TypeIdClass(), ShaderStages::GS },
 		{ PixelShader::TypeIdClass(), ShaderStages::PS },
+		{ ComputeShader::TypeIdClass(), ShaderStages::CS },
 	};
 
 	const map<ShaderStages, Material::ShaderStageCallInfo> Material::ShaderStageCalls
@@ -81,6 +84,15 @@ namespace Library
 				bind(&ID3D11DeviceContext::PSSetConstantBuffers, _1, _2, _3, _4),
 				bind(&ID3D11DeviceContext::PSSetShaderResources, _1, _2, _3, _4),
 				bind(&ID3D11DeviceContext::PSSetSamplers, _1, _2, _3, _4),
+			}
+		},
+		{
+			ShaderStages::CS,
+			{
+				SetCSShader,
+				bind(&ID3D11DeviceContext::CSSetConstantBuffers, _1, _2, _3, _4),
+				bind(&ID3D11DeviceContext::CSSetShaderResources, _1, _2, _3, _4),
+				bind(&ID3D11DeviceContext::CSSetSamplers, _1, _2, _3, _4),
 			}
 		},
 	};
@@ -214,6 +226,11 @@ namespace Library
 		EndDraw();
 	}
 
+	uint32_t Material::VertexSize() const
+	{
+		return 0;
+	}
+
 	void Material::BeginDraw()
 	{
 		auto direct3DDeviceContext = mGame->Direct3DDeviceContext();
@@ -334,6 +351,19 @@ namespace Library
 		else
 		{
 			direct3DDeviceContext.PSSetShader(nullptr, nullptr, 0);
+		}
+	}
+
+	void Material::SetCSShader(ID3D11DeviceContext& direct3DDeviceContext, const ShaderStageData& shaderStageData)
+	{
+		if (shaderStageData.Shader != nullptr)
+		{
+			auto pixelShader = static_pointer_cast<ComputeShader>(shaderStageData.Shader);
+			direct3DDeviceContext.CSSetShader(pixelShader->Shader().get(), &shaderStageData.ShaderClassInstance, shaderStageData.ShaderClassInstance != nullptr ? 1 : 0);
+		}
+		else
+		{
+			direct3DDeviceContext.CSSetShader(nullptr, nullptr, 0);
 		}
 	}
 }

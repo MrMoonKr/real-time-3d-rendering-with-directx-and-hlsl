@@ -83,6 +83,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_1_Point_Sprites", "..\so
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_4_Dynamic_LOD", "..\source\10.4_Dynamic_LOD\10_4_Dynamic_LOD.vcxproj", "{5094A919-E33D-4314-B0D4-C06C1CCD646D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11_2_Compute_Shaders", "..\source\11.2_Compute_Shaders\11_2_Compute_Shaders.vcxproj", "{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
@@ -375,6 +377,14 @@ Global
 		{5094A919-E33D-4314-B0D4-C06C1CCD646D}.Release|Win32.Build.0 = Release|Win32
 		{5094A919-E33D-4314-B0D4-C06C1CCD646D}.Release|x64.ActiveCfg = Release|x64
 		{5094A919-E33D-4314-B0D4-C06C1CCD646D}.Release|x64.Build.0 = Release|x64
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Debug|Win32.Build.0 = Debug|Win32
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Debug|x64.ActiveCfg = Debug|x64
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Debug|x64.Build.0 = Debug|x64
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Release|Win32.ActiveCfg = Release|Win32
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Release|Win32.Build.0 = Release|Win32
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Release|x64.ActiveCfg = Release|x64
+		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

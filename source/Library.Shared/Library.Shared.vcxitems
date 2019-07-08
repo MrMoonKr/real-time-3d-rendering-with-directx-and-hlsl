@@ -23,6 +23,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BoneAnimation.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Camera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ColorHelper.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ComputeShader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ComputeShaderReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ContentManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ContentTypeReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ContentTypeReaderManager.cpp" />
@@ -119,6 +121,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BoneAnimation.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Camera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ColorHelper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ComputeShader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ComputeShaderReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ContentManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ContentTypeReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ContentTypeReaderManager.h" />
