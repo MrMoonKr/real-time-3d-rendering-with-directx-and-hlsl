@@ -109,72 +109,72 @@ namespace Library
 	{
 		assert(ShaderStageIsProgrammable(shaderStage));
 
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		return (shaderStageInfo.first ? shaderStageInfo.second->Shader : nullptr);
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		return (found ? shaderStageData->Shader : nullptr);
 	}
 
 	ID3D11ClassInstance* Material::GetShaderClassInstance(ShaderStages shaderStage)
 	{
 		assert(ShaderStageIsProgrammable(shaderStage));
 
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		return (shaderStageInfo.first ? shaderStageInfo.second->ShaderClassInstance : nullptr);
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		return (found ? shaderStageData->ShaderClassInstance : nullptr);
 	}
 
 	void Material::RemoveConstantBuffer(ShaderStages shaderStage, ID3D11Buffer* constantBuffer)
 	{
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		if (shaderStageInfo.first)
-		{;
-			auto& constantBuffers = shaderStageInfo.second->ConstantBuffers;
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		if (found)
+		{
+			auto& constantBuffers = shaderStageData->ConstantBuffers;
 			constantBuffers.erase(find(constantBuffers.begin(), constantBuffers.end(), constantBuffer));
 		}
 	}
 
 	void Material::ClearConstantBuffers(ShaderStages shaderStage)
 	{
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		if (shaderStageInfo.first)
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		if (found)
 		{
-			shaderStageInfo.second->ConstantBuffers.clear();
+			shaderStageData->ConstantBuffers.clear();
 		}
 	}
 
 	void Material::RemoveShaderResource(ShaderStages shaderStage, ID3D11ShaderResourceView* shaderResource)
 	{
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		if (shaderStageInfo.first)
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		if (found)
 		{
-			auto& shaderResources = shaderStageInfo.second->ShaderResources;
+			auto& shaderResources = shaderStageData->ShaderResources;
 			shaderResources.erase(find(shaderResources.begin(), shaderResources.end(), shaderResource));
 		}
 	}
 
 	void Material::ClearShaderResources(ShaderStages shaderStage)
 	{
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		if (shaderStageInfo.first)
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		if (found)
 		{
-			shaderStageInfo.second->ShaderResources.clear();
+			shaderStageData->ShaderResources.clear();
 		}
 	}
 
 	void Material::RemoveSamplerState(ShaderStages shaderStage, ID3D11SamplerState* samplerState)
 	{
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		if (shaderStageInfo.first)
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		if (found)
 		{
-			auto& samplerStates = shaderStageInfo.second->SamplerStates;
+			auto& samplerStates = shaderStageData->SamplerStates;
 			samplerStates.erase(find(samplerStates.begin(), samplerStates.end(), samplerState));
 		}
 	}
 
 	void Material::ClearSamplerStates(ShaderStages shaderStage)
 	{
-		auto shaderStageInfo = GetDataForShaderStage(shaderStage);
-		if (shaderStageInfo.first)
+		auto [found, shaderStageData] = GetDataForShaderStage(shaderStage);
+		if (found)
 		{
-			shaderStageInfo.second->SamplerStates.clear();
+			shaderStageData->SamplerStates.clear();
 		}
 	}
 

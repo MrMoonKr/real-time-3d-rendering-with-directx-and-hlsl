@@ -21,6 +21,6 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 	float3 ambient = color.rgb * AmbientColor;
 	float n_dot_l = dot(IN.Normal, LightDirection);
 	float3 diffuse = (n_dot_l > 0 ? color.rgb * n_dot_l * LightColor : (float3)0);
-
+	
 	return float4(saturate(ambient + diffuse), color.a);
 }

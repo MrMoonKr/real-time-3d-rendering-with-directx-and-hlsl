@@ -20,7 +20,7 @@ namespace Library
 			std::shared_ptr<Shader> Shader;
 			ID3D11ClassInstance* ShaderClassInstance{ nullptr };
 			std::vector<ID3D11Buffer*> ConstantBuffers;
-			std::vector<ID3D11ShaderResourceView*> ShaderResources;
+			std::vector<ID3D11ShaderResourceView*> ShaderResources;			
 			std::vector<ID3D11SamplerState*> SamplerStates;
 		};
 

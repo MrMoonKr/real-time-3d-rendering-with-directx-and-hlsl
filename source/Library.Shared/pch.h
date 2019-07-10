@@ -21,6 +21,7 @@
 #include <tuple>
 #include <iterator>
 #include <random>
+#include <cmath>
 
 #if defined(DEBUG) || defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC

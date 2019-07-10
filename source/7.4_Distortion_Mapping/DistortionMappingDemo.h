@@ -54,7 +54,7 @@ namespace Rendering
 		struct PixelCBufferPerObject
 		{
 			float DisplacementScale{ 1.0f };
-			DirectX::XMFLOAT3 Padding;
+			DirectX::XMFLOAT3 Padding{ 0.0f, 0.0f, 0.0f };
 		};
 
 		std::shared_ptr<DiffuseLightingDemo> mDiffuseLightingDemo;		

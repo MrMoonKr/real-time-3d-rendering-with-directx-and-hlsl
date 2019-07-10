@@ -2,7 +2,6 @@
 #include "DistortionMappingDemo.h"
 #include "Game.h"
 #include "DiffuseLightingDemo.h"
-#include "FullScreenQuad.h"
 #include "FullScreenQuadMaterial.h"
 #include "PixelShader.h"
 #include "Texture2D.h"

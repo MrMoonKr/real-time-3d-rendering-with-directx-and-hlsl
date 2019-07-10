@@ -16,12 +16,12 @@ namespace Library
 
 	struct BloomSettings
 	{
-		float BloomThreshold;
-		float BlurAmount;
-		float BloomIntensity;
-		float BloomSaturation;
-		float SceneIntensity;
-		float SceneSaturation;
+		float BloomThreshold{ 0.45f };
+		float BlurAmount{ 2.0f };
+		float BloomIntensity{ 1.25f };
+		float BloomSaturation{ 1.0f };
+		float SceneIntensity{ 1.0f };
+		float SceneSaturation{ 1.0f };
 	};
 
 	enum class BloomDrawModes

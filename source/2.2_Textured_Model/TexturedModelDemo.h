@@ -28,7 +28,7 @@ namespace Rendering
 	private:
 		struct CBufferPerObject
 		{
-			DirectX::XMFLOAT4X4 WorldViewProjection;
+			DirectX::XMFLOAT4X4 WorldViewProjection{ Library::MatrixHelper::Identity };
 		};
 
 		void CreateVertexBuffer(const Library::Mesh& mesh, gsl::not_null<ID3D11Buffer**> vertexBuffer) const;

@@ -271,7 +271,7 @@ namespace Rendering
 			mFogDemo->SetSpecularIntensity(mSpecularIntensity);
 		}
 
-		const auto ModulationRate = numeric_limits<uint8_t>::max();
+		constexpr auto ModulationRate = numeric_limits<uint8_t>::max();
 		if (mKeyboard->IsKeyDown(Keys::O) && mSpecularPower < numeric_limits<uint8_t>::max())
 		{
 			mSpecularPower += ModulationRate * elapsedTime;
