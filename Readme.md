@@ -31,6 +31,8 @@ Install dependencies (assuming default triplet of x86-windows):
 > vcpkg install ms-gsl:x64-windows directxtk:x64-windows assimp:x64-windows imgui:x64-windows
 ```
 
+Install C++/WinRT Visual Studio Extension ([VSIX](https://marketplace.visualstudio.com/items?itemName=CppWinRTTeam.cppwinrt101804264))
+
 Open the DirectX.sln file (within the build directory) in Visual Studio and enjoy!
 
 ### Using Older versions
