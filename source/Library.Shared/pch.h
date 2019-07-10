@@ -37,8 +37,8 @@
 #include <winrt\Windows.Foundation.h>
 
 // DirectX
-#include <d3d11_4.h>
-#include <dxgi1_6.h>
+#include <d3d11_3.h>
+#include <dxgi1_2.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>

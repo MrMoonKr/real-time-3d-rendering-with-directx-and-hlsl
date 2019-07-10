@@ -51,8 +51,8 @@ namespace Library
 		Game& operator=(Game&&) = delete;
 		virtual ~Game() = default;
 
-		gsl::not_null<ID3D11Device5*> Direct3DDevice() const;
-		gsl::not_null<ID3D11DeviceContext4*> Direct3DDeviceContext() const;
+		gsl::not_null<ID3D11Device3*> Direct3DDevice() const;
+		gsl::not_null<ID3D11DeviceContext3*> Direct3DDeviceContext() const;
 		gsl::not_null<IDXGISwapChain1*> SwapChain() const;
 		gsl::not_null<ID3D11RenderTargetView*> RenderTargetView() const;
 		gsl::not_null<ID3D11DepthStencilView*> DepthStencilView() const;
@@ -96,8 +96,8 @@ namespace Library
 		inline static const std::uint32_t DefaultMultiSamplingCount{ 4 };
 		inline static const std::uint32_t DefaultBufferCount{ 2 };
 
-		winrt::com_ptr<ID3D11Device5> mDirect3DDevice;
-		winrt::com_ptr<ID3D11DeviceContext4> mDirect3DDeviceContext;
+		winrt::com_ptr<ID3D11Device3> mDirect3DDevice;
+		winrt::com_ptr<ID3D11DeviceContext3> mDirect3DDeviceContext;
 		winrt::com_ptr<IDXGISwapChain1> mSwapChain;
 		D3D_FEATURE_LEVEL mFeatureLevel = DefaultFeatureLevel;
 

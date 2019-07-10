@@ -141,10 +141,10 @@ namespace Library
 		com_ptr<ID3D11Device> direct3DDevice;
 		com_ptr<ID3D11DeviceContext> direct3DDeviceContext;
 		ThrowIfFailed(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, featureLevels, narrow_cast<uint32_t>(size(featureLevels)), D3D11_SDK_VERSION, direct3DDevice.put(), &mFeatureLevel, direct3DDeviceContext.put()), "D3D11CreateDevice() failed");
-		mDirect3DDevice = direct3DDevice.as<ID3D11Device5>();
+		mDirect3DDevice = direct3DDevice.as<ID3D11Device3>();
 		assert(mDirect3DDevice != nullptr);
 
-		mDirect3DDeviceContext = direct3DDeviceContext.as<ID3D11DeviceContext4>();
+		mDirect3DDeviceContext = direct3DDeviceContext.as<ID3D11DeviceContext3>();
 		assert(mDirect3DDeviceContext != nullptr);
 
 		ThrowIfFailed(mDirect3DDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, mMultiSamplingCount, &mMultiSamplingQualityLevels), "CheckMultisampleQualityLevels() failed.");
@@ -215,13 +215,13 @@ namespace Library
 			swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 #endif
 
-			com_ptr<IDXGIDevice4> dxgiDevice = mDirect3DDevice.as<IDXGIDevice4>();
+			com_ptr<IDXGIDevice> dxgiDevice = mDirect3DDevice.as<IDXGIDevice>();
 			assert(dxgiDevice != nullptr);
 
 			com_ptr<IDXGIAdapter> dxgiAdapter;
 			ThrowIfFailed(dxgiDevice->GetAdapter(dxgiAdapter.put()));
 
-			com_ptr<IDXGIFactory5> dxgiFactory;
+			com_ptr<IDXGIFactory2> dxgiFactory;
 			ThrowIfFailed(dxgiAdapter->GetParent(IID_PPV_ARGS(dxgiFactory.put())));
 
 			void* window = mGetWindow();
@@ -236,8 +236,6 @@ namespace Library
 #else
 			ThrowIfFailed(dxgiFactory->CreateSwapChainForCoreWindow(mDirect3DDevice.get(), reinterpret_cast<IUnknown*>(window), &swapChainDesc, nullptr, mSwapChain.put()), "IDXGIFactory2::CreateSwapChainForCoreWindow() failed.");
 #endif
-
-			ThrowIfFailed(dxgiDevice->SetMaximumFrameLatency(1));
 		}
 		else
 		{
@@ -254,13 +252,13 @@ namespace Library
 			}
 			else
 			{
-				ThrowIfFailed(hr, "IDXGISwapChain1::ResizeBuffers() failed.");
+				ThrowIfFailed(hr, "IDXGISwapChain::ResizeBuffers() failed.");
 			}
 		}
 
 		// Create a render target view
 		com_ptr<ID3D11Texture2D> backBuffer;
-		ThrowIfFailed(mSwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.put())), "IDXGISwapChain1::GetBuffer() failed.");
+		ThrowIfFailed(mSwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.put())), "IDXGISwapChain::GetBuffer() failed.");
 		backBuffer->GetDesc(&mBackBufferDesc);
 		ThrowIfFailed(mDirect3DDevice->CreateRenderTargetView(backBuffer.get(), nullptr, mRenderTargetView.put()), "IDXGIDevice::CreateRenderTargetView() failed.");
 

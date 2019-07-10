@@ -1,13 +1,13 @@
 namespace Library
 {
-	inline gsl::not_null<ID3D11Device5*> Game::Direct3DDevice() const
+	inline gsl::not_null<ID3D11Device3*> Game::Direct3DDevice() const
 	{
-		return gsl::not_null<ID3D11Device5*>(mDirect3DDevice.get());
+		return gsl::not_null<ID3D11Device3*>(mDirect3DDevice.get());
 	}
 
-	inline gsl::not_null<ID3D11DeviceContext4*> Game::Direct3DDeviceContext() const
+	inline gsl::not_null<ID3D11DeviceContext3*> Game::Direct3DDeviceContext() const
 	{
-		return gsl::not_null<ID3D11DeviceContext4*>(mDirect3DDeviceContext.get());
+		return gsl::not_null<ID3D11DeviceContext3*>(mDirect3DDeviceContext.get());
 	}
 
 	inline gsl::not_null<IDXGISwapChain1*> Game::SwapChain() const
