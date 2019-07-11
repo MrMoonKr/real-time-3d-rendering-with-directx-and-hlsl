@@ -58,9 +58,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)imgui_impl_dx11.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)JsonHelper.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)JsonObject.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)JsonObjectReader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)KeyboardComponent.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Keyframe.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Light.cpp" />
@@ -154,9 +151,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)HullShaderReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ImGuiComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)imgui_impl_dx11.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)JsonHelper.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)JsonObject.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)JsonObjectReader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)KeyboardComponent.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Keyframe.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Light.h" />

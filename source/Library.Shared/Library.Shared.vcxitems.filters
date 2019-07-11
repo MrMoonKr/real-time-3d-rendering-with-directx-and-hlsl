@@ -40,9 +40,6 @@
     <Filter Include="Content\ContentReaders">
       <UniqueIdentifier>{a7e4884d-bc69-46d0-94bc-ea6531266381}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Json">
-      <UniqueIdentifier>{31e6129c-14b5-44e7-8879-b26ebe197894}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Camera.cpp">
@@ -220,15 +217,6 @@
       <Filter>Content\ContentReaders</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)PixelShaderReader.cpp">
-      <Filter>Content\ContentReaders</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)JsonObject.cpp">
-      <Filter>Json</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)JsonHelper.cpp">
-      <Filter>Json</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)JsonObjectReader.cpp">
       <Filter>Content\ContentReaders</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)SkyboxMaterial.cpp">
@@ -499,15 +487,6 @@
       <Filter>Content\ContentReaders</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)PixelShaderReader.h">
-      <Filter>Content\ContentReaders</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)JsonHelper.h">
-      <Filter>Json</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)JsonObject.h">
-      <Filter>Json</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)JsonObjectReader.h">
       <Filter>Content\ContentReaders</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)SkyboxMaterial.h">
