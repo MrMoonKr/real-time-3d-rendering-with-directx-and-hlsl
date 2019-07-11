@@ -13,7 +13,7 @@ namespace Library
 		inline static winrt::com_ptr<ID3D11SamplerState> TrilinearWrap;
 		inline static winrt::com_ptr<ID3D11SamplerState> TrilinearMirror;
 		inline static winrt::com_ptr<ID3D11SamplerState> TrilinearClamp;
-		inline static winrt::com_ptr<ID3D11SamplerState> TrilinerBorder;
+		inline static winrt::com_ptr<ID3D11SamplerState> TrilinearBorder;
 		inline static winrt::com_ptr<ID3D11SamplerState> PointClamp;
 		inline static winrt::com_ptr<ID3D11SamplerState> DepthMap;
 		inline static winrt::com_ptr<ID3D11SamplerState> ShadowMap;

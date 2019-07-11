@@ -127,7 +127,7 @@ namespace Rendering
 		std::shared_ptr<Library::Texture2D> mProjectedMap;
 		winrt::com_ptr<ID3D11ShaderResourceView> mDepthMap;
 		winrt::com_ptr<ID3D11SamplerState> mColorMapSamplerState{ Library::SamplerStates::TrilinearWrap };
-		winrt::com_ptr<ID3D11SamplerState> mProjectedMapSamplerState{ Library::SamplerStates::TrilinerBorder };
+		winrt::com_ptr<ID3D11SamplerState> mProjectedMapSamplerState{ Library::SamplerStates::TrilinearBorder };
 		winrt::com_ptr<ID3D11SamplerState> mDepthMapSamplerState{ Library::SamplerStates::DepthMap };
 		std::array<ID3D11SamplerState*, 3> mPSSamplerStates;
 		std::array<ID3D11ShaderResourceView*, 2> mNoDepthMapPSShadersResources;

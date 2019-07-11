@@ -41,7 +41,7 @@ namespace Library
 		samplerStateDesc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerStateDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 		memcpy(samplerStateDesc.BorderColor, BorderColor.f, sizeof(FLOAT) * 4);
-		ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerStateDesc, TrilinerBorder.put()), "ID3D11Device::CreateSamplerState() failed.");
+		ThrowIfFailed(direct3DDevice->CreateSamplerState(&samplerStateDesc, TrilinearBorder.put()), "ID3D11Device::CreateSamplerState() failed.");
 
 		samplerStateDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 		samplerStateDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -77,7 +77,7 @@ namespace Library
 		TrilinearWrap = nullptr;
 		TrilinearMirror = nullptr;
 		TrilinearClamp = nullptr;
-		TrilinerBorder = nullptr;
+		TrilinearBorder = nullptr;
 		PointClamp = nullptr;
 		DepthMap = nullptr;
 		ShadowMap = nullptr;
