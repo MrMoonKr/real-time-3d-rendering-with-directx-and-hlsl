@@ -219,7 +219,7 @@
   <ItemGroup>
     <Image Include="Content\Textures\Blocks_COLOR_RGB.png" />
     <Image Include="Content\Textures\Blocks_DISP.png" />
-    <Image Include="Content\Textures\DefaultNormalMap.png" />
+    <Image Include="Content\Textures\DefaultDisplacementMap.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

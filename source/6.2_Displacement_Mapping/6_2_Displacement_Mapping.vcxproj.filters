@@ -46,10 +46,10 @@
     <Image Include="Content\Textures\Blocks_COLOR_RGB.png">
       <Filter>Content\Textures</Filter>
     </Image>
-    <Image Include="Content\Textures\DefaultNormalMap.png">
+    <Image Include="Content\Textures\Blocks_DISP.png">
       <Filter>Content\Textures</Filter>
     </Image>
-    <Image Include="Content\Textures\Blocks_DISP.png">
+    <Image Include="Content\Textures\DefaultDisplacementMap.png">
       <Filter>Content\Textures</Filter>
     </Image>
   </ItemGroup>
