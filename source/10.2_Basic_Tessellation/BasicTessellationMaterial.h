@@ -49,13 +49,13 @@ namespace Rendering
 		{
 			float TessellationEdgeFactors[4]{ 2.0f, 2.0f, 2.0f, 2.0f };
 			float TessellationInsideFactors[2]{ 2.0f, 2.0f };
-			DirectX::XMFLOAT2 Padding;
+			DirectX::XMFLOAT2 Padding{ 0.0f, 0.0f };
 		};
 
 		struct TriHullCBufferPerFrame final
 		{
 			float TessellationEdgeFactors[3]{ 2.0f, 2.0f, 2.0f };
-			float TessellationInsideFactors[1] { 2.0f };
+			float TessellationInsideFactors[1]{ 2.0f };
 		};
 
 		virtual void BeginDraw() override;

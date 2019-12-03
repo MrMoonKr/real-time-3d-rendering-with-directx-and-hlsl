@@ -23,9 +23,6 @@
     <ClInclude Include="PointSpriteDemo.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="Content\Shaders\PointSpriteDemoPS.hlsl">
       <Filter>Content\Shaders</Filter>
     </FxCompile>
@@ -40,5 +37,8 @@
     <Image Include="Content\Textures\BookCover.png">
       <Filter>Content\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

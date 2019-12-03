@@ -19,6 +19,10 @@ namespace Library
 	TexturedModelMaterial::TexturedModelMaterial(Game& game, shared_ptr<Texture2D> texture) :
 		Material(game), mTexture(move(texture))
 	{
+		if (mTexture != nullptr)
+		{
+			AddShaderResource(ShaderStages::PS, mTexture->ShaderResourceView().get());
+		}
 	}
 
 	com_ptr<ID3D11SamplerState> TexturedModelMaterial::SamplerState() const

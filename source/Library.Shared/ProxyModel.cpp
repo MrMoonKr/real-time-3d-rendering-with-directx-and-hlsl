@@ -20,7 +20,7 @@ namespace Library
 	ProxyModel::ProxyModel(Game& game, const shared_ptr<Camera>& camera, const std::string& modelFileName, float scale) :
 		DrawableGameComponent(game, camera),
 		mModelFileName(modelFileName), mScale(scale),
-		mMaterial(*mGame)
+		mMaterial(game)
 	{
 	}
 

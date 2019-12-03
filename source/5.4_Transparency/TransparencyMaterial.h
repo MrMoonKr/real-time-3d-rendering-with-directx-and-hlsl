@@ -71,7 +71,7 @@ namespace Rendering
 			DirectX::XMFLOAT3 CameraPosition{ Library::Vector3Helper::Zero };
 			float FogStart{ 20.0f };			
 			float FogRange{ 40.0f };
-			float Padding[3];
+			float Padding[3]{ 0.0f, 0.0f, 0.0f };
 		};
 
 		struct VertexCBufferPerObject
@@ -88,7 +88,7 @@ namespace Rendering
 			DirectX::XMFLOAT4 LightColor{ DirectX::Colors::White };
 			DirectX::XMFLOAT4 FogColor{ DirectX::Colors::CornflowerBlue };
 			DirectX::XMFLOAT3 CameraPosition{ Library::Vector3Helper::Zero };
-			float Padding2;
+			float Padding2{ 0.0f };
 		};
 
 		struct PixelCBufferPerObject
