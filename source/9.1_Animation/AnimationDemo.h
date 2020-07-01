@@ -67,7 +67,6 @@ namespace Rendering
 		std::uint32_t mIndexCount{ 0 };
 		Library::DirectionalLight mDirectionalLight;
 		std::unique_ptr<Library::ProxyModel> mProxyModel;
-		float mModelRotationAngle{ 0.0f };
 		bool mUpdateMaterial{ true };
 		bool mUpdateMaterialBoneTransforms{ true };
 		std::unique_ptr<Library::AnimationPlayer> mAnimationPlayer;

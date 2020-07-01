@@ -78,7 +78,7 @@ namespace Rendering
 
 				{
 					ostringstream edgeFactorsLabel;
-					edgeFactorsLabel << "Uniform Tessellation Factor (+Up/-Down): "s << mHeightmapTessellationDemo->EdgeFactors().at(0);
+					edgeFactorsLabel << "Uniform Tessellation Factor (+Up/-Down): "s << mHeightmapTessellationDemo->EdgeFactors()[0];
 					ImGui::Text(edgeFactorsLabel.str().c_str());
 				}
 
@@ -174,7 +174,7 @@ namespace Rendering
 		// Update uniform tessellation factors
 		const float MinTessellationFactor = 1.0f;
 		const float MaxTessellationFactor = 64.0f;
-		float edgeFactor = mHeightmapTessellationDemo->EdgeFactors().at(0);
+		float edgeFactor = mHeightmapTessellationDemo->EdgeFactors()[0];
 		UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, edgeFactor, 1, [&](const float& edgeFactor)
 		{
 			mHeightmapTessellationDemo->SetUniformFactors(edgeFactor);

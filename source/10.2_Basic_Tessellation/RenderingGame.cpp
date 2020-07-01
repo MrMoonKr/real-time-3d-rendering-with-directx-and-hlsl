@@ -169,7 +169,7 @@ namespace Rendering
 		const float MaxTessellationFactor = 64.0f;
 		if (mBasicTessellationDemo->UseUniformTessellation())
 		{
-			float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(0);
+			float edgeFactor = mBasicTessellationDemo->EdgeFactors()[0];
 			UpdateValueWithKeyboard<float>(*mKeyboard, Keys::Up, Keys::Down, edgeFactor, 1, [&](const float& edgeFactor)
 			{
 				mBasicTessellationDemo->SetUniformEdgeFactors(edgeFactor);
@@ -179,21 +179,21 @@ namespace Rendering
 		{
 			// Update non-uniform edge factors
 			{
-				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(0);
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors()[0];
 				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::U, Keys::H, edgeFactor, 1, [&](const float& edgeFactor)
 				{
 					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 0);
 				}, MinTessellationFactor, MaxTessellationFactor);
 			}
 			{
-				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(1);
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors()[1];
 				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::I, Keys::J, edgeFactor, 1, [&](const float& edgeFactor)
 				{
 					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 1);
 				}, MinTessellationFactor, MaxTessellationFactor);
 			}
 			{
-				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(2);
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors()[2];
 				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::O, Keys::K, edgeFactor, 1, [&](const float& edgeFactor)
 				{
 					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 2);
@@ -202,7 +202,7 @@ namespace Rendering
 
 			if (mBasicTessellationDemo->ShowQuadTopology())
 			{
-				float edgeFactor = mBasicTessellationDemo->EdgeFactors().at(3);
+				float edgeFactor = mBasicTessellationDemo->EdgeFactors()[3];
 				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::P, Keys::L, edgeFactor, 1, [&](const float& edgeFactor)
 				{
 					mBasicTessellationDemo->SetEdgeFactor(edgeFactor, 3);
@@ -211,7 +211,7 @@ namespace Rendering
 
 			// Update non-uniform inside factors
 			{
-				float insideFactor = mBasicTessellationDemo->InsideFactors().at(0);
+				float insideFactor = mBasicTessellationDemo->InsideFactors()[0];
 				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::V, Keys::B, insideFactor, 1, [&](const float& insideFactor)
 					{
 						mBasicTessellationDemo->SetInsideFactor(insideFactor, 0);
@@ -221,7 +221,7 @@ namespace Rendering
 			if (mBasicTessellationDemo->ShowQuadTopology())
 			{
 				// Update non-uniform inside factors
-				float insideFactor = mBasicTessellationDemo->InsideFactors().at(1);
+				float insideFactor = mBasicTessellationDemo->InsideFactors()[1];
 				UpdateValueWithKeyboard<float>(*mKeyboard, Keys::N, Keys::M, insideFactor, 1, [&](const float& insideFactor)
 				{
 					mBasicTessellationDemo->SetInsideFactor(insideFactor, 1);
