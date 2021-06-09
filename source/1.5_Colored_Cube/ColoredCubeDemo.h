@@ -35,7 +35,7 @@ namespace Rendering
 		winrt::com_ptr<ID3D11Buffer> mVertexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mIndexBuffer;
 		winrt::com_ptr<ID3D11Buffer> mConstantBuffer;		
-		std::uint32_t mIndexCount{ 0 };
+		std::uint16_t mIndexCount{ 0 };
 		float mRotationAngle{ 0.0f };
 		bool mAnimationEnabled{ true };
 		bool mUpdateConstantBuffer{ true };

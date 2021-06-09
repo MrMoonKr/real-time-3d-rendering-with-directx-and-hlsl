@@ -94,10 +94,10 @@ namespace Rendering
 			0, 4, 7
 		};
 
-		mIndexCount = narrow_cast<uint32_t>(size(indices));
+		mIndexCount = narrow_cast<uint16_t>(size(indices));
 
 		D3D11_BUFFER_DESC indexBufferDesc{ 0 };
-		indexBufferDesc.ByteWidth = narrow_cast<uint16_t>(sizeof(uint16_t)) * mIndexCount;
+		indexBufferDesc.ByteWidth = sizeof(uint16_t) * mIndexCount;
 		indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
