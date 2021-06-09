@@ -80,5 +80,5 @@ float4 main(VS_OUTPUT IN) : SV_TARGET
 		totalLightContribution += GetLightContribution(lightContributionData);
 	}
 
-	return float4(ambient + totalLightContribution, color.a);
+	return float4(saturate(ambient + totalLightContribution), color.a);
 }
