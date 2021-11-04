@@ -117,7 +117,7 @@ With the refactoring of v2.0, I have changed the organization of the projects. W
     * 10_3_Heightmap_Tessellation
     * 10_4_Dynamic_LOD
 * Chapter 22
-    * 11_1_Computer_Shaders
+    * 11_1_Compute_Shaders
 
 ### Using v1.0 (This material is out-of-date with the head revision)
 
