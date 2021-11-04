@@ -14,7 +14,7 @@ There is also a companion site for the book at [http://www.varcholik.org/](http:
 
 Retrieve this repository:
 ```
-> git clone https://pvarcholik@bitbucket.org/pvarcholik/real-time-3d-rendering-with-directx-and-hlsl.git
+> git clone git clone https://bitbucket.org/pvarcholik/real-time-3d-rendering-with-directx-and-hlsl.git
 ```
 
 Install vcpkg ([additional detail](https://github.com/microsoft/vcpkg)):
@@ -39,7 +39,7 @@ Open the DirectX.sln file (within the build directory) in Visual Studio and enjo
 
 Retrieve this repository:
 ```
-> git clone https://pvarcholik@bitbucket.org/pvarcholik/real-time-3d-rendering-with-directx-and-hlsl.git
+> git clone https://bitbucket.org/pvarcholik/real-time-3d-rendering-with-directx-and-hlsl.git
 > cd real-time-3d-rendering-with-directx-and-hlsl
 > git checkout <tagname> (see list of tags below. e.g. git checkout v1.0)
 ```
