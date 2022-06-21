@@ -216,7 +216,6 @@ namespace Library
 		BeginDraw();
 
 		const uint32_t stride = VertexSize();
-		const uint32_t offset = 0;
 		ID3D11Buffer* const vertexBuffers[]{ vertexBuffer };
 		direct3DDeviceContext->IASetVertexBuffers(0, narrow_cast<uint32_t>(size(vertexBuffers)), vertexBuffers, &stride, &vertexOffset);
 		direct3DDeviceContext->IASetIndexBuffer(indexBuffer, format, indexOffset);

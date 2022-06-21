@@ -5,13 +5,13 @@ cbuffer CBufferPerObject
 
 struct VS_INPUT
 {
-	float4 ObjectPosition: POSITION;
+	float4 ObjectPosition : POSITION;
 	float2 TextureCoordinate : TEXCOORD;
 };
 
 struct VS_OUTPUT
 {
-	float4 Position: SV_Position;
+	float4 Position : SV_Position;
 	float2 TextureCoordinate : TEXCOORD;
 };
 

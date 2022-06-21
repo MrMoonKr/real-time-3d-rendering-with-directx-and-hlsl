@@ -140,7 +140,7 @@ namespace Rendering
 		mFpsComponent = nullptr;
 		mAddressingModesDemo = nullptr;
 		SamplerStates::Shutdown();
-		Game::Shutdown();		
+		Game::Shutdown();
 	}
 
 	void RenderingGame::Exit()

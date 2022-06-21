@@ -8,11 +8,7 @@
   <ItemDefinitionGroup>
     <CustomBuildStep>
       <Command>IF EXIST "$(SharedPdb)" xcopy /Y /F "$(SharedPdb)" "$(IntDir)"
-IF EXIST "$(SharedIdb)" xcopy /Y /F "$(SharedIdb)" "$(IntDir)"
-
-mkdir "$(OutDir)Content"
-IF EXIST "$(SolutionDir)..\content" xcopy /E /Y "$(SolutionDir)..\content" "$(OutDir)Content\"
-IF EXIST "$(ProjectDir)content" xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"</Command>
+IF EXIST "$(SharedIdb)" xcopy /Y /F "$(SharedIdb)" "$(IntDir)"</Command>
       <Outputs>$(IntDir)vc$(PlatformToolsetVersion).pdb</Outputs>
       <Inputs>$(SharedPdb)</Inputs>
     </CustomBuildStep>

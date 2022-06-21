@@ -107,26 +107,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -172,8 +172,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
+      <Command>IF NOT EXIST "$(SolutionDir)..\Content" mkdir "$(SolutionDir)..\Content"
 IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
 xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>
@@ -209,8 +208,7 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
+      <Command>IF NOT EXIST "$(SolutionDir)..\Content" mkdir "$(SolutionDir)..\Content"
 IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
 xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>
@@ -249,8 +247,7 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
+      <Command>IF NOT EXIST "$(SolutionDir)..\Content" mkdir "$(SolutionDir)..\Content"
 IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
 xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>
@@ -289,8 +286,7 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(SolutionDir)..\content"
-
+      <Command>IF NOT EXIST "$(SolutionDir)..\Content" mkdir "$(SolutionDir)..\Content"
 IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
 xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
     </PostBuildEvent>

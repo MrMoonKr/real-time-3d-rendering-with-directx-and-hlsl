@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29009.5
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{67DD0724-C093-4DE4-ADE2-83C11C0278F7}"
 EndProject
@@ -85,11 +85,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_4_Dynamic_LOD", "..\sour
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11_2_Compute_Shaders", "..\source\11.2_Compute_Shaders\11_2_Compute_Shaders.vcxproj", "{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bonus_FullScreenQuad", "..\source\Bonus_FullScreenQuad\Bonus_FullScreenQuad.vcxproj", "{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bonus_CpuWriteToTexture", "..\source\Bonus_CpuWriteToTexture\Bonus_CpuWriteToTexture.vcxproj", "{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}"
+EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
-		..\source\Library.Shared\Library.Shared.vcxitems*{8f60ba9c-aab6-47e4-bd36-dcdebf4d9ae6}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
@@ -385,6 +385,22 @@ Global
 		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Release|Win32.Build.0 = Release|Win32
 		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Release|x64.ActiveCfg = Release|x64
 		{DE7CC1DA-419E-4BEF-9C04-1A71F51FDD5B}.Release|x64.Build.0 = Release|x64
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Debug|Win32.Build.0 = Debug|Win32
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Debug|x64.ActiveCfg = Debug|x64
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Debug|x64.Build.0 = Debug|x64
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Release|Win32.ActiveCfg = Release|Win32
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Release|Win32.Build.0 = Release|Win32
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Release|x64.ActiveCfg = Release|x64
+		{0D386C2C-16E9-4603-9DAD-9BA2092CB40C}.Release|x64.Build.0 = Release|x64
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Debug|Win32.Build.0 = Debug|Win32
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Debug|x64.ActiveCfg = Debug|x64
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Debug|x64.Build.0 = Debug|x64
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Release|Win32.ActiveCfg = Release|Win32
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Release|Win32.Build.0 = Release|Win32
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Release|x64.ActiveCfg = Release|x64
+		{8EA9EC3C-1D3F-439C-9ED1-A1362187FEEF}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -394,5 +410,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F708FE9A-2CCA-4155-A457-57D4C1FA9118}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\source\Library.Shared\Library.Shared.vcxitems*{45d41acc-2c3c-43d2-bc10-02aa73ffc7c7}*SharedItemsImports = 9
+		..\source\Library.Shared\Library.Shared.vcxitems*{8f60ba9c-aab6-47e4-bd36-dcdebf4d9ae6}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
