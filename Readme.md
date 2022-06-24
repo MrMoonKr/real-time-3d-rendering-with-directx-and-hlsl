@@ -8,7 +8,7 @@ There is also a companion site for the book at [http://www.varcholik.org/](http:
 
 ### Prerequisites
 * Windows 10
-* Visual Studio 2019 or newer
+* Visual Studio 2022 or newer
 
 ### Quick Start (latest)
 
