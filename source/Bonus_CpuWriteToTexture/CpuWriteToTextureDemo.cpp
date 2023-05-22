@@ -30,7 +30,6 @@ namespace Rendering
 
 	void CpuWriteToTextureDemo::Initialize()
 	{
-
 		const auto renderTargetSize = mGame->RenderTargetSize();
 		D3D11_TEXTURE2D_DESC textureDesc;
 		ZeroMemory(&textureDesc, sizeof(textureDesc));

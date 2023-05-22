@@ -3,6 +3,7 @@
 #include <gsl\gsl>
 #include <winrt\Windows.Foundation.h>
 #include <d3d11.h>
+#include <DirectXTK\SpriteBatch.h>
 #include "DrawableGameComponent.h"
 #include "MatrixHelper.h"
 #include "PointLight.h"
@@ -10,11 +11,6 @@
 #include "Rectangle.h"
 #include "ShadowMappingMaterial.h"
 #include "RenderStateHelper.h"
-
-namespace DirectX
-{
-	class SpriteBatch;
-}
 
 namespace Library
 {

@@ -11,11 +11,6 @@
 #include "ProjectiveTextureMappingMaterial.h"
 #include "RenderStateHelper.h"
 
-namespace DirectX
-{
-	class SpriteBatch;
-}
-
 namespace Library
 {
 	class ProxyModel;

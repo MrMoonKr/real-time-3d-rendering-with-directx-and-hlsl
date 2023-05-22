@@ -72,7 +72,7 @@ namespace Rendering
 				ImGui::Text(fpsLabel.str().c_str());
 			}
 			
-			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");			
+			ImGui::Text("Camera (WASD + Left-Click-Mouse-Look)");	
 			ImGui::Text("Rotate Directional Light (Arrow Keys)");
 
 			{

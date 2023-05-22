@@ -2,13 +2,8 @@
 
 #include "DrawableGameComponent.h"
 #include <DirectXMath.h>
+#include <DirectXTK\SpriteBatch.h>
 #include <chrono>
-
-namespace DirectX
-{
-	class SpriteBatch;
-	class SpriteFont;
-}
 
 namespace Library
 {
