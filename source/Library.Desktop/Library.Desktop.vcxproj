@@ -208,9 +208,9 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>IF NOT EXIST "$(SolutionDir)..\Content" mkdir "$(SolutionDir)..\Content"
+      <Command>IF NOT EXIST "$(SolutionDir)..\content" mkdir "$(SolutionDir)..\Content"
 IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
-xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
+xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\content\"</Command>
     </PostBuildEvent>
     <FxCompile>
       <EntryPointName>
@@ -286,9 +286,9 @@ xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>IF NOT EXIST "$(SolutionDir)..\Content" mkdir "$(SolutionDir)..\Content"
+      <Command>IF NOT EXIST "$(SolutionDir)..\content" mkdir "$(SolutionDir)..\Content"
 IF EXIST "$(ProjectDir)Content"  xcopy /E /Y "$(ProjectDir)Content" "$(OutDir)Content\"
-xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\Content\"</Command>
+xcopy /E /Y "$(OutDir)Content" "$(SolutionDir)..\content\"</Command>
     </PostBuildEvent>
     <FxCompile>
       <EntryPointName>
