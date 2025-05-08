@@ -51,8 +51,10 @@ find_package( imgui CONFIG REQUIRED )
 # 하위 프로젝트
 
 add_subdirectory( source/1.1_Win32_Startup )
+add_subdirectory( source/1.2_Win32_Framework )
 
-
+add_subdirectory( source/Library.Shared )
+add_subdirectory( source/Library.Desktop )
 
 # media 폴더를 실행 폴더( Debug, Release )로 복사하는 샘플 코드
 # add_custom_command(

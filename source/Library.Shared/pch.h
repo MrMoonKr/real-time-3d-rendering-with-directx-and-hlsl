@@ -32,6 +32,7 @@
 // Guidelines Support Library
 #include <gsl\gsl>
 
+#define NOMINMAX
 // Windows
 #include <windows.h>
 #include <winrt\Windows.Foundation.h>

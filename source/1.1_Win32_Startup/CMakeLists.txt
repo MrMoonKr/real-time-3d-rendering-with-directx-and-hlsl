@@ -5,6 +5,7 @@ set( target Ch01_01_Win32_Startup )
 add_executable( ${target} WIN32
     Program.cpp
     GameException.cpp GameException.h
+    pch.cpp pch.h
 )
 
 target_precompile_headers( ${target} PRIVATE
