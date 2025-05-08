@@ -3,20 +3,19 @@
 
 namespace Library
 {
-	GameException::GameException(const char* const& message, HRESULT hr) :
-		exception(message), mHR(hr)
-	{
-	}
+    GameException::GameException( const char* const& message, HRESULT hr ) : exception( message ), mHR( hr )
+    {
+    }
 
-	HRESULT GameException::HR() const
-	{
-		return mHR;
-	}
+    HRESULT GameException::HR() const
+    {
+        return mHR;
+    }
 
-	std::wstring GameException::whatw() const
-	{
-		std::wstringstream whatw;
-		whatw << what();
-		return whatw.str();
-	}
-}
+    std::wstring GameException::whatw() const
+    {
+        std::wstringstream whatw;
+        whatw << what();
+        return whatw.str();
+    }
+} // namespace Library

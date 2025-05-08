@@ -35,13 +35,22 @@ add_definitions( -DWIN32_LEAN_AND_MEAN )
 # find_package( effects11 CONFIG REQUIRED )
 # target_link_libraries( main PRIVATE Microsoft::Effects11 )
 
+find_package( Microsoft.GSL CONFIG REQUIRED )
+# target_link_libraries( main PRIVATE Microsoft.GSL::GSL )
+
 find_package( directxtk CONFIG REQUIRED )
 # target_link_libraries( main PRIVATE Microsoft::DirectXTK )
+
+find_package( assimp CONFIG REQUIRED )
+# target_link_libraries( main PRIVATE assimp::assimp )
+
+find_package( imgui CONFIG REQUIRED )
+# target_link_libraries( main PRIVATE imgui::imgui )
 
 
 # 하위 프로젝트
 
-
+add_subdirectory( source/1.1_Win32_Startup )
 
 
 

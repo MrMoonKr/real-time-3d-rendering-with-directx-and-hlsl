@@ -13,6 +13,6 @@ PointerAlignment: Left
 SortIncludes: 'false'
 KeepEmptyLinesAtTheStartOfBlocks: true
 IndentAccessModifiers: false
-
+NamespaceIndentation: All
 
 ...
