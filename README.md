@@ -1,3 +1,119 @@
+# Real-Time 3D Rendering with DirectX and HLSL
+
+WIP ( Work in Progress )  
+
+C++ / DirectX 11 직무 교육( OJT, On the job Training )을 위해서 생성 하였습니다.  
+
+## 책 관련 링크
+
+<img src="https://learning.oreilly.com/library/cover/9780133570120/250w/" alt="" height="256px" align="right">
+
+- [Real-Time 3D Rendering with DirectX and HLSL [ 원서 ]](https://www.oreilly.com/library/view/real-time-3d-rendering/9780133570120/)  
+
+- [저자 저장소](https://bitbucket.org/pvarcholik/real-time-3d-rendering-with-directx-and-hlsl/src/) ( 최근 2023-07-11 )  
+
+- 2014년 출시된 책의 소스를 저자가 직접 2023년까지 업데이트 하셨네요  
+
+## 개발 및 테스트 환경
+
+- 시스템 ( Computer System )  
+
+  - AMD Ryzen 9 5900X 12-Core Processor
+  - NVIDIA Geforce RTX 3080 10GB
+  - Windows 11 64bit Korean
+
+- 컴파일러 및 링커 ( Compiler , Linker )  
+
+  - [Visual Studio Community 2022](https://visualstudio.microsoft.com/ko/free-developer-offers/)  
+    - C++를 사용한 데스크톱 개발  
+    - C++를 사용한 게임 개발  ( DirectX SDK 포함되어 있음 )
+
+- 에디터 ( Editor, Intergrated Development Environment )  
+
+  - [VS Code](https://visualstudio.microsoft.com/ko/free-developer-offers/)  
+    - C/C++ Extension for VS Code
+      - c_cpp_properties.json ( compiler path and IntelliSense settings )  
+      - tasks.json ( build instructions )  
+      - launch.json ( debugger settings )  
+      - Chapter01 동작 테스트 후 CMake 도입함.  
+
+- 빌드 매니저 ( Build Manager )
+  - [CMake](https://cmake.org/)  
+    - [설치](https://cmake.org/download/)  
+    - ...
+    ```
+    $ cmake --version
+    ```
+  - CMakeLists.txt
+  - CMakePresets.json
+  - CMakeUserPresets.json
+
+- 패키지 매니저 ( Package Manager )
+  - [vcpkg](https://vcpkg.io/en/)  
+    - [설치](https://github.com/microsoft/vcpkg)  
+    - ...
+    ```
+    $ vcpkg --version
+    $ vcpkg new --application
+    ```
+  - vcpkg.json
+  - vcpkg-configuration.json
+
+
+## 사용된 패키지 목록
+
+- ms-gsl
+  - [vcpkg](https://vcpkg.io/en/package/ms-gsl)
+    ```
+    $ vcpkg add port ms-gsl
+    ```
+  - [GSL](https://github.com/Microsoft/GSL)  
+  - Microsoft-Guidelines-Support-Library
+
+- directxtk
+  - [vcpkg](https://vcpkg.io/en/package/directxtk)
+    ```
+    $ vcpkg add port directxtk
+    ```
+  - [DirectXTK](https://github.com/Microsoft/DirectXTK)  
+  - DirectX 11 Helper Classes
+
+- assimp
+  - [vcpkg](https://vcpkg.io/en/package/assimp)
+    ```
+    $ vcpkg add port assimp
+    ```
+  - [assimp](https://github.com/assimp/assimp)  
+  - Open-Asset-Importer-Library
+
+- IMGUI
+  - [vcpkg](https://vcpkg.io/en/package/imgui)  
+  ```
+  $ vcpkg add port imgui[win32binding,dx11-binding,freetype]
+  ```
+  - [imgui](https://github.com/ocornut/imgui)
+  - Immediate-Mode-Graphical-User-Interface
+
+- ...
+  - [vcpkg]()  
+  ```
+  $ vcpkg add port ...
+  ```
+  - [...]()
+  - ...
+
+## ...
+
+---
+---
+---
+
+
+
+
+
+
+
 ### Overview
 
 This is the source code repository for the book *Real Time 3D Rendering with DirectX and HLSL: A Practical Guide to Graphics Programming* by Paul Varcholik.
