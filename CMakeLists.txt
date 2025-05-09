@@ -47,9 +47,6 @@ find_package( assimp CONFIG REQUIRED )
 find_package( imgui CONFIG REQUIRED )
 # target_link_libraries( main PRIVATE imgui::imgui )
 
-find_package( directx-dxc CONFIG REQUIRED )
-# target_link_libraries( main PRIVATE Microsoft::DirectXShaderCompiler )
-
 
 # 하위 프로젝트
 
@@ -59,6 +56,8 @@ add_subdirectory( source/Library.Desktop )
 add_subdirectory( source/1.1_Win32_Startup )
 add_subdirectory( source/1.2_Win32_Framework )
 add_subdirectory( source/1.3_Point )
+add_subdirectory( source/1.4_Colored_Triangle )
+add_subdirectory( source/1.5_Colored_Cube )
 
 
 # media 폴더를 실행 폴더( Debug, Release )로 복사하는 샘플 코드

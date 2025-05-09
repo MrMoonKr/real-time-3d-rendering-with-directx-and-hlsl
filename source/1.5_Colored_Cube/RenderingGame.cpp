@@ -38,8 +38,8 @@ namespace Rendering
 		mComponents.push_back(camera);
 		mServices.AddService(Camera::TypeIdClass(), camera.get());
 
-		auto grid = make_shared<Grid>(*this, camera);
-		mComponents.push_back(grid);
+		// auto grid = make_shared<Grid>(*this, camera);
+		// mComponents.push_back(grid);
 
 		mColoredCubeDemo = make_shared<ColoredCubeDemo>(*this, camera);
 		mComponents.push_back(mColoredCubeDemo);

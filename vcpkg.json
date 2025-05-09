@@ -9,7 +9,6 @@
         "freetype"
       ]
     },
-    "assimp",
-    "directx-dxc"
+    "assimp"
   ]
 }
