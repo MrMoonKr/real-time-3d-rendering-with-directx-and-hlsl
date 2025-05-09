@@ -3,4 +3,4 @@ build/packages/
 *.user
 build/obj/
 build/bin/
-content/
+

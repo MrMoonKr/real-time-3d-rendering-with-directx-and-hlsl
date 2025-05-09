@@ -94,13 +94,22 @@ C++ / DirectX 11 직무 교육( OJT, On the job Training )을 위해서 생성 �
   - [imgui](https://github.com/ocornut/imgui)
   - Immediate-Mode-Graphical-User-Interface
 
+- directx-dxc
+  - [vcpkg](https://vcpkg.io/en/package/directx-dxc)  
+  ```
+  $ vcpkg add port directx-dxc
+  ```
+  - [DirectXShaderCompiler](https://github.com/microsoft/DirectXShaderCompiler)
+  - DirectX Shader Compiler which is based on LLVM/Clang
+
 - ...
   - [vcpkg]()  
   ```
   $ vcpkg add port ...
   ```
   - [...]()
-  - ...
+  - ...  
+
 
 ## ...
 
