@@ -25,103 +25,107 @@
 
 namespace Library
 {
-	class GameComponent;
+    class GameComponent;
 
-	class IDeviceNotify
-	{
-	public:
-		virtual ~IDeviceNotify() { };
+    class IDeviceNotify
+    {
+      public:
+        virtual ~IDeviceNotify() {};
 
-		virtual void OnDeviceLost() = 0;
-		virtual void OnDeviceRestored() = 0;
+        virtual void OnDeviceLost() = 0;
+        virtual void OnDeviceRestored() = 0;
 
-	protected:
-		IDeviceNotify() { };
-	};
+      protected:
+        IDeviceNotify() {};
+    };
 
+    /**
+     * @brief 애플리케이션 로직 랩퍼 클래스.  
+     */
     class Game : public RenderTarget
     {
-		RTTI_DECLARATIONS(Game, RenderTarget)
+        RTTI_DECLARATIONS( Game, RenderTarget )
 
-    public:
-        Game(std::function<void*()> getWindowCallback, std::function<void(SIZE&)> getRenderTargetSizeCallback);
-		Game(const Game&) = delete;
-		Game& operator=(const Game&) = delete;
-		Game(Game&&) = delete;
-		Game& operator=(Game&&) = delete;
-		virtual ~Game() = default;
+      public:
+        Game( std::function<void*()> getWindowCallback, std::function<void( SIZE& )> getRenderTargetSizeCallback );
+        Game( const Game& ) = delete;
+        Game& operator=( const Game& ) = delete;
+        Game( Game&& ) = delete;
+        Game& operator=( Game&& ) = delete;
+        virtual ~Game() = default;
 
-		gsl::not_null<ID3D11Device3*> Direct3DDevice() const;
-		gsl::not_null<ID3D11DeviceContext3*> Direct3DDeviceContext() const;
-		gsl::not_null<IDXGISwapChain1*> SwapChain() const;
-		gsl::not_null<ID3D11RenderTargetView*> RenderTargetView() const;
-		gsl::not_null<ID3D11DepthStencilView*> DepthStencilView() const;
-		SIZE RenderTargetSize() const;
-		float AspectRatio() const;
-		bool IsFullScreen() const;
-		const D3D11_TEXTURE2D_DESC& BackBufferDesc() const;
-		const D3D11_VIEWPORT& Viewport() const;
-		std::uint32_t MultiSamplingCount() const;
-		std::uint32_t MultiSamplingQualityLevels() const;
+        gsl::not_null<ID3D11Device3*> Direct3DDevice() const;
+        gsl::not_null<ID3D11DeviceContext3*> Direct3DDeviceContext() const;
+        gsl::not_null<IDXGISwapChain1*> SwapChain() const;
+        gsl::not_null<ID3D11RenderTargetView*> RenderTargetView() const;
+        gsl::not_null<ID3D11DepthStencilView*> DepthStencilView() const;
+        SIZE RenderTargetSize() const;
+        float AspectRatio() const;
+        bool IsFullScreen() const;
+        const D3D11_TEXTURE2D_DESC& BackBufferDesc() const;
+        const D3D11_VIEWPORT& Viewport() const;
+        std::uint32_t MultiSamplingCount() const;
+        std::uint32_t MultiSamplingQualityLevels() const;
 
-		const std::vector<std::shared_ptr<GameComponent>>& Components() const;
-		const ServiceContainer& Services() const;			
+        const std::vector<std::shared_ptr<GameComponent>>& Components() const;
+        const ServiceContainer& Services() const;
 
         virtual void Initialize();
-		virtual void Run();
-		virtual void Shutdown();  
+        virtual void Run();
+        virtual void Shutdown();
 
-		virtual void Update(const GameTime& gameTime);
-		virtual void Draw(const GameTime& gameTime);
+        virtual void Update( const GameTime& gameTime );
+        virtual void Draw( const GameTime& gameTime );
 
-		void UpdateRenderTargetSize();
-		void RegisterDeviceNotify(IDeviceNotify* deviceNotify);
-		
-		std::function<void*()> GetWindowCallback() const;
+        void UpdateRenderTargetSize();
+        void RegisterDeviceNotify( IDeviceNotify* deviceNotify );
 
-		ContentManager& Content();
+        std::function<void*()> GetWindowCallback() const;
 
-    protected:		
-		virtual void HandleDeviceLost();
+        ContentManager& Content();
 
-		virtual void Begin() override;
-		virtual void End() override;
+      protected:
+        virtual void HandleDeviceLost();
 
-		virtual void CreateDeviceIndependentResources();
-		virtual void CreateDeviceResources();
-		virtual void CreateWindowSizeDependentResources();
+        virtual void Begin() override;
+        virtual void End() override;
 
-		inline static const D3D_FEATURE_LEVEL DefaultFeatureLevel{ D3D_FEATURE_LEVEL_9_1 };
-		inline static const std::uint32_t DefaultFrameRate{ 60 };
-		inline static const std::uint32_t DefaultMultiSamplingCount{ 4 };
-		inline static const std::uint32_t DefaultBufferCount{ 2 };
+        virtual void CreateDeviceIndependentResources();
+        virtual void CreateDeviceResources();
+        virtual void CreateWindowSizeDependentResources();
 
-		winrt::com_ptr<ID3D11Device3> mDirect3DDevice;
-		winrt::com_ptr<ID3D11DeviceContext3> mDirect3DDeviceContext;
-		winrt::com_ptr<IDXGISwapChain1> mSwapChain;
-		D3D_FEATURE_LEVEL mFeatureLevel = DefaultFeatureLevel;
+        inline static const D3D_FEATURE_LEVEL DefaultFeatureLevel{ D3D_FEATURE_LEVEL_9_1 };
+        inline static const std::uint32_t DefaultFrameRate{ 60 };
+        inline static const std::uint32_t DefaultMultiSamplingCount{ 4 };
+        inline static const std::uint32_t DefaultBufferCount{ 2 };
 
-		D3D11_TEXTURE2D_DESC mBackBufferDesc;
-		winrt::com_ptr<ID3D11RenderTargetView> mRenderTargetView;
-		winrt::com_ptr<ID3D11DepthStencilView> mDepthStencilView;
-		D3D11_VIEWPORT mViewport;
+        winrt::com_ptr<ID3D11Device3> mDirect3DDevice;
+        winrt::com_ptr<ID3D11DeviceContext3> mDirect3DDeviceContext;
+        winrt::com_ptr<IDXGISwapChain1> mSwapChain;
+        D3D_FEATURE_LEVEL mFeatureLevel = DefaultFeatureLevel;
 
-		std::uint32_t mFrameRate{ DefaultFrameRate };
-		bool mIsFullScreen{ false };
-		std::uint32_t mMultiSamplingCount{ DefaultMultiSamplingCount };
-		std::uint32_t mMultiSamplingQualityLevels{ 0 };
+        D3D11_TEXTURE2D_DESC mBackBufferDesc;
+        winrt::com_ptr<ID3D11RenderTargetView> mRenderTargetView;
+        winrt::com_ptr<ID3D11DepthStencilView> mDepthStencilView;
+        D3D11_VIEWPORT mViewport;
 
-		std::function<void*()> mGetWindow;
-		std::function<void(SIZE&)> mGetRenderTargetSize;
-		SIZE mRenderTargetSize;
-		IDeviceNotify* mDeviceNotify;
+        std::uint32_t mFrameRate{ DefaultFrameRate };
+        bool mIsFullScreen{ false };
+        std::uint32_t mMultiSamplingCount{ DefaultMultiSamplingCount };
+        std::uint32_t mMultiSamplingQualityLevels{ 0 };
+
+        std::function<void*()> mGetWindow;
+        std::function<void( SIZE& )> mGetRenderTargetSize;
+        SIZE mRenderTargetSize;
+        IDeviceNotify* mDeviceNotify;
 
         GameClock mGameClock;
         GameTime mGameTime;
-		std::vector<std::shared_ptr<GameComponent>> mComponents;
-		ServiceContainer mServices;
-		ContentManager mContentManager;
+        std::vector<std::shared_ptr<GameComponent>> mComponents;
+        ServiceContainer mServices;
+        ContentManager mContentManager;
     };
-}
+
+} // namespace Library
 
 #include "Game.inl"

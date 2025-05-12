@@ -3,42 +3,42 @@
 
 namespace Library
 {
-	RTTI_DEFINITIONS(GameComponent)
+    RTTI_DEFINITIONS( GameComponent )
 
-	GameComponent::GameComponent(Game& game) :
-		mGame(&game)
-	{
-	}
+    GameComponent::GameComponent( Game& game ) : mGame( &game )
+    {
+    }
 
-	Game* GameComponent::GetGame()
-	{
-		return mGame;
-	}
+    Game* GameComponent::GetGame()
+    {
+        return mGame;
+    }
 
-	void GameComponent::SetGame(Game& game)
-	{
-		mGame = gsl::not_null<Game*>(&game);
-	}
+    void GameComponent::SetGame( Game& game )
+    {
+        mGame = gsl::not_null<Game*>( &game );
+    }
 
-	bool GameComponent::Enabled() const
-	{
-		return mEnabled;
-	}
+    bool GameComponent::Enabled() const
+    {
+        return mEnabled;
+    }
 
-	void GameComponent::SetEnabled(bool enabled)
-	{
-		mEnabled = enabled;
-	}
+    void GameComponent::SetEnabled( bool enabled )
+    {
+        mEnabled = enabled;
+    }
 
-	void GameComponent::Initialize()
-	{
-	}
+    void GameComponent::Initialize()
+    {
+    }
 
-	void GameComponent::Shutdown()
-	{
-	}
+    void GameComponent::Shutdown()
+    {
+    }
 
-	void GameComponent::Update(const GameTime&)
-	{		
-	}
-}
+    void GameComponent::Update( const GameTime& )
+    {
+    }
+
+} // namespace Library

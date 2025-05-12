@@ -11,67 +11,81 @@ using namespace std;
 using namespace gsl;
 using namespace DirectX;
 
-
 namespace Library
 {
-	RTTI_DEFINITIONS(Shader)
+    RTTI_DEFINITIONS( Shader )
 
-	com_ptr<ID3D11ClassLinkage> Shader::CreateClassLinkage(gsl::not_null<ID3D11Device*> device)
-	{
-		com_ptr<ID3D11ClassLinkage> classLinkage;
-		ThrowIfFailed(device->CreateClassLinkage(classLinkage.put()), "ID3D11Device::CreateClassLinkage() failed.");
+    com_ptr<ID3D11ClassLinkage> Shader::CreateClassLinkage( gsl::not_null<ID3D11Device*> device )
+    {
+        com_ptr<ID3D11ClassLinkage> classLinkage;
+        ThrowIfFailed( device->CreateClassLinkage( classLinkage.put() ), "ID3D11Device::CreateClassLinkage() failed." );
 
-		return classLinkage;
-	}
+        return classLinkage;
+    }
 
-	com_ptr<ID3DBlob> Shader::CompileShader( const wchar_t* filename, const char* entryPoint, const char* target )
-	{
-		com_ptr<ID3DBlob> shaderBlob;
-		com_ptr<ID3DBlob> errorBlob;
+    /**
+     * 셰이더 소스코드 파일을 컴파일합니다.  
+     * @param filename: 셰이더 소스코드 파일 경로
+     * @param entryPoint: 셰이더의 진입점 함수 이름. main, VSMain, PSMain 등
+     * @param target: 셰이더의 타겟 버전. vs_5_0, ps_5_0 등
+     * 
+     */
+    com_ptr<ID3DBlob> Shader::CompileShader( const wchar_t* filename, const char* entryPoint, const char* target )
+    {
+        com_ptr<ID3DBlob> shaderBlob;
+        com_ptr<ID3DBlob> errorBlob;
 
-		HRESULT hr = D3DCompileFromFile( filename, nullptr, nullptr, 
-			entryPoint, target,
-			D3DCOMPILE_ENABLE_STRICTNESS, 0, 
-			shaderBlob.put(), errorBlob.put()
-		);
+        HRESULT hr = D3DCompileFromFile( filename, 
+                                         nullptr, nullptr, 
+                                         entryPoint, target, 
+                                         D3DCOMPILE_ENABLE_STRICTNESS,
+                                         0, 
+                                         shaderBlob.put(), 
+                                         errorBlob.put() );
 
-		if (FAILED(hr))
-		{
-			if (errorBlob)
-			{
-				OutputDebugStringA(static_cast<const char*>(errorBlob->GetBufferPointer()));
-			}
-			return nullptr;
-		}
+        if ( FAILED( hr ) )
+        {
+            if ( errorBlob )
+            {
+                OutputDebugStringA( static_cast<const char*>( errorBlob->GetBufferPointer() ) );
+            }
+            return nullptr;
+        }
 
-		return shaderBlob;
-	}
+        return shaderBlob;
+    }
 
-	com_ptr<ID3D11InputLayout> Shader::CreateInputLayout(gsl::not_null<ID3D11Device*> device, 
-		com_ptr<ID3DBlob> shaderBlob,
-		const D3D11_INPUT_ELEMENT_DESC* inputs, int inputCount)
-	{
-		com_ptr<ID3D11InputLayout> inputLayout;
-		ThrowIfFailed(device->CreateInputLayout(inputs, inputCount, shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), inputLayout.put()), "ID3D11Device::CreateInputLayout() failed.");
+    com_ptr<ID3D11InputLayout> Shader::CreateInputLayout( gsl::not_null<ID3D11Device*> device,
+                                                          com_ptr<ID3DBlob> shaderBlob,
+                                                          const D3D11_INPUT_ELEMENT_DESC* inputs, int inputCount )
+    {
+        com_ptr<ID3D11InputLayout> inputLayout;
+        ThrowIfFailed( device->CreateInputLayout( inputs, inputCount, shaderBlob->GetBufferPointer(),
+                                                  shaderBlob->GetBufferSize(), inputLayout.put() ),
+                       "ID3D11Device::CreateInputLayout() failed." );
 
-		return inputLayout;
-	}
+        return inputLayout;
+    }
 
-	com_ptr<ID3D11VertexShader> Shader::CreateVertexShader(gsl::not_null<ID3D11Device*> device, 
-		com_ptr<ID3DBlob> shaderBlob)
-	{
-		com_ptr<ID3D11VertexShader> vertexShader;
-		ThrowIfFailed(device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, vertexShader.put()), "ID3D11Device::CreateVertexShader() failed.");
+    com_ptr<ID3D11VertexShader> Shader::CreateVertexShader( gsl::not_null<ID3D11Device*> device,
+                                                            com_ptr<ID3DBlob> shaderBlob )
+    {
+        com_ptr<ID3D11VertexShader> vertexShader;
+        ThrowIfFailed( device->CreateVertexShader( shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr,
+                                                   vertexShader.put() ),
+                       "ID3D11Device::CreateVertexShader() failed." );
 
-		return vertexShader;
-	}
-	com_ptr<ID3D11PixelShader> Shader::CreatePixelShader(gsl::not_null<ID3D11Device*> device,
-		com_ptr<ID3DBlob> shaderBlob)
-	{
-		com_ptr<ID3D11PixelShader> pixelShader;
-		ThrowIfFailed(device->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, pixelShader.put()), "ID3D11Device::CreatePixelShader() failed.");
+        return vertexShader;
+    }
 
-		return pixelShader;
-	}
-}
+    com_ptr<ID3D11PixelShader> Shader::CreatePixelShader( gsl::not_null<ID3D11Device*> device,
+                                                          com_ptr<ID3DBlob> shaderBlob )
+    {
+        com_ptr<ID3D11PixelShader> pixelShader;
+        ThrowIfFailed( device->CreatePixelShader( shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr,
+                                                  pixelShader.put() ),
+                       "ID3D11Device::CreatePixelShader() failed." );
 
+        return pixelShader;
+    }
+} // namespace Library

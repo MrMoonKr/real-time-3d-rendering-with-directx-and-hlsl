@@ -59,6 +59,7 @@ add_subdirectory( source/1.3_Point )
 add_subdirectory( source/1.4_Colored_Triangle )
 add_subdirectory( source/1.5_Colored_Cube )
 
+add_subdirectory( source/2.1_Model )
 
 # media 폴더를 실행 폴더( Debug, Release )로 복사하는 샘플 코드
 # add_custom_command(

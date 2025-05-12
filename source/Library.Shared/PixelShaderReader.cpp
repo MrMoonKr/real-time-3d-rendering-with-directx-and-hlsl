@@ -21,7 +21,15 @@ namespace Library
 	{
 		com_ptr<ID3D11PixelShader> pixelShader;
 		vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(assetName, compiledPixelShader);
+		//Utility::LoadBinaryFile(assetName, compiledPixelShader);
+		if (StringHelper::EndsWith(assetName, L".hlsl"))
+		{
+			Utility::LoadShaderFile(assetName, "main", "ps_5_0", compiledPixelShader);
+		}
+		else
+		{
+			Utility::LoadBinaryFile(assetName, compiledPixelShader);
+		}
 		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, pixelShader.put()), "ID3D11Device::CreatedPixelShader() failed.");
 		
 		return shared_ptr<PixelShader>(new PixelShader(move(pixelShader)));

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ImGuiComponent.h"
-#include "imgui_impl_dx11.h"
+//#include "imgui_impl_dx11.h"
 #include "Game.h"
 #include <map>
 
@@ -36,11 +36,19 @@ namespace Library
 
 	void ImGuiComponent::Initialize()
 	{
+		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+
+		ImGui::StyleColorsDark();
 
 		auto getWindow = mGame->GetWindowCallback();
 		HWND window = reinterpret_cast<HWND>(getWindow());
-		ImGui_ImplDX11_Init(window, mGame->Direct3DDevice(), mGame->Direct3DDeviceContext());
+		//ImGui_ImplDX11_Init(window, mGame->Direct3DDevice(), mGame->Direct3DDeviceContext());
+		ImGui_ImplWin32_Init(window);
+		ImGui_ImplDX11_Init(mGame->Direct3DDevice(), mGame->Direct3DDeviceContext());
 
 		SetStyle(mStyle);
 	}
@@ -48,6 +56,7 @@ namespace Library
 	void ImGuiComponent::Shutdown()
 	{		
 		ImGui_ImplDX11_Shutdown();
+		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 	}
 
@@ -56,6 +65,8 @@ namespace Library
 		if (mUseCustomDraw == false)
 		{
 			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
 
 			for (auto& block : mRenderBlocks)
 			{

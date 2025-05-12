@@ -8,6 +8,7 @@
 #include "GameException.h"
 #include "Model.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 using namespace std;
 using namespace gsl;
@@ -34,14 +35,14 @@ namespace Rendering
 	void ModelDemo::Initialize()
 	{
 		// Load a compiled vertex shader
-		vector<char> compiledVertexShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\ModelDemoVS.cso", compiledVertexShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.put()), "ID3D11Device::CreatedVertexShader() failed.");
+		// vector<char> compiledVertexShader;
+		// Utility::LoadBinaryFile(L"Content\\Shaders\\ModelDemoVS.cso", compiledVertexShader);
+		// ThrowIfFailed(mGame->Direct3DDevice()->CreateVertexShader(&compiledVertexShader[0], compiledVertexShader.size(), nullptr, mVertexShader.put()), "ID3D11Device::CreatedVertexShader() failed.");
 
-		// Load a compiled pixel shader
-		vector<char> compiledPixelShader;
-		Utility::LoadBinaryFile(L"Content\\Shaders\\ModelDemoPS.cso", compiledPixelShader);
-		ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.put()), "ID3D11Device::CreatedPixelShader() failed.");
+		// // Load a compiled pixel shader
+		// vector<char> compiledPixelShader;
+		// Utility::LoadBinaryFile(L"Content\\Shaders\\ModelDemoPS.cso", compiledPixelShader);
+		// ThrowIfFailed(mGame->Direct3DDevice()->CreatePixelShader(&compiledPixelShader[0], compiledPixelShader.size(), nullptr, mPixelShader.put()), "ID3D11Device::CreatedPixelShader() failed.");
 
 		// Create an input layout
 		const D3D11_INPUT_ELEMENT_DESC inputElementDescriptions[] =
@@ -50,7 +51,15 @@ namespace Rendering
 			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
-		ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, narrow_cast<uint32_t>(size(inputElementDescriptions)), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.put()), "ID3D11Device::CreateInputLayout() failed.");
+		//ThrowIfFailed(mGame->Direct3DDevice()->CreateInputLayout(inputElementDescriptions, narrow_cast<uint32_t>(size(inputElementDescriptions)), &compiledVertexShader[0], compiledVertexShader.size(), mInputLayout.put()), "ID3D11Device::CreateInputLayout() failed.");
+
+		winrt::com_ptr<ID3DBlob> vsShaderBlob = Shader::CompileShader(L"Content\\Shaders\\ModelDemoVS.hlsl", "main", "vs_5_0");
+		winrt::com_ptr<ID3DBlob> psShaderBlob = Shader::CompileShader(L"Content\\Shaders\\ModelDemoPS.hlsl", "main", "ps_5_0");
+
+		mInputLayout = Shader::CreateInputLayout(mGame->Direct3DDevice().get(), vsShaderBlob, inputElementDescriptions, size(inputElementDescriptions));
+		mVertexShader = Shader::CreateVertexShader(mGame->Direct3DDevice().get(), vsShaderBlob);
+		mPixelShader = Shader::CreatePixelShader(mGame->Direct3DDevice().get(), psShaderBlob);
+
 
 		// Load the model
 		Library::Model model("Content\\Models\\Sphere.obj.bin");
